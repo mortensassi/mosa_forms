@@ -1,34 +1,18 @@
 <script>
   import AppForm from '@/components/AppForm.vue'
   import store from '@/store'
+  import { onMounted, inject } from 'vue'
 
   export default {
     name: 'MosaFormsApp',
 
-    data() {
-      return {
-        form: store.state.formData
-      }
+    setup() {
+      const formId = inject('formId')
+      onMounted(() => store.getFormData(`${import.meta.env.VITE_API_ENDPOINT}wp/v2/mosa_form/${formId}`))
     },
 
     components: {
       AppForm
-    },
-
-    computed: {
-      formData() {
-        return store.state.formData
-      }
-    },
-
-    methods: {
-      fetchData() {
-        store.getFormData('https://wp.lo/wp-json/wp/v2/mosa_form/' + this.form_id)
-      }
-    },
-
-    mounted() {
-      this.fetchData()
     },
   }
 </script>

@@ -7,6 +7,7 @@ appIds.forEach(aid => {
     const app = createApp(App)
 
     app.config.globalProperties.form_id = aid.dataset.formId
+    app.provide('formId', app.config.globalProperties.form_id)
 
     app.mount(`#${aid.id}`)
 });

@@ -1,8 +1,14 @@
 <script>
+import { computed } from 'vue'
+import store from '@/store';
+
 export default {
   name: 'AppForm',
 
-  mounted() {
+  setup() {
+    const formData = computed(() => store.state.formData)
+
+    return { formData }
   }
 }
 </script>

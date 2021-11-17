@@ -115,8 +115,8 @@ class Mosa_Forms_Public {
 
 		if (getenv('WP_ENV') === 'development') {
 			echo '
-                <script type="module" src="https://192.168.178.49:3000/@vite/client"></script>
-                <script type="module" src="https://192.168.178.49:3000/src/main.js"></script>
+                <script type="module" src="https://192.168.178.35:3000/@vite/client"></script>
+                <script type="module" src="https://192.168.178.35:3000/src/main.js"></script>
             ';
 		} else {
 			wp_register_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'app/dist/' . $this->manifest['index.html']['file'], $this->version, true );

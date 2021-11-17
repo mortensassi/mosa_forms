@@ -161,7 +161,17 @@ class Mosa_Forms {
 			register_extended_post_type( 'mosa_form', [
 				'supports' => ['title'],
 				'show_in_rest' => true
-			] );
+			], [
+                'singular' => __('Form', 'mosa'),
+                'plural' => __('Forms', 'mosa'),
+            ] );
+
+            register_extended_post_type( 'mosa_form_signup', [
+                'supports' => ['title'],
+            ], [
+                'singular' => __('Signup', 'mosa'),
+                'plural' => __('Signups', 'mosa'),
+            ] );
 		} );
 
 		add_action('acf/init', function() {
