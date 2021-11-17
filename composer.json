@@ -1,0 +1,20 @@
+{
+    "name": "moe/mosa-forms",
+    "type": "wp-plugin",
+    "require": {
+        "log1x/poet": "^2.0",
+        "wordplate/acf": "^11.2",
+        "johnbillion/extended-cpts": "^4.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "Moe\\MosaForms\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Morten Sassi",
+            "email": "dev@mortensassi.com"
+        }
+    ]
+}
