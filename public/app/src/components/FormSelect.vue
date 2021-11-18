@@ -19,7 +19,7 @@ export default {
     <label
       :for="`msf-select-${index}`"
       class="msf-input__label ms-input__label--select"
-    />
+    >{{ data.label }}</label>
     <select
       :id="`msf-select-${index}`"
       class="msf-input__control"
