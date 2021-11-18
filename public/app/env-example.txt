@@ -1,0 +1,3 @@
+# The address of your wp rest api endpoint
+# Needs to be in IP-format to prevend CORS issues
+VITE_API_ENDPOINT="https://192.168.178.49/wp-json"
