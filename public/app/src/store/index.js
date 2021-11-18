@@ -3,11 +3,15 @@ import { reactive } from 'vue'
 
 const store = {
     state: reactive({
-        formData: null
+        form: {
+            data: null,
+            options: null
+        }
     }),
 
     async getFormData(url) {
-        this.state.formData = await fetchData(url);
+        this.state.form.data = await fetchData(url);
+        this.state.form.options = await fetchData(url, 'OPTIONS')
     }
 }
 

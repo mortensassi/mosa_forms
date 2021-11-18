@@ -6,19 +6,19 @@
   export default {
     name: 'MosaFormsApp',
 
+    components: {
+      AppForm
+    },
+
     setup() {
       const formId = inject('formId')
       onMounted(() => store.getFormData(`${import.meta.env.VITE_API_ENDPOINT}wp/v2/mosa_form/${formId}`))
-    },
-
-    components: {
-      AppForm
     },
   }
 </script>
 
 <template>
-  <AppForm></AppForm>
+  <AppForm />
 </template>
 
 <style>

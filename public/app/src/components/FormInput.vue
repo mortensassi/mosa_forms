@@ -1,13 +1,47 @@
-<template>
-
-</template>
-
 <script>
+import {h} from 'vue'
+
 export default {
-  name: 'FormInput'
+  name: 'FormInput',
+  props: {
+    data: {
+      type: Object,
+      default: null
+    },
+    index: {
+      type: String,
+      default: ''
+    }
+  },
+
+  render() {
+    const field = this.data
+
+    const childElements = [
+      h('label', {
+        class: 'msf-input__label',
+        innerHTML: field.label,
+        for: `msf-input-${this.index}`
+      }),
+      h('input', {
+        id: `msf-input-${this.index}`,
+        class: 'msf-input__control',
+        type: field.type,
+        required: field.is_required
+      }),
+    ]
+
+    const requiredElement = h('span', {
+      class: 'msf-input__required-star',
+      innerHTML: '*'
+    })
+
+    if (field.is_required) childElements.splice(1, 0, requiredElement)
+
+    return h('div',
+        {
+          class: 'c-input'
+        }, childElements)
+  }
 }
 </script>
-
-<style scoped>
-
-</style>
