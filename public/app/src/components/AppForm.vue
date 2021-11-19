@@ -1,6 +1,6 @@
 <script>
 import _capitalize from 'lodash.capitalize'
-import {computed} from 'vue'
+import { computed, watch, ref } from 'vue'
 import store from '@/store'
 import FormInput from '@/components/FormInput.vue'
 import FormSelect from '@/components/FormSelect.vue'
@@ -20,9 +20,17 @@ export default {
     const prepareCompName = (name) => _capitalize(name)
     const goToStep = (step) => store.updateStep(store.state.form.step + step)
     const currentStep = computed(() => store.state.form.step)
+    const step = computed(() => formData.value.acf.steps[currentStep.value])
+    let stepTransitionName = ref('move-left')
+
+    watch(currentStep, (currentVal, oldVal) => {
+      stepTransitionName.value = currentVal > oldVal ? 'move-left' : 'move-right'
+    })
 
 
     return {
+      stepTransitionName,
+      step,
       formData,
       currentStep,
       goToStep,
@@ -33,31 +41,24 @@ export default {
 </script>
 
 <template>
-  <form
+  <div
     v-if="formData"
     class="msf-form"
   >
-    <div class="msf-form__wrapper">
+    <div
+      class="msf-form__container"
+    >
       <div
-        class="msf-form__container"
-        :style="{transform: `translateX(calc(-100% * ${currentStep}))`}"
+        :key="`mosa-forms_step-${currentStep}`"
+        class="msf-step"
       >
-        <div
-          v-for="(step, stepIndex) in formData.acf.steps"
-          :key="`mosa-forms_step-${stepIndex}`"
-          class="msf-step"
-        >
-          <h2 class="msf-step__headline">
-            {{ step.title }}
-          </h2>
-          <component
-            :is="`Form${prepareCompName(input.acf_fc_layout)}`"
-            v-for="(input, inputIndex) in step.fields"
-            :key="`mosa-forms_step-${stepIndex}-input-${inputIndex}`"
-            :data="input"
-            :index="`${stepIndex}-${inputIndex}`"
-          />
-        </div>
+        <component
+          :is="`Form${prepareCompName(input.acf_fc_layout)}`"
+          v-for="(input, inputIndex) in step.fields"
+          :key="`mosa-forms_step-${currentStep}-input-${inputIndex}`"
+          :data="input"
+          :index="`${currentStep}-${inputIndex}`"
+        />
       </div>
     </div>
     <button
@@ -69,37 +70,33 @@ export default {
       Previous
     </button>
     <button
-      v-if="formData.acf.steps.length > currentStep"
+      v-if="formData.acf.steps.length > currentStep + 1"
       class="msf-form__btn"
       type="button"
       @click="goToStep(1)"
     >
       Next
     </button>
-    <button v-else type="button">Yodelihi</button>
-  </form>
+    <button
+      v-else
+      type="button"
+    >
+      Yodelihi
+    </button>
+  </div>
 </template>
 
-<style lang="scss" scoped>
-  .msf-form {
-    background-color: hsl(160, 15%, 45%);
-    color: #fff;
-    max-width: 580px;
-    margin: 0 auto;
-  }
+<style lang="scss" src="@styles/components/_form.scss" scoped />
+<style lang="scss" src="@styles/components/_step.scss" scoped />
 
-  .msf-form__wrapper {
-    overflow: hidden;
-  }
+<style>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s ease;
+}
 
-  .msf-form__container {
-    transition: 0.3s transform cubic-bezier(0.3, 1, 0.9, 1);
-    display: flex;
-    flex-flow: row nowrap;
-  }
-  
-  .msf-step {
-    width: 100%;
-    flex: 1 0 100%;
-  }
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
 </style>

@@ -45,3 +45,5 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" src="@styles/components/_input.scss"/>

@@ -17,9 +17,15 @@ export default defineConfig({
         find: '@', replacement: path.resolve(__dirname, 'src'),
       },
       {
-        find: '@styles', replacement: path.resolve(__dirname, 'src/assets/styles'),
+        find: '@styles', replacement: path.resolve(__dirname, 'src/assets/scss'),
       },
     ],
+  },
+
+  css: {
+    preprocessorOptions: {
+      scss: { additionalData: `@import "@/assets/scss/app";` },
+    },
   },
 
   server: {

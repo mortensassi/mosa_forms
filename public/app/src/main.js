@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from 'uuid'
 import {createApp} from 'vue'
 import App from './App.vue'
 
@@ -8,6 +9,7 @@ appIds.forEach(aid => {
 
     app.config.globalProperties.form_id = aid.dataset.formId
     app.provide('formId', app.config.globalProperties.form_id)
+    app.provide('uuid', uuidv4())
 
     app.mount(`#${aid.id}`)
 });

@@ -1,0 +1,28 @@
+/* ==========================================================================
+   FORM
+   ========================================================================== */
+
+.msf-form {
+  background-color: $primary-color;
+  color: #fff;
+  max-width: 580px;
+  margin: 0 auto;
+  border-radius: 1.333333em;
+  box-sizing: border-box;
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: inherit;
+  }
+}
+
+.msf-form__wrapper {
+  overflow: hidden;
+}
+
+.msf-form__container {
+  transition: 0.3s transform ease-in-out;
+  display: flex;
+  flex-flow: row nowrap;
+}

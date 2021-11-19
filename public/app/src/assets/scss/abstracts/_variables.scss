@@ -1,0 +1,22 @@
+/* ==========================================================================
+   VARIABLES
+   ========================================================================== */
+
+$font-size: 12px;
+$line-height-ratio: 1.5;
+$line-height-base: 1rem * $line-height-ratio;
+$global-timing-func: cubic-bezier(0.9, 1, 0.7, 1);
+$border-radius: 1rem;
+
+/// Regular font family
+/// @type List
+$text-font-stack: 'Akkurat Std', 'Helvetica Neue Light', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif !default;
+
+/// Main brand color
+/// @type Color
+$primary-color: #39506A !default;
+$secondary-color: #6FFFE9 !default;
+
+$color-grey: rgba($primary-color, 0.25);
+
+$border-radius: 0.25rem;
