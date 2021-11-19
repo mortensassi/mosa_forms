@@ -43,7 +43,7 @@ export default {
         :style="{transform: `translateX(calc(-100% * ${currentStep}))`}"
       >
         <div
-          v-for="(step, stepIndex) in formData.acf['steps']"
+          v-for="(step, stepIndex) in formData.acf.steps"
           :key="`mosa-forms_step-${stepIndex}`"
           class="msf-step"
         >
@@ -69,12 +69,14 @@ export default {
       Previous
     </button>
     <button
+      v-if="formData.acf.steps.length > currentStep"
       class="msf-form__btn"
       type="button"
       @click="goToStep(1)"
     >
       Next
     </button>
+    <button v-else type="button">Yodelihi</button>
   </form>
 </template>
 
