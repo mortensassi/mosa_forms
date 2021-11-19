@@ -5,13 +5,17 @@ const store = {
     state: reactive({
         form: {
             data: null,
-            options: null
+            step: 0,
+            entry: {}
         }
     }),
 
     async getFormData(url) {
         this.state.form.data = await fetchData(url);
-        this.state.form.options = await fetchData(url, 'OPTIONS')
+    },
+
+    updateStep(step) {
+      this.state.form.step = step
     }
 }
 

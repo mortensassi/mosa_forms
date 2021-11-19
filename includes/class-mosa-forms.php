@@ -291,7 +291,7 @@ class Mosa_Forms
                                                                     Repeater::make(__('Price', 'mosa'), 'price')
                                                                         ->fields([
                                                                             Text::make(__('Audience', 'mosa'), 'audience'),
-                                                                            Text::make(__('Price', 'mosa'), 'price'),
+                                                                            Text::make(__('Price', 'mosa'), 'value'),
                                                                         ])
                                                                 ])
                                                         ]),
