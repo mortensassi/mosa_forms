@@ -5,5 +5,10 @@
 .msf-step {
   width: 100%;
   flex: 1 0 100%;
-  padding: 2rem;
+}
+
+.msf-step__group-title {
+  @include text-token('sans', 'headline', 'xs');
+
+  color: #000;
 }

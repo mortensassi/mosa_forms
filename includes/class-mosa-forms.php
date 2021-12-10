@@ -178,13 +178,27 @@ class Mosa_Forms
         });
 
         add_action('acf/init', function () {
+			$fields = require plugin_dir_path( __FILE__ ) . 'class-mosa-forms-fields.php';
+			
+			register_extended_field_group([
+				'title' => __('Form', 'mosa'),
+				'style' => 'default',
+				'show_in_rest' => true,
+				'id' => $this->plugin_name . 'form-selection',
+				'key' => $this->plugin_name . 'form-selection',
+				'fields' => $fields['form'],
+				'location' => [
+					Location::if('page_template', 'tpl.mosa-forms.php')
+				],
+			]);
+			
             register_extended_field_group([
                 'title' => __('Form Settings', 'mosa'),
                 'style' => 'default',
                 'show_in_rest' => true,
                 'id' => $this->plugin_name . 'form-fields',
                 'key' => $this->plugin_name . 'form-fields',
-                'fields' => require plugin_dir_path( __FILE__ ) . 'class-mosa-forms-fields.php',
+                'fields' => $fields['settings'],
                 'location' => [
                     Location::if('post_type', 'mosa_form')
                 ],

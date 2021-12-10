@@ -18,5 +18,7 @@
 </script>
 
 <template>
-  <AppForm />
+  <div class="o-wrapper">
+    <AppForm />
+  </div>
 </template>

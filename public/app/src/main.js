@@ -4,12 +4,12 @@ import App from './App.vue'
 
 const appIds = document.querySelectorAll('[id^="mosa-forms-app"]');
 
-appIds.forEach(aid => {
+appIds.forEach(appId => {
     const app = createApp(App)
 
-    app.config.globalProperties.form_id = aid.dataset.formId
+    app.config.globalProperties.form_id = appId.dataset.formId
     app.provide('formId', app.config.globalProperties.form_id)
     app.provide('uuid', uuidv4())
 
-    app.mount(`#${aid.id}`)
+    app.mount(`#${appId.id}`)
 });
