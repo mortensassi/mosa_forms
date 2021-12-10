@@ -7,7 +7,7 @@
 }
 
 .msf-cards__title {
-  @extend %label;
+  @include text-token('sans', 'copy', 'sm');
 }
 
 .msf-cards__wrapper {

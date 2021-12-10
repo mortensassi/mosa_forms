@@ -7,7 +7,7 @@
     }"
   >
     <div
-        v-if="imageProps"
+      v-if="imageProps"
       class="c-img__wrap"
     >
       <div
@@ -25,7 +25,7 @@
 
 <script>
 import lozad from 'lozad'
-import {computed, onMounted, ref, watch} from 'vue'
+import {computed, ref, watch} from 'vue'
 
 export default {
   name: 'AppImage',

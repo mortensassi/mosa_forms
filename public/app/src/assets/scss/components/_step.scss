@@ -7,8 +7,34 @@
   flex: 1 0 100%;
 }
 
+.msf-step__header {
+
+}
+
+.msf-step__header-content {
+  padding-top: 6.0625rem;
+
+  @include bp($large-bp) {
+    padding-top: 12.125rem;
+  }
+}
+
+.msf-step__headline {
+  @include text-token('sans', 'headline', 'sm');
+}
+
+.msf-step__group {
+  padding: 1.5rem 0;
+  border-top: 1px solid map-get($brand-colors, 'warm-grey', '100');
+  margin-top: 1.5rem;
+
+  @include bp($large-bp) {
+    padding: 3rem 0;
+    margin-top: 3rem;
+  }
+}
+
 .msf-step__group-title {
   @include text-token('sans', 'headline', 'xs');
-
-  color: #000;
 }
+

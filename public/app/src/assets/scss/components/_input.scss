@@ -2,9 +2,34 @@
    INPUT
    ========================================================================== */
 
-.msf-input__label {
-  @extend %label;
+.msf-input__checkboxes {
+  display: flex;
+  flex-flow: row wrap;
 }
+
+.msf-input--checkbox {
+  display: flex;
+  flex: 1 0 33%;
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+  align-items: center;
+
+  margin-bottom: 1rem;
+}
+
+.msf-input__label {
+  @include text-token('sans', 'copy', 'sm');
+}
+
+.msf-input__label--checkbox {
+  @include text-token('sans', 'copy', 'md');
+  margin-left: 0.75rem;
+}
+
 .msf-input__control {
   display: block;
+}
+
+.msf-input__checkboxes {
+  display: flex;
 }

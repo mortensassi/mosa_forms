@@ -3,7 +3,7 @@
    ========================================================================== */
 
 .msf-form {
-  color: #fff;
+  position: relative;
   margin: 0 auto;
   border-radius: 1.333333em;
   box-sizing: border-box;
@@ -17,4 +17,8 @@
 
 .msf-form__wrapper {
   overflow: hidden;
+}
+
+.msf-form__steps {
+  display: flex;
 }

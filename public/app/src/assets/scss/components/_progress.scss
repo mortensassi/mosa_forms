@@ -1,0 +1,113 @@
+/* ==========================================================================
+   PROGRESS
+   ========================================================================== */
+
+.msf-progress--overlayed {
+  position: absolute;
+  width: 100%;
+  z-index: 1;
+  transform: translateY(-50%);
+}
+
+.msf-progress__inner {
+  position: relative;
+  background: #fff;
+  box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.06), 0px 1px 3px rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+  padding: 1.25rem 1.25rem 1.5rem;
+  display: flex;
+
+  @include bp($large-bp) {
+    padding: 3rem 3.53125rem;
+  }
+}
+
+.msf-progress-item {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-flow: column wrap;
+  align-items: center;
+  text-align: center;
+
+  @include bp($large-bp) {
+    margin-right: 9.875rem;
+
+    &:last-child {
+      padding-right: 0;
+    }
+  }
+}
+
+.msf-progress-item__value {
+  @include anim();
+  @include text-token('sans', 'copy', 'md');
+
+  position: relative;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  border-radius: 50%;
+  align-items: center;
+  justify-content: center;
+  background-color: #fff;
+  border: 2px solid map-get($brand-colors, 'black', '200');
+  color: map-get($brand-colors, 'black', '200');
+  margin-bottom: 0.5rem;
+
+  &::before {
+    @include ps();
+
+    top: -1rem;
+    right: -1rem;
+    bottom: -1rem;
+    left: -1rem;
+    border-radius: 50%;
+    background-color: #fff;
+    z-index: -1;
+  }
+
+  .msf-progress__item--active & {
+    background-color: map-get($brand-colors, 'green', '500');
+    border-color: map-get($brand-colors, 'green', '500');
+    color: #fff;
+  }
+
+  @include bp($large-bp) {
+    @include text-token('sans', 'copy', 'lg');
+
+    width: 3rem;
+    height: 3rem;
+  }
+}
+
+.msf-progress-item__label {
+  @include text-token('sans', 'copy', 'sm');
+
+  color: map-get($brand-colors, 'black', '200');
+  white-space: nowrap;
+
+
+  .msf-progress__item--active & {
+    color: map-get($brand-colors, 'black', '900-50');
+  }
+
+  @include bp($large-bp) {
+    @include text-token('sans', 'copy', 'md');
+  }
+}
+
+.msf-progress-item__separator {
+  position: absolute;
+  display: block;
+  stroke: map-get($brand-colors, 'black', '200');
+  height: 4px;
+  top: 50%;
+  left: 100%;
+  transform: translate(-20%, -50%);
+  width: 16.53125rem;
+
+  @include bp($large-bp) {
+    top: 1.5rem;
+  }
+}

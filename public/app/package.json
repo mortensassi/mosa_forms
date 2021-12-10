@@ -7,10 +7,12 @@
     "serve": "vite preview"
   },
   "dependencies": {
+    "lodash.camelcase": "^4.3.0",
     "lodash.capitalize": "^4.2.1",
     "lozad": "^1.16.0",
     "uuid": "^8.3.2",
-    "vue": "^3.2.16"
+    "vue": "^3.2.16",
+    "vue3-treeselect": "^0.1.10"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^1.9.3",

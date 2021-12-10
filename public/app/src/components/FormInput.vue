@@ -19,13 +19,13 @@ export default {
 
     const childElements = [
       h('label', {
-        class: 'msf-input__label',
+        class: ['msf-input__label', `msf-input__label--${field.type}`],
         innerHTML: field.label,
         for: `msf-input-${this.index}`
       }),
       h('input', {
         id: `msf-input-${this.index}`,
-        class: 'msf-input__control',
+        class: ['msf-input__control', `msf-input__control--${field.type}`],
         type: field.type,
         required: field.is_required
       }),
@@ -40,7 +40,7 @@ export default {
 
     return h('div',
         {
-          class: 'c-input'
+          class: ['msf-input', `msf-input--${field.type}`],
         }, childElements)
   }
 }
