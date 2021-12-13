@@ -2,6 +2,7 @@
   <div
     class="c-img c-img--bg msf-form-header-image"
     :style="{
+      '--image-aspect--mobile': `${595 / 1200 * 100}%`,
       '--image-aspect': `${595 / 1200 * 100}%`,
       '--image-focuspoint': '50% 50%',
     }"

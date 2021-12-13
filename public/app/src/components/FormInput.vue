@@ -14,6 +14,13 @@ export default {
     }
   },
 
+  emits: {
+    change: {
+      type: String,
+      default: ''
+    }
+  },
+
   render() {
     const field = this.data
 
@@ -27,7 +34,8 @@ export default {
         id: `msf-input-${this.index}`,
         class: ['msf-input__control', `msf-input__control--${field.type}`],
         type: field.type,
-        required: field.is_required
+        required: field.is_required,
+        onChange: () => this.$emit('change', field.label)
       }),
     ]
 

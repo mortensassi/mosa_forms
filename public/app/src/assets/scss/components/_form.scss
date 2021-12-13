@@ -22,3 +22,25 @@
 .msf-form__steps {
   display: flex;
 }
+
+.msf-form__btn {
+  margin-bottom: 0;
+}
+
+.msf-form__collapse-trigger {
+  background: transparent;
+  border: none;
+  appearance: none;
+  text-decoration: underline;
+  color: map-get($brand-colors, 'green', '800');
+  margin-top: 2rem;
+  cursor: pointer;
+
+  @include on-event {
+    color: map-get($brand-colors, 'green', '500');
+  }
+
+  @include bp($large-bp) {
+    @include text-token('sans', 'copy', 'sm');
+  }
+}

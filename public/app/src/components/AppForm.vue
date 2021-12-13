@@ -66,7 +66,7 @@ export default {
             :key="`mosa-forms_step-${currentStep}-group-${groupIndex}`"
             class="msf-step__group"
           >
-            <div class="columns">
+            <div class="columns is-multiline">
               <div class="column is-12 is-3-desktop">
                 <h2 class="msf-step__group-title">
                   {{ group.title }}
@@ -120,7 +120,7 @@ export default {
 .move-right-enter-active,
 .move-left-leave-active,
 .move-right-leave-active {
-  transition: transform 25s ease;
+  transition: transform 0.5s ease;
 }
 
 .move-left-enter-to,

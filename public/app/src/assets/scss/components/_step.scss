@@ -28,6 +28,10 @@
   border-top: 1px solid map-get($brand-colors, 'warm-grey', '100');
   margin-top: 1.5rem;
 
+  + .msf-step__group {
+    margin-top: 0;
+  }
+
   @include bp($large-bp) {
     padding: 3rem 0;
     margin-top: 3rem;

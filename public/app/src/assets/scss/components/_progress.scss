@@ -3,10 +3,12 @@
    ========================================================================== */
 
 .msf-progress--overlayed {
-  position: absolute;
-  width: 100%;
-  z-index: 1;
-  transform: translateY(-50%);
+  @include bp($large-bp) {
+    position: absolute;
+    width: 100%;
+    z-index: 1;
+    transform: translateY(-50%);
+  }
 }
 
 .msf-progress__inner {
