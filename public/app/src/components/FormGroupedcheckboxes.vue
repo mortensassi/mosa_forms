@@ -10,6 +10,10 @@ export default {
     data: {
       type: Object,
       default: null
+    },
+    index: {
+      type: String,
+      default: null
     }
   },
 
@@ -80,35 +84,35 @@ export default {
 <template>
   <div class="msf-input msf-input--grouped-checkboxes">
     <div
-        class="msf-input__group"
+      class="msf-input__group"
     >
       <button
-          v-for="(button, groupIndex) in data.groups"
-          :key="`FormGroupedcheckboxes-button-${groupIndex}`"
-          class="c-btn c-btn--pill msf-form__btn"
-          :class="{ 'is-hovered' : groupIndex === currentGroup }"
-          @click="currentGroup = groupIndex"
+        v-for="(button, groupIndex) in data.groups"
+        :key="`FormGroupedcheckboxes-button-${groupIndex}`"
+        class="c-btn c-btn--pill msf-form__btn"
+        :class="{ 'is-hovered' : groupIndex === currentGroup }"
+        @click="currentGroup = groupIndex"
       >
         <span class="c-btn__label">{{ `${button.name}` }} <span v-if="groupIndex === currentGroup">({{ selection.length }})</span> </span>
       </button>
 
       <div
-          ref="checkboxesEl"
-          class="msf-input__checkboxes"
-          :class="{ 'msf-input__checkboxes--collapsed' : collapseList }"
+        ref="checkboxesEl"
+        class="msf-input__checkboxes"
+        :class="{ 'msf-input__checkboxes--collapsed' : collapseList }"
       >
         <FormInput
-            v-for="(input, inputIndex) in checkboxes"
-            :key="`GroupedCheckboxes-${currentGroup}-checkbox-${inputIndex}`"
-            :data="{ type: 'checkbox', label: input }"
-            :index="inputIndex"
-            @change="updateSelection"
+          v-for="(input, inputIndex) in checkboxes"
+          :key="`GroupedCheckboxes-${currentGroup}-checkbox-${inputIndex}`"
+          :data="{ type: 'checkbox', label: input }"
+          :index="`${index}-GroupedCheckboxes-${groupIndex}-checkbox-${inputIndex}`"
+          @change="updateSelection"
         />
       </div>
       <button
-          v-if="collapseList && listIsCollapsed"
-          class="c-link msf-form__collapse-trigger"
-          @click="setMaxHeightVariable(true)"
+        v-if="collapseList && listIsCollapsed"
+        class="c-link msf-form__collapse-trigger"
+        @click="setMaxHeightVariable(true)"
       >
         Alle Gebiete ansehen ({{ checkboxes.length }})
       </button>

@@ -1,5 +1,5 @@
 <script>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import Treeselect from 'vue3-treeselect'
 import 'vue3-treeselect/dist/vue3-treeselect.css'
 
@@ -17,25 +17,33 @@ export default {
     }
   },
 
-  setup() {
+  setup(props) {
     const value = ref(null)
-    const options = ref([ {
-      id: 'a',
-      label: 'a',
-      children: [ {
-        id: 'aa',
-        label: 'aa',
-      }, {
-        id: 'ab',
-        label: 'ab',
-      } ],
-    }, {
-      id: 'b',
-      label: 'b',
-    }, {
-      id: 'c',
-      label: 'c',
-    } ])
+    const options = computed(() => {
+      const data = props.data
+
+      return data.choices.map((item, index) => {
+        let choiceOptions =  {
+          id: `choice-${index}`,
+          label: item.choice
+        }
+
+        if (item.is_grouped) {
+          const childrenOptions = {
+            children: item.choices.map((nestedItem, nestedIndex) => {
+              return {
+                id: `choice-${index}-child-${nestedIndex}`,
+                label: nestedItem.choice,
+              }
+            })
+          }
+
+          choiceOptions = { ...choiceOptions, ...childrenOptions}
+        }
+
+        return choiceOptions
+      })
+    })
 
     return { value, options }
   }
@@ -44,21 +52,18 @@ export default {
 
 <template>
   <div class="msf-input msf-input--select">
-    <treeselect v-model="value" :multiple="true" :options="options" :placeholder="data.title" />
     <label
       :for="`msf-select-${index}`"
       class="msf-input__label ms-input__label--select"
     >{{ data.label }}</label>
-    <select
+    <treeselect
       :id="`msf-select-${index}`"
-      class="msf-input__control"
+      v-model="value"
+      :multiple="true"
+      :options="options"
+      :placeholder="data.title"
+      :default-expand-level="1"
     >
-      <option
-        v-for="(item, itemIndex) in data.choices"
-        :key="`msf-select-${index}-choice-${itemIndex}`"
-      >
-        {{ item.choice }}
-      </option>
-    </select>
+    </treeselect>
   </div>
 </template>

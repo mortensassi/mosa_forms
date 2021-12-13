@@ -1,5 +1,6 @@
 <?php
 
+use WordPlate\Acf\ConditionalLogic;
 use WordPlate\Acf\Fields\FlexibleContent;
 use WordPlate\Acf\Fields\Group;
 use WordPlate\Acf\Fields\Image;
@@ -101,9 +102,19 @@ return [
 																	  ]),
 															 Text::make(__('Title', 'mosa'), 'title'),
 															 Repeater::make(__('Choices', 'mosa'), 'choices')
-																	 ->buttonLabel(__('Add Choice', 'mosa'))
+																	 ->buttonLabel(__('+ Add Choice', 'mosa'))
 																	 ->fields([
-																		 Text::make(__('Choice', 'mosa'), 'choice')
+																		 Text::make(__('Choice', 'mosa'), 'choice' ),
+																		 TrueFalse::make(__('Is Grouped?', 'mosa'), 'is_grouped')
+																			->stylisedUi(),
+																		 Repeater::make(__('Choices', 'mosa'), 'choices')
+																				 ->buttonLabel(__('+ Add Choice', 'mosa'))
+																				 ->fields([
+																					 Text::make(__('Choice', 'mosa'), 'choice'),
+																					 ])
+																		 		->conditionalLogic([
+																					 ConditionalLogic::if('is_grouped')->equals(1)
+																				])
 																	 ])
 														 ]),
 												   Layout::make(__('Checkbox', 'mosa'), 'checkbox')

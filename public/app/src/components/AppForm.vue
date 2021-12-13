@@ -63,7 +63,7 @@ export default {
 
           <div
             v-for="(group, groupIndex) in step.groups"
-            :key="`mosa-forms_step-${currentStep}-group-${groupIndex}`"
+            :key="`mosa-forms_s-${currentStep}-g-${groupIndex}`"
             class="msf-step__group"
           >
             <div class="columns is-multiline">
@@ -76,10 +76,10 @@ export default {
                 <component
                   :is="`Form${prepareCompName(input.acf_fc_layout)}`"
                   v-for="(input, inputIndex) in group.fields"
-                  :key="`mosa-forms_step-${currentStep}-input-${inputIndex}`"
+                  :key="`mosa-forms_s-${currentStep}-g-${groupIndex}-i-${inputIndex}`"
                   :data-comp-name="`Form${prepareCompName(input.acf_fc_layout)}`"
                   :data="input"
-                  :index="`${currentStep}-${inputIndex}`"
+                  :index="`${currentStep}-${groupIndex}-${inputIndex}`"
                 />
               </div>
             </div>
