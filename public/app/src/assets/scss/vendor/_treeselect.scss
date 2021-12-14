@@ -14,8 +14,15 @@
   }
 
   .vue-treeselect--open & {
-    border-bottom: none;
     border-color: map-get($brand-colors, 'green', '900');
+  }
+
+  .vue-treeselect--open.vue-treeselect--open-below & {
+    border-bottom-color: transparent;
+  }
+
+  .vue-treeselect--open.vue-treeselect--open-above & {
+    border-top-color: transparent;
   }
 
   @include on-event {
