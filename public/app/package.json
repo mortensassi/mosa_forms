@@ -14,6 +14,7 @@
     "lozad": "^1.16.0",
     "uuid": "^8.3.2",
     "vue": "^3.2.16",
+    "vue-slider-component": "^4.0.0-beta.4",
     "vue3-treeselect": "^0.1.10"
   },
   "devDependencies": {

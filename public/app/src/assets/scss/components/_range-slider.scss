@@ -1,0 +1,68 @@
+/* ==========================================================================
+   RANGE SLIDER
+   ========================================================================== */
+
+.msf-range-slider {
+  margin-bottom: 2rem;
+}
+
+.msf-range-slider__dot {
+  display: block;
+  width: 1.75rem;
+  height: 1.75rem;
+}
+
+.vue-slider {
+  height: 28px!important;
+  padding: 0!important;
+  display: flex;
+  align-items: center;
+}
+
+.vue-slider-dot {
+  width: 28px!important;
+  height: 28px!important;
+}
+
+.vue-slider-rail {
+  &:before {
+    @include ps();
+
+    width: 100%;
+    height: 0.5rem;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    background-image: radial-gradient(map-get($brand-colors, 'black', '200') 20%, transparent 20%);
+    background-position: 0 0;
+    background-size: 0.375rem 0.5rem;
+  }
+}
+
+.msf-range-slider__process {
+  position: absolute;
+  height: 3px;
+  transform: translateY(-50%);
+  background-color: map-get($brand-colors, 'green', '800');
+}
+
+.msf-range-slider__inputs {
+  margin-bottom: 2rem;
+
+  @include bp($large-bp) {
+    display: flex;
+    margin-bottom: 3.3125rem;
+  }
+}
+
+.msf-range-slider__input {
+
+
+  @include bp($large-bp) {
+    + .msf-range-slider__input {
+
+      margin-top: 0;
+      margin-left: 1.5rem;
+    }
+  }
+}

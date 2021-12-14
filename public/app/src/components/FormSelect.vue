@@ -1,11 +1,11 @@
 <script>
-import { ref, computed } from 'vue'
+import {ref, computed} from 'vue'
 import Treeselect from 'vue3-treeselect'
 import 'vue3-treeselect/dist/vue3-treeselect.css'
 
 export default {
   name: 'FormSelect',
-  components: { Treeselect },
+  components: {Treeselect},
   props: {
     data: {
       type: Object,
@@ -23,7 +23,7 @@ export default {
       const data = props.data
 
       return data.choices.map((item, index) => {
-        let choiceOptions =  {
+        let choiceOptions = {
           id: `choice-${index}`,
           label: item.choice
         }
@@ -38,14 +38,14 @@ export default {
             })
           }
 
-          choiceOptions = { ...choiceOptions, ...childrenOptions}
+          choiceOptions = {...choiceOptions, ...childrenOptions}
         }
 
         return choiceOptions
       })
     })
 
-    return { value, options }
+    return {value, options}
   }
 }
 </script>
@@ -60,6 +60,7 @@ export default {
       class="c-txt c-txt--highlight"
     >*</span> </label>
     <treeselect
+      v-if="options"
       :id="`msf-select-${index}`"
       v-model="value"
       :multiple="true"

@@ -97,41 +97,43 @@ export default {
 </script>
 
 <template>
-  <span class="msf-input__label msf-input__label--button-group">
-    {{ data.label }}
-    <span
-      v-if="data.is_required"
-      class="c-txt c-txt--highlight"
-    >*</span>
-  </span>
-  <div
-    ref="buttonGroup"
-    class="msf-form__button-group"
-  >
-    <button
-      v-for="(button, buttonIndex) in data.buttons"
-      :key="`Buttongroup-${index}-button-${buttonIndex}`"
-      class="c-btn c-btn--pill"
-    >
-      <span class="c-btn__label">{{ button.label }}</span>
+  <div>
+    <span class="msf-input__label msf-input__label--button-group">
+      {{ data.label }}
       <span
-        v-if="button.has_info"
-        class="c-btn--tooltip u-tooltip"
-        :aria-labelledby="`Buttongroup-${index}-button-${buttonIndex}-tooltip`"
+        v-if="data.is_required"
+        class="c-txt c-txt--highlight"
+      >*</span>
+    </span>
+    <div
+      ref="buttonGroup"
+      class="msf-form__button-group"
+    >
+      <button
+        v-for="(button, buttonIndex) in data.buttons"
+        :key="`Buttongroup-${index}-button-${buttonIndex}`"
+        class="c-btn c-btn--pill"
       >
-        <span class="u-tooltip__icon-wrap">
-          <svg class="u-tooltip__icon"><use xlink:href="#icon-info" /></svg>
-        </span>
+        <span class="c-btn__label">{{ button.label }}</span>
         <span
-          :id="`Buttongroup-${index}-button-${buttonIndex}-tooltip`"
-          role="tooltip"
-          class="u-tooltip__content"
+          v-if="button.has_info"
+          class="c-btn--tooltip u-tooltip"
+          :aria-labelledby="`Buttongroup-${index}-button-${buttonIndex}-tooltip`"
         >
-          {{ button.info }}
-          <span class="u-tooltip__arrow" />
+          <span class="u-tooltip__icon-wrap">
+            <svg class="u-tooltip__icon"><use xlink:href="#icon-info" /></svg>
+          </span>
+          <span
+            :id="`Buttongroup-${index}-button-${buttonIndex}-tooltip`"
+            role="tooltip"
+            class="u-tooltip__content"
+          >
+            {{ button.info }}
+            <span class="u-tooltip__arrow" />
+          </span>
         </span>
-      </span>
-    </button>
+      </button>
+    </div>
   </div>
 </template>
 

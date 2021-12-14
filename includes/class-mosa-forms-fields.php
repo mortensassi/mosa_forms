@@ -90,13 +90,18 @@ return [
 													   ->fields([
 														   Text::make(__('Label', 'mosa'), 'label')
 														   ->wrapper([
-															   'width' => '50%'
+															   'width' => '75%'
 														   ]),
+														   TrueFalse::make(__('Required', 'mosa'), 'is_required')
+																	->stylisedUi()
+																	->wrapper([
+																		'width' => '25%'
+																	]),
 														   Number::make(__('Max value', 'mosa'), 'max_val')
 																 ->wrapper([
-																	 'width' => '25%'
+																	 'width' => '75%'
 																 ]),
-														   TrueFalse::make(__('Required', 'mosa'), 'is_required')
+														   TrueFalse::make(__('Minium Toggle', 'mosa'), 'min_toggle')
 																	->stylisedUi()
 																	->wrapper([
 																		'width' => '25%'

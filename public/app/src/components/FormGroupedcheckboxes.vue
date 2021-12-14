@@ -84,6 +84,7 @@ export default {
 <template>
   <div class="msf-input msf-input--grouped-checkboxes">
     <div
+      v-if="data.groups"
       class="msf-input__group"
     >
       <button
@@ -105,7 +106,7 @@ export default {
           v-for="(input, inputIndex) in checkboxes"
           :key="`GroupedCheckboxes-${currentGroup}-checkbox-${inputIndex}`"
           :data="{ type: 'checkbox', label: input }"
-          :index="`${index}-GroupedCheckboxes-${groupIndex}-checkbox-${inputIndex}`"
+          :index="`${index}-GroupedCheckboxes-${currentGroup}-checkbox-${inputIndex}`"
           @change="updateSelection"
         />
       </div>
