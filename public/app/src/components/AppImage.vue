@@ -25,8 +25,9 @@
 </template>
 
 <script>
+import store from '@/store'
 import lozad from 'lozad'
-import {computed, ref, watch} from 'vue'
+import {computed, onMounted, ref, watch, onBeforeUnmount} from 'vue'
 
 export default {
   name: 'AppImage',
@@ -54,18 +55,23 @@ export default {
       return {height, width, type: {full: {src: full.source_url}, thumb: {src: thumbnail.source_url}}}
     })
 
+    onMounted(() => {
+      getImage()
+    })
 
-    watch(lazyImage, (newImage) => {
-      if (newImage) {
-
-        const el = newImage
-        const observer = lozad(el);
+    watch(lazyImage, (n, o) => {
+      if (n) {
+        const observer = lozad(n);
 
         observer.observe();
+
+        store.setImage(n)
       }
     })
 
-    getImage()
+    onBeforeUnmount(() => {
+      store.setImage(null)
+    })
 
 
     return {imageObject, imageProps, lazyImage}

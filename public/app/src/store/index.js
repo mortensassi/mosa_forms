@@ -6,12 +6,16 @@ const store = {
         form: {
             data: null,
             step: 0,
-            entry: {}
+            stepImage : false
         }
     }),
 
     async getFormData(url) {
         this.state.form.data = await fetchData(url);
+    },
+
+    setImage(image) {
+        this.state.form.stepImage = image
     },
 
     updateStep(step) {

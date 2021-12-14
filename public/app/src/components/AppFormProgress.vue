@@ -42,24 +42,37 @@ export default {
     const formData = computed(() => store.state.form.data)
     const currentStep = computed(() => store.state.form.step)
     const step = computed(() => formData.value.acf.steps[currentStep.value])
+    const stepImage = computed(() => store.state.form.stepImage)
+    const heroEl = document.querySelector('.c-hero--has-bg')
+    const heroElPaddingBottom = heroEl.style.paddingBottom
 
-    onMounted(() => {
-      if (formProgress.value) {
-        const progressEl = formProgress.value
-        if (step.value.header.image) {
-          const headerEl = progressEl.nextSibling
-          if (headerEl) {
-            const headerImage = headerEl.querySelector('.msf-form-header-image')
-            const parentBox = progressEl.parentNode.getBoundingClientRect()
-            const headerImageBox = headerImage.getBoundingClientRect()
+    const moveBar = (image) => {
+      const progressEl = formProgress.value
+      const parentBox = progressEl.parentNode.getBoundingClientRect()
 
-            progressEl.style.top = `${headerImageBox.bottom - parentBox.top}px`
-          }
-        }
+      if (image) {
+        const headerImageBox = image.getBoundingClientRect()
+
+        progressEl.style.transform = `translateY(calc(-50% + ${headerImageBox.bottom - parentBox.top}px))`
+      } else {
+        const heroEl = document.querySelector('.c-hero')
+        const heroElBox = heroEl.getBoundingClientRect()
+
+        progressEl.style.transform = `translateY(calc(-50% + ${heroElBox.bottom - parentBox.top}px))`
       }
-    })
+    }
 
-    return { formData, formProgress, step, currentStep }
+    watch(stepImage, (n, o) => {
+      if (n) {
+        moveBar(n)
+        heroEl.style.paddingBottom = heroElPaddingBottom
+      } else {
+        moveBar()
+        heroEl.style.paddingBottom = '169px'
+      }
+    }, { deep: true })
+
+    return { formData, formProgress, step, stepImage, currentStep }
   }
 }
 </script>

@@ -44,3 +44,11 @@
     @include text-token('sans', 'copy', 'sm');
   }
 }
+
+.msf-form-header-image {
+  @include anim();
+
+  &.start-anim {
+    transform: scaleY(0)
+  }
+}

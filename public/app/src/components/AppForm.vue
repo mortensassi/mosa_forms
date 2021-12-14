@@ -18,26 +18,39 @@ export default {
   name: 'AppForm',
 
   components: {
-    AppFormProgress, AppFormHeader, FormInput, FormSelect, FormTextarea, FormCards, FormGroupedcheckboxes, FormButtongroup, FormPricerange
+    AppFormProgress,
+    AppFormHeader,
+    FormInput,
+    FormSelect,
+    FormTextarea,
+    FormCards,
+    FormGroupedcheckboxes,
+    FormButtongroup,
+    FormPricerange
   },
 
   setup() {
-    let stepTransitionName = ref('move-left')
-
     const prepareCompName = (name) => _capitalize(_camelCase(name))
-    const goToStep = (step) => store.updateStep(store.state.form.step + step)
+    const goToStep = async (step) => {
+      if (step) {
+        const intersectionObserver = new IntersectionObserver(async (entries) => {
+          let [entry] = entries
+          if (entry.isIntersecting) {
+            await store.updateStep(store.state.form.step + step)
+          }
+        })
+        const headerEl = document.querySelector('.c-header')
+
+        await intersectionObserver.observe(headerEl)
+        headerEl.scrollIntoView({ behavior: 'smooth' })
+      }
+    }
 
     const formData = computed(() => store.state.form.data)
     const currentStep = computed(() => store.state.form.step)
     const step = computed(() => formData.value.acf.steps[currentStep.value])
 
-    watch(currentStep, (currentVal, oldVal) => {
-      stepTransitionName.value = currentVal > oldVal ? 'move-left' : 'move-right'
-    })
-
-
     return {
-      stepTransitionName,
       step,
       formData,
       currentStep,
@@ -54,15 +67,16 @@ export default {
     class="msf-form"
   >
     <AppFormProgress />
+    <AppFormHeader v-if="step.header" :data="step.header" />
 
     <div class="msf-form__steps">
-      <transition :name="stepTransitionName">
+      <transition
+        name="move-up"
+      >
         <article
           :key="`mosa-forms_step-${currentStep}`"
           class="msf-step"
         >
-          <AppFormHeader :data="step.header" />
-
           <div
             v-for="(group, groupIndex) in step.groups"
             :key="`mosa-forms_s-${currentStep}-g-${groupIndex}`"
@@ -89,59 +103,55 @@ export default {
         </article>
       </transition>
     </div>
-    <button
-      v-if="currentStep > 0"
-      class="msf-form__btn"
-      type="button"
-      @click="goToStep(-1)"
-    >
-      Previous
-    </button>
-    <button
-      v-if="formData.acf.steps.length > currentStep + 1"
-      class="msf-form__btn"
-      type="button"
-      @click="goToStep(1)"
-    >
-      Next
-    </button>
-    <button
-      v-else
-      type="button"
-    >
-      Yodelihi
-    </button>
+
+    <div class="msf-form__controls">
+      <div class="columns">
+        <div class="column is-12 is-8-desktop is-offset-4-desktop">
+          <button
+            v-if="currentStep > 0"
+            class="msf-form__btn c-btn c-btn--secondary"
+            type="button"
+            @click="goToStep(-1)"
+          >
+            Zurück
+          </button>
+          <button
+            v-if="formData.acf.steps.length > currentStep + 1"
+            class="msf-form__btn msf-form__btn--next c-btn c-btn--primary"
+            type="button"
+            @click="goToStep(1)"
+          >
+            Weiter zu Schritt {{ currentStep + 1 }}
+          </button>
+          <button
+            v-else
+            class="msf-form__btn msf-form__btn--submit c-btn c-btn--primary"
+            type="button"
+          >
+            Absenden
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <style lang="scss" src="@styles/components/_form.scss"/>
 <style lang="scss" src="@styles/components/_step.scss"/>
 
-<style>
-.move-left-enter-active,
-.move-right-enter-active,
-.move-left-leave-active,
-.move-right-leave-active {
-  transition: transform 0.5s ease;
+<style lang="scss">
+.move-up-enter-active,
+.move-up-leave-active {
+  @include anim();
 }
 
-.move-left-enter-to,
-.move-right-leave-to {
-  transform: translateX(100%)
-}
+.move-up-enter-from,
+.move-up-leave-to {
+  transform: translateY(1rem);
+  opacity: 0;
 
-.move-left-enter-to,
-.move-left-leave-from {
-  transform: translateX(0)
-}
-
-.move-right-enter-to,
-.move-right-leave-from {
-  transform: translateX(0);
-}
-
-.move-left-leave-to,
-.move-right-enter-from {
-  transform: translateX(-100%)
+  .msf-form-header-image {
+    margin-top: -100%;
+  }
 }
 </style>

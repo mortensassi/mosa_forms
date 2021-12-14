@@ -4,6 +4,8 @@
 
 .msf-progress--overlayed {
   @include bp($large-bp) {
+    @include anim();
+
     position: absolute;
     width: 100%;
     z-index: 1;
