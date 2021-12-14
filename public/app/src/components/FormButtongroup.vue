@@ -15,6 +15,15 @@ export default {
   },
 
   setup() {
+    const selection = ref([])
+    const toggleSelection = (buttonIndex) => {
+      if (selection.value.includes(buttonIndex)) {
+        const pos = selection.value.indexOf(buttonIndex)
+        selection.value.splice(pos, 1)
+      } else {
+        selection.value.push(buttonIndex)
+      }
+    }
     const buttonGroup = ref(null)
     const largeBreakpoint = window.matchMedia('(min-width: 1024px)')
     const updatePosition = (button, trigger, tooltipEl) => {
@@ -91,13 +100,13 @@ export default {
       }
     })
 
-    return { buttonGroup }
+    return { buttonGroup, selection, toggleSelection }
   }
 }
 </script>
 
 <template>
-  <div>
+  <div class="msf-input msf-input--btn-group">
     <span class="msf-input__label msf-input__label--button-group">
       {{ data.label }}
       <span
@@ -113,6 +122,8 @@ export default {
         v-for="(button, buttonIndex) in data.buttons"
         :key="`Buttongroup-${index}-button-${buttonIndex}`"
         class="c-btn c-btn--pill"
+        :class="{ 'is-active' : selection.includes(buttonIndex) }"
+        @click="toggleSelection(buttonIndex)"
       >
         <span class="c-btn__label">{{ button.label }}</span>
         <span
