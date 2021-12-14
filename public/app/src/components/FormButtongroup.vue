@@ -88,6 +88,7 @@ export default {
         buttons.forEach(button => {
           const trigger = button.querySelector('.u-tooltip__icon-wrap')
           const tooltipEl = button.querySelector('.u-tooltip__content')
+
           if (tooltipEl) {
             showEvents.forEach(e => {
               trigger.addEventListener(e, () => showTooltip(button, trigger, tooltipEl))
@@ -153,12 +154,14 @@ export default {
   @include anim($dur: 0.15s);
   @include text-token('sans', 'copy', 'md');
 
+  transition-property: opacity, transform;
+  position: absolute;
   display: block;
-  visibility: hidden;
+  left: 0;
   text-align: left;
+  visibility: hidden;
   opacity: 0;
   transform: translateY(1rem);
-  position: absolute;
   background: map-get($brand-colors, 'green', '200');
   color: map-get($brand-colors, 'green', '900');
   min-width: 10rem;

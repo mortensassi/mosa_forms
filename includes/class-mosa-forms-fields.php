@@ -16,10 +16,10 @@ use WordPlate\Acf\Fields\WysiwygEditor;
 use WordPlate\Acf\Fields\Text;
 
 return [
-	'form' => [
+	'form'     => [
 		PostObject::make(__('Select a form', 'mosa'), 'form')
-			->returnFormat('id')
-			->postTypes(['mosa_form'])
+				  ->returnFormat('id')
+				  ->postTypes(['mosa_form'])
 	],
 	'settings' => [
 		Text::make(__('Title', 'mosa'), 'title'),
@@ -53,13 +53,19 @@ return [
 																	 ->buttonLabel(__('+ Add Checkbox Group', 'mosa'))
 																	 ->fields([
 																		 Text::make(__('Name', 'mosa'), 'name'),
-																		 Textarea::make(
+																		 Repeater::make(
 																			 __('Checkboxes', 'mosa'),
 																			 'checkboxes'
 																		 )
-																				 ->instructions(
-																					 __('One Checkbox per line', 'mosa')
+																				 ->buttonLabel(
+																					 __('+ Add Checkbox', 'mosa')
 																				 )
+																				 ->fields([
+																					 Text::make(
+																						 __('Checkbox', 'mosa'),
+																						 'checkbox'
+																					 )
+																				 ])
 																	 ])
 														 ]),
 												   Layout::make(__('Input', 'mosa'), 'input')
@@ -70,10 +76,10 @@ return [
 																 ]),
 															 Select::make(__('Type', 'mosa'), 'type')
 																   ->choices([
-																	   'text' => __('Text', 'mosa'),
+																	   'text'  => __('Text', 'mosa'),
 																	   'email' => __('Email', 'mosa'),
-																	   'tel' => __('Phone', 'mosa'),
-																	   'file' => __('File', 'mosa')
+																	   'tel'   => __('Phone', 'mosa'),
+																	   'file'  => __('File', 'mosa')
 																   ])
 																   ->defaultValue('text')
 																   ->stylisedUi()
@@ -87,56 +93,61 @@ return [
 																	  ])
 														 ]),
 												   Layout::make(__('Price Range'), 'price_range')
-													   ->fields([
-														   Text::make(__('Label', 'mosa'), 'label')
-														   ->wrapper([
-															   'width' => '75%'
-														   ]),
-														   TrueFalse::make(__('Required', 'mosa'), 'is_required')
-																	->stylisedUi()
-																	->wrapper([
-																		'width' => '25%'
-																	]),
-														   Number::make(__('Max value', 'mosa'), 'max_val')
+														 ->fields([
+															 Text::make(__('Label', 'mosa'), 'label')
 																 ->wrapper([
 																	 'width' => '75%'
 																 ]),
-														   TrueFalse::make(__('Minium Toggle', 'mosa'), 'min_toggle')
-																	->stylisedUi()
-																	->wrapper([
-																		'width' => '25%'
-																	]),
-													   ]),
+															 TrueFalse::make(__('Required', 'mosa'), 'is_required')
+																	  ->stylisedUi()
+																	  ->wrapper([
+																		  'width' => '25%'
+																	  ]),
+															 Number::make(__('Max value', 'mosa'), 'max_val')
+																   ->wrapper([
+																	   'width' => '75%'
+																   ]),
+															 TrueFalse::make(__('Minium Toggle', 'mosa'), 'min_toggle')
+																	  ->stylisedUi()
+																	  ->wrapper([
+																		  'width' => '25%'
+																	  ]),
+														 ]),
 												   Layout::make(__('Button Group'), 'button_group')
-														->fields([
-															Text::make(__('Label', 'mosa'), 'label')
-																->wrapper([
-																	'width' => '75%'
-																]),
-															TrueFalse::make(__('Required', 'mosa'), 'is_required')
-																	 ->stylisedUi()
-																	 ->wrapper([
-																		 'width' => '25%'
-																	 ]),
-															Repeater::make(__('Buttons', 'mosa'), 'buttons')
-																->layout('block')
-																->buttonLabel(__('+ Add Button', 'mosa'))
-																->fields([
-																	Text::make(__('Label', 'mosa'), 'label')
-																		->wrapper([
-																			'width' => '75%'
-																		]),
-																	TrueFalse::make(__('Info Tooltip', 'mosa'), 'has_info')
-																			 ->stylisedUi()
-																		->wrapper([
-																			'width' => '25%'
-																		]),
-																	Text::make(__('Info text', 'mosa'), 'info')
-																		->conditionalLogic([
-																			ConditionalLogic::if('has_info')->equals(1)
-																		])
-																])
-														]),
+														 ->fields([
+															 Text::make(__('Label', 'mosa'), 'label')
+																 ->wrapper([
+																	 'width' => '75%'
+																 ]),
+															 TrueFalse::make(__('Required', 'mosa'), 'is_required')
+																	  ->stylisedUi()
+																	  ->wrapper([
+																		  'width' => '25%'
+																	  ]),
+															 Repeater::make(__('Buttons', 'mosa'), 'buttons')
+																	 ->layout('block')
+																	 ->buttonLabel(__('+ Add Button', 'mosa'))
+																	 ->fields([
+																		 Text::make(__('Label', 'mosa'), 'label')
+																			 ->wrapper([
+																				 'width' => '75%'
+																			 ]),
+																		 TrueFalse::make(
+																			 __('Info Tooltip', 'mosa'),
+																			 'has_info'
+																		 )
+																				  ->stylisedUi()
+																				  ->wrapper([
+																					  'width' => '25%'
+																				  ]),
+																		 Text::make(__('Info text', 'mosa'), 'info')
+																			 ->conditionalLogic([
+																				 ConditionalLogic::if(
+																					 'has_info'
+																				 )->equals(1)
+																			 ])
+																	 ])
+														 ]),
 												   Layout::make(__('Textarea', 'mosa'), 'textarea')
 														 ->fields([
 															 Text::make(__('Label', 'mosa'), 'label')
@@ -156,17 +167,30 @@ return [
 															 Repeater::make(__('Choices', 'mosa'), 'choices')
 																	 ->buttonLabel(__('+ Add Choice', 'mosa'))
 																	 ->fields([
-																		 Text::make(__('Choice', 'mosa'), 'choice' ),
-																		 TrueFalse::make(__('Is Grouped?', 'mosa'), 'is_grouped')
-																			->stylisedUi(),
-																		 Repeater::make(__('Choices', 'mosa'), 'choices')
-																				 ->buttonLabel(__('+ Add Choice', 'mosa'))
+																		 Text::make(__('Choice', 'mosa'), 'choice'),
+																		 TrueFalse::make(
+																			 __('Is Grouped?', 'mosa'),
+																			 'is_grouped'
+																		 )
+																				  ->stylisedUi(),
+																		 Repeater::make(
+																			 __('Choices', 'mosa'),
+																			 'choices'
+																		 )
+																				 ->buttonLabel(
+																					 __('+ Add Choice', 'mosa')
+																				 )
 																				 ->fields([
-																					 Text::make(__('Choice', 'mosa'), 'choice'),
-																					 ])
-																		 		->conditionalLogic([
-																					 ConditionalLogic::if('is_grouped')->equals(1)
-																				])
+																					 Text::make(
+																						 __('Choice', 'mosa'),
+																						 'choice'
+																					 ),
+																				 ])
+																				 ->conditionalLogic([
+																					 ConditionalLogic::if(
+																						 'is_grouped'
+																					 )->equals(1)
+																				 ])
 																	 ])
 														 ]),
 												   Layout::make(__('Checkbox', 'mosa'), 'checkbox')
@@ -180,7 +204,10 @@ return [
 																	  ->wrapper([
 																		  'width' => '50%'
 																	  ]),
-															 WysiwygEditor::make(__('Description', 'mosa'), 'description')
+															 WysiwygEditor::make(
+																 __('Description', 'mosa'),
+																 'description'
+															 )
 																		  ->delay()
 																		  ->mediaUpload(0)
 																		  ->tabs('visual')

@@ -31,7 +31,7 @@ export default {
       }
     }
     const currentGroup = ref(0)
-    const checkboxes = computed(() => props.data.groups[currentGroup.value].checkboxes.split('\r\n'))
+    const checkboxes = computed(() => props.data.groups[currentGroup.value].checkboxes)
     const collapseList = computed(() => checkboxes.value.length > 9)
     const maxHeight = ref(0)
     const listIsCollapsed = ref(true)
@@ -105,7 +105,7 @@ export default {
         <FormInput
           v-for="(input, inputIndex) in checkboxes"
           :key="`GroupedCheckboxes-${currentGroup}-checkbox-${inputIndex}`"
-          :data="{ type: 'checkbox', label: input }"
+          :data="{ type: 'checkbox', label: input.checkbox }"
           :index="`${index}-GroupedCheckboxes-${currentGroup}-checkbox-${inputIndex}`"
           @change="updateSelection"
         />
