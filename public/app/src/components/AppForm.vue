@@ -6,6 +6,7 @@ import store from '@/store'
 import AppFormHeader from '@/components/AppFormHeader.vue'
 import AppFormProgress from '@/components/AppFormProgress.vue'
 import FormInput from '@/components/FormInput.vue'
+import FormCounter from '@/components/FormCounter.vue'
 import FormSelect from '@/components/FormSelect.vue'
 import FormTextarea from '@/components/FormTextarea.vue'
 import FormCards from '@/components/FormCards.vue'
@@ -21,6 +22,7 @@ export default {
     AppFormProgress,
     AppFormHeader,
     FormInput,
+    FormCounter,
     FormSelect,
     FormTextarea,
     FormCards,
@@ -33,13 +35,15 @@ export default {
     const prepareCompName = (name) => _capitalize(_camelCase(name))
     const goToStep = async (step) => {
       if (step) {
+        const headerEl = document.querySelector('.c-header')
+
         const intersectionObserver = new IntersectionObserver(async (entries) => {
           let [entry] = entries
           if (entry.isIntersecting) {
             await store.updateStep(store.state.form.step + step)
+            intersectionObserver.unobserve(headerEl)
           }
         })
-        const headerEl = document.querySelector('.c-header')
 
         await intersectionObserver.observe(headerEl)
         headerEl.scrollIntoView({ behavior: 'smooth' })
@@ -121,7 +125,7 @@ export default {
             type="button"
             @click="goToStep(1)"
           >
-            Weiter zu Schritt {{ currentStep + 1 }}
+            Weiter zu Schritt {{ (currentStep + 1) + 1 }}
           </button>
           <button
             v-else
@@ -142,16 +146,12 @@ export default {
 <style lang="scss">
 .move-up-enter-active,
 .move-up-leave-active {
-  @include anim();
+  @include anim($dur: 0.2s);
 }
 
 .move-up-enter-from,
 .move-up-leave-to {
-  transform: translateY(1rem);
   opacity: 0;
-
-  .msf-form-header-image {
-    margin-top: -100%;
-  }
+  transform: translateY(2rem)
 }
 </style>

@@ -1,5 +1,5 @@
 <script>
-import {ref, computed, onMounted} from 'vue'
+import {ref} from 'vue'
 import VueSlider from 'vue-slider-component'
 
 export default {
@@ -20,7 +20,6 @@ export default {
     const inputData = ref([Number(0), Number(props.data.max_val)])
 
     const updateInputData = () => {
-      console.log('CHANGESSSS')
       const current = inputData.value
       priceRange.value.setValue(current)
     }

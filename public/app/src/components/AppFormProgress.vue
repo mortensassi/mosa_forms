@@ -62,7 +62,11 @@ export default {
       }
     }
 
-    watch(stepImage, (n, o) => {
+    onMounted(() => {
+      moveBar(document.querySelector('.msf-form-header-image'))
+    })
+
+    watch(stepImage, (n) => {
       if (n) {
         moveBar(n)
         heroEl.style.paddingBottom = heroElPaddingBottom

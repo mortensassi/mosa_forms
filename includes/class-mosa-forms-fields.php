@@ -213,67 +213,23 @@ return [
 																		  ->tabs('visual')
 																		  ->toolbar('mosa_forms_toolbar'),
 														 ]),
-												   Layout::make(__('Cards', 'mosa'), 'cards')
-														 ->fields([
-															 Text::make(__('Label', 'mosa'), 'label'),
-															 Repeater::make(__('Choices', 'mosa'), 'choices')
-																	 ->buttonLabel(__('Add Choice', 'mosa'))
-																	 ->layout('block')
-																	 ->fields([
-																		 Text::make(__('Choice', 'mosa'), 'title'),
-																		 WysiwygEditor::make(
-																			 __('Description', 'mosa'),
-																			 'description'
-																		 )
-																					  ->delay()
-																					  ->mediaUpload(0)
-																					  ->tabs('visual')
-																					  ->toolbar('mosa_forms_toolbar'),
-																		 Group::make(
-																			 __('Pricing Table', 'mosa'),
-																			 'pricing_table'
-																		 )
-																			  ->fields([
-																				  Text::make(
-																					  __('Headline', 'mosa'),
-																					  'headline'
-																				  ),
-																				  Repeater::make(
-																					  __('Pricing', 'mosa'),
-																					  'pricing'
-																				  )
-																						  ->buttonLabel(
-																							  __('Add Price', 'mosa')
-																						  )
-																						  ->fields([
-																							  Text::make(
-																								  __('Title', 'mosa'),
-																								  'title'
-																							  ),
-																							  Repeater::make(
-																								  __('Price', 'mosa'),
-																								  'price'
-																							  )
-																									  ->fields([
-																										  Text::make(
-																											  __(
-																												  'Audience',
-																												  'mosa'
-																											  ),
-																											  'audience'
-																										  ),
-																										  Text::make(
-																											  __(
-																												  'Price',
-																												  'mosa'
-																											  ),
-																											  'value'
-																										  ),
-																									  ])
-																						  ])
-																			  ]),
-																	 ])
-														 ])
+												   Layout::make(__('Counter', 'mosa'), 'counter')
+												   	->fields([
+														   Repeater::make(__('Counter', 'mosa'), 'inputs')
+															   	->buttonLabel(__('+ Add Counter', 'mosa'))
+																->fields([
+																	Text::make(__('Label', 'mosa'), 'label')
+																		->wrapper([
+																			'width' => '50%'
+																		]),
+																	TrueFalse::make(__('Required', 'mosa'), 'is_required')
+																			 ->stylisedUi()
+																			 ->wrapper([
+																				 'width' => '50%'
+																			 ]),
+																	Number::make(__('Maximum Input value', 'mosa'), 'max_val')
+																])
+													])
 											   ])
 							]),
 				]),
