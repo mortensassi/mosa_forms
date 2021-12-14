@@ -5,6 +5,7 @@ use WordPlate\Acf\Fields\FlexibleContent;
 use WordPlate\Acf\Fields\Group;
 use WordPlate\Acf\Fields\Image;
 use WordPlate\Acf\Fields\Layout;
+use WordPlate\Acf\Fields\Number;
 use WordPlate\Acf\Fields\PostObject;
 use WordPlate\Acf\Fields\Repeater;
 use WordPlate\Acf\Fields\Select;
@@ -85,6 +86,52 @@ return [
 																		  'width' => '25%'
 																	  ])
 														 ]),
+												   Layout::make(__('Price Range'), 'price_range')
+													   ->fields([
+														   Text::make(__('Label', 'mosa'), 'label')
+														   ->wrapper([
+															   'width' => '50%'
+														   ]),
+														   Number::make(__('Max value', 'mosa'), 'max_val')
+																 ->wrapper([
+																	 'width' => '25%'
+																 ]),
+														   TrueFalse::make(__('Required', 'mosa'), 'is_required')
+																	->stylisedUi()
+																	->wrapper([
+																		'width' => '25%'
+																	]),
+													   ]),
+												   Layout::make(__('Button Group'), 'button_group')
+														->fields([
+															Text::make(__('Label', 'mosa'), 'label')
+																->wrapper([
+																	'width' => '75%'
+																]),
+															TrueFalse::make(__('Required', 'mosa'), 'is_required')
+																	 ->stylisedUi()
+																	 ->wrapper([
+																		 'width' => '25%'
+																	 ]),
+															Repeater::make(__('Buttons', 'mosa'), 'buttons')
+																->layout('block')
+																->buttonLabel(__('+ Add Button', 'mosa'))
+																->fields([
+																	Text::make(__('Label', 'mosa'), 'label')
+																		->wrapper([
+																			'width' => '75%'
+																		]),
+																	TrueFalse::make(__('Info Tooltip', 'mosa'), 'has_info')
+																			 ->stylisedUi()
+																		->wrapper([
+																			'width' => '25%'
+																		]),
+																	Text::make(__('Info text', 'mosa'), 'info')
+																		->conditionalLogic([
+																			ConditionalLogic::if('has_info')->equals(1)
+																		])
+																])
+														]),
 												   Layout::make(__('Textarea', 'mosa'), 'textarea')
 														 ->fields([
 															 Text::make(__('Label', 'mosa'), 'label')

@@ -55,7 +55,10 @@ export default {
     <label
       :for="`msf-select-${index}`"
       class="msf-input__label ms-input__label--select"
-    >{{ data.label }}</label>
+    >{{ data.label }} <span
+      v-if="data.is_required"
+      class="c-txt c-txt--highlight"
+    >*</span> </label>
     <treeselect
       :id="`msf-select-${index}`"
       v-model="value"
@@ -63,7 +66,6 @@ export default {
       :options="options"
       :placeholder="data.title"
       :default-expand-level="1"
-    >
-    </treeselect>
+    />
   </div>
 </template>

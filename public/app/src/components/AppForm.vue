@@ -10,13 +10,15 @@ import FormSelect from '@/components/FormSelect.vue'
 import FormTextarea from '@/components/FormTextarea.vue'
 import FormCards from '@/components/FormCards.vue'
 import FormGroupedcheckboxes from '@/components/FormGroupedcheckboxes.vue'
+import FormPricerange from '@/components/FormPricerange.vue'
+import FormButtongroup from '@/components/FormButtongroup.vue'
 
 
 export default {
   name: 'AppForm',
 
   components: {
-    AppFormProgress, AppFormHeader, FormInput, FormSelect, FormTextarea, FormCards, FormGroupedcheckboxes
+    AppFormProgress, AppFormHeader, FormInput, FormSelect, FormTextarea, FormCards, FormGroupedcheckboxes, FormButtongroup, FormPricerange
   },
 
   setup() {
