@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@floating-ui/dom": "^0.1.7",
+    "fuse.js": "^6.4.6",
     "lodash.camelcase": "^4.3.0",
     "lodash.capitalize": "^4.2.1",
     "lodash.throttle": "^4.1.1",
