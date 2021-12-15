@@ -2,6 +2,10 @@
    INPUT
    ========================================================================== */
 
+.msf-input {
+  flex-flow: row wrap;
+}
+
 .msf-input-wrap {
   display: flex;
   align-items: center;
@@ -89,6 +93,16 @@
       padding-left: 0;
     }
   }
+}
+
+.msf-input__label,
+.msf-input__required-star {
+  align-self: flex-start;
+}
+
+.msf-input__label--choices {
+  align-self: initial;
+  width: 100%;
 }
 
 .msf-input__label {

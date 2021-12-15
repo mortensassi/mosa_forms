@@ -12,7 +12,10 @@ import FormTextarea from '@/components/FormTextarea.vue'
 import FormCards from '@/components/FormCards.vue'
 import FormGroupedcheckboxes from '@/components/FormGroupedcheckboxes.vue'
 import FormPricerange from '@/components/FormPricerange.vue'
+import FormPricerangesingle from '@/components/FormPricerangesingle.vue'
 import FormButtongroup from '@/components/FormButtongroup.vue'
+import FormCountries from '@/components/FormCountries.vue'
+import FormChoices from '@/components/FormChoices.vue'
 
 
 export default {
@@ -28,7 +31,10 @@ export default {
     FormCards,
     FormGroupedcheckboxes,
     FormButtongroup,
-    FormPricerange
+    FormPricerange,
+    FormPricerangesingle,
+    FormCountries,
+    FormChoices,
   },
 
   setup() {

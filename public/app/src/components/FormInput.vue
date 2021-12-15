@@ -26,13 +26,13 @@ export default {
 
     const childElements = [
       h('label', {
-        class: ['msf-input__label', `msf-input__label--${field.type}`],
+        class: ['c-input__label', 'msf-input__label', `msf-input__label--${field.type}`],
         innerHTML: field.label,
         for: `msf-input-${this.index}`
       }),
       h('input', {
         id: `msf-input-${this.index}`,
-        class: ['msf-input__control', `msf-input__control--${field.type}`],
+        class: ['c-input__control', 'msf-input__control', `msf-input__control--${field.type}`],
         type: field.type,
         required: field.is_required,
         onChange: () => this.$emit('change', field.label)
@@ -40,7 +40,7 @@ export default {
     ]
 
     const requiredElement = h('span', {
-      class: 'msf-input__required-star',
+      class: 'msf-input__required-star c-txt c-txt--highlight',
       innerHTML: '*'
     })
 
@@ -48,7 +48,7 @@ export default {
 
     return h('div',
         {
-          class: ['msf-input', `msf-input--${field.type}`],
+          class: ['c-input', 'msf-input', `msf-input--${field.type}`],
         }, childElements)
   }
 }

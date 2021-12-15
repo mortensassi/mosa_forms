@@ -112,6 +112,38 @@ return [
 																	  ->wrapper([
 																		  'width' => '25%'
 																	  ]),
+															 Group::make(__('Infotext', 'mosa'), 'info')
+															 ->fields([
+																 Text::make(__('Label', 'mosa'), 'label'),
+																 WysiwygEditor::make(__('Description', 'mosa'), 'description')
+																 ->toolbar('basic')
+																 ->mediaUpload(0)
+																 ->tabs('visual')
+															 ])
+														 ]),
+												   Layout::make(__('Price Range Single'), 'price_range_single')
+														 ->fields([
+															 Text::make(__('Label', 'mosa'), 'label')
+																 ->wrapper([
+																	 'width' => '75%'
+																 ]),
+															 TrueFalse::make(__('Required', 'mosa'), 'is_required')
+																	  ->stylisedUi()
+																	  ->wrapper([
+																		  'width' => '25%'
+																	  ]),
+															 Number::make(__('Max value', 'mosa'), 'max_val')
+																   ->wrapper([
+																	   'width' => '75%'
+																   ]),
+															 Group::make(__('Infotext', 'mosa'), 'info')
+																  ->fields([
+																	  Text::make(__('Label', 'mosa'), 'label'),
+																	  WysiwygEditor::make(__('Description', 'mosa'), 'description')
+																				   ->toolbar('basic')
+																				   ->mediaUpload(0)
+																				   ->tabs('visual')
+																  ])
 														 ]),
 												   Layout::make(__('Button Group'), 'button_group')
 														 ->fields([
@@ -214,21 +246,56 @@ return [
 																		  ->toolbar('mosa_forms_toolbar'),
 														 ]),
 												   Layout::make(__('Counter', 'mosa'), 'counter')
-												   	->fields([
-														   Repeater::make(__('Counter', 'mosa'), 'inputs')
-															   	->buttonLabel(__('+ Add Counter', 'mosa'))
-																->fields([
-																	Text::make(__('Label', 'mosa'), 'label')
-																		->wrapper([
-																			'width' => '50%'
-																		]),
-																	TrueFalse::make(__('Required', 'mosa'), 'is_required')
-																			 ->stylisedUi()
+														 ->fields([
+															 Repeater::make(__('Counter', 'mosa'), 'inputs')
+																	 ->buttonLabel(__('+ Add Counter', 'mosa'))
+																	 ->fields([
+																		 Text::make(__('Label', 'mosa'), 'label')
 																			 ->wrapper([
 																				 'width' => '50%'
 																			 ]),
-																	Number::make(__('Maximum Input value', 'mosa'), 'max_val')
-																])
+																		 TrueFalse::make(
+																			 __('Required', 'mosa'),
+																			 'is_required'
+																		 )
+																				  ->stylisedUi()
+																				  ->wrapper([
+																					  'width' => '50%'
+																				  ]),
+																		 Number::make(
+																			 __('Maximum Input value', 'mosa'),
+																			 'max_val'
+																		 )
+																	 ])
+														 ]),
+												   Layout::make(__('Choices', 'mosa'), 'choices')
+														 ->fields([
+															 Text::make(__('Label', 'mosa'), 'label')
+																 ->wrapper([
+																	 'width' => '75%'
+																 ]),
+															 TrueFalse::make(__('Required', 'mosa'), 'is_required')
+																	  ->stylisedUi()
+																	  ->wrapper([
+																		  'width' => '25%'
+																	  ]),
+															 Repeater::make(__('Buttons', 'mosa'), 'buttons')
+																	 ->buttonLabel(__('+ Add Button', 'mosa'))
+																	 ->fields([
+																		 Text::make(__('Button ', 'mosa'), 'text')
+																	 ])
+														 ]),
+												   Layout::make(__('Country Select', 'mosa'), 'countries')
+												   	->fields([
+														Text::make(__('Label', 'mosa'), 'label')
+															->wrapper([
+																'width' => '75%'
+															]),
+														TrueFalse::make(__('Required', 'mosa'), 'is_required')
+																 ->stylisedUi()
+																 ->wrapper([
+																	 'width' => '25%'
+																 ])
 													])
 											   ])
 							]),

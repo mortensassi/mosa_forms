@@ -1,0 +1,13 @@
+/* ==========================================================================
+   SELECT
+   ========================================================================== */
+
+.msf-select {
+  position: relative;
+}
+
+.msf-select__inner,
+.msf-select__group {
+  display: flex;
+  flex-flow: column wrap;
+}
