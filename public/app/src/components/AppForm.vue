@@ -1,22 +1,9 @@
 <script>
-import _capitalize from 'lodash.capitalize'
-import _camelCase from 'lodash.camelcase'
-import {computed, watch, ref} from 'vue'
+import {computed} from 'vue'
 import store from '@/store'
 import AppFormHeader from '@/components/AppFormHeader.vue'
 import AppFormProgress from '@/components/AppFormProgress.vue'
-import FormInput from '@/components/FormInput.vue'
-import FormCounter from '@/components/FormCounter.vue'
-import FormSelect from '@/components/FormSelect.vue'
-import FormTextarea from '@/components/FormTextarea.vue'
-import FormCards from '@/components/FormCards.vue'
-import FormGroupedcheckboxes from '@/components/FormGroupedcheckboxes.vue'
-import FormPricerange from '@/components/FormPricerange.vue'
-import FormPricerangesingle from '@/components/FormPricerangesingle.vue'
-import FormButtongroup from '@/components/FormButtongroup.vue'
-import FormCountries from '@/components/FormCountries.vue'
-import FormChoices from '@/components/FormChoices.vue'
-
+import FormStep from '@/components/FormStep.vue'
 
 export default {
   name: 'AppForm',
@@ -24,21 +11,10 @@ export default {
   components: {
     AppFormProgress,
     AppFormHeader,
-    FormInput,
-    FormCounter,
-    FormSelect,
-    FormTextarea,
-    FormCards,
-    FormGroupedcheckboxes,
-    FormButtongroup,
-    FormPricerange,
-    FormPricerangesingle,
-    FormCountries,
-    FormChoices,
+    FormStep
   },
 
   setup() {
-    const prepareCompName = (name) => _capitalize(_camelCase(name))
     const goToStep = async (step) => {
       if (step) {
         await store.updateStep(store.state.form.step + step)
@@ -64,8 +40,7 @@ export default {
       step,
       formData,
       currentStep,
-      goToStep,
-      prepareCompName
+      goToStep
     }
   }
 }
@@ -86,36 +61,11 @@ export default {
       <transition
         name="move-up"
       >
-        <article
+        <FormStep
           :key="`mosa-forms_step-${currentStep}`"
-          class="msf-step"
-        >
-          <div
-            v-for="(group, groupIndex) in step.groups"
-            :key="`mosa-forms_s-${currentStep}-g-${groupIndex}`"
-            class="msf-step__group"
-          >
-            <div class="columns is-multiline">
-              <div class="column is-12 is-3-desktop">
-                <h2 class="msf-step__group-title">
-                  {{ group.title }}
-                </h2>
-              </div>
-              <div class="column is-12 is-8-desktop is-offset-1-desktop">
-                <div class="msf-step__group-wrap">
-                  <component
-                      :is="`Form${prepareCompName(input.acf_fc_layout)}`"
-                      v-for="(input, inputIndex) in group.fields"
-                      :key="`mosa-forms_s-${currentStep}-g-${groupIndex}-i-${inputIndex}`"
-                      :data-comp-name="`Form${prepareCompName(input.acf_fc_layout)}`"
-                      :data="input"
-                      :index="`${currentStep}-${groupIndex}-${inputIndex}`"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </article>
+          :current-step="currentStep"
+          :step="step"
+        />
       </transition>
     </div>
 

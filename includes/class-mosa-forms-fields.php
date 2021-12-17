@@ -307,6 +307,18 @@ return [
 																 ->wrapper([
 																	 'width' => '25%'
 																 ])
+													]),
+												   Layout::make(__('Duplicate fields', 'mosa'), 'duplicate')
+												   	->fields([
+														   TrueFalse::make(__('Duplicate fields from this step', 'mosa'), 'duplicate_fields')
+														->stylisedUi()
+															   ->wrapper([
+																   'width' => '25%'
+															   ]),
+														Text::make(__('Text label', 'mosa'), 'label')
+															->wrapper([
+																'width' => '75%'
+															])
 													])
 											   ])
 							]),

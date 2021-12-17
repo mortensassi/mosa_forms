@@ -47,11 +47,7 @@ $sizes: (
 }
 
 .msf-input--btn-group {
-  margin-bottom: 2rem;
 
-  @include bp($large-bp) {
-    margin-bottom: 3.3125rem;
-  }
 }
 
 .msf-input__btn {

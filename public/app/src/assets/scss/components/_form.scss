@@ -66,8 +66,13 @@
 }
 
 .msf-form__controls {
+  margin-top: 4rem;
   display: flex;
   justify-content: space-between;
+
+  @include bp($large-bp) {
+    margin-top: 8rem;
+  }
 }
 
 .msf-form-info-tooltip {
@@ -88,4 +93,28 @@
   @include text-token('sans', 'copy', 'xs');
 
   color: map-get($brand-colors, 'black', '900-50');
+}
+
+.msf-form__duplicator {
+  margin-top: 3rem;
+  display: flex;
+  align-items: center;
+
+  @include bp($large-bp) {
+    margin-top: 6rem;
+  }
+}
+
+.msf-form__duplicator-label {
+  @include text-token('sans', 'copy', 'sm');
+  color: map-get($brand-colors, 'green', '800');
+
+  @include bp($large-bp) {
+    @include text-token('sans', 'copy', 'lg');
+  }
+}
+
+.msf-form__duplicator-btn {
+  margin: 0;
+  margin-right: 1rem;
 }
