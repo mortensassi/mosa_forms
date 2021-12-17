@@ -2,8 +2,43 @@
    INPUT
    ========================================================================== */
 
+
+$sizes: (
+        'full': 100%,
+        'one_third': 100% / 3 * 1,
+        'two_third': 100% / 3 * 2,
+);
+
 .msf-input {
   flex-flow: row wrap;
+  width: 100%;
+
+  + .msf-input {
+    margin-top: 1rem;
+  }
+
+  @include bp($large-bp) {
+    + .msf-input {
+      margin-top: 2rem;
+    }
+  }
+}
+
+@each $name, $size in $sizes {
+  .msf-input--size-#{$name} {
+    @if($name == 'one_third') {
+      width: calc(#{$size} - 1.5rem);
+    } @else {
+      width: $size;
+    }
+  }
+
+  @if($name != 'full') {
+    .msf-input--size-one_third + .msf-input--size-two_third,
+    .msf-input--size-two_third + .msf-input--size-one_third {
+      margin-left: 1.5rem;
+    }
+  }
 }
 
 .msf-input-wrap {
@@ -30,6 +65,8 @@
   flex-flow: row wrap;
   margin-top: 1.5rem;
   max-height: 100%;
+  padding: 0 1rem;
+  margin: 0 -1rem;
 
   @include bp($large-bp) {
     margin-top: 3rem;
@@ -39,7 +76,7 @@
 .msf-input__checkboxes--collapsed {
   position: relative;
   max-height: calc(var(--list-max-height) + 1.5rem);
-  overflow: hidden;
+  overflow-y: hidden;
 
   &::before {
     @include anim($prop: transform);
@@ -81,13 +118,16 @@
 
   &:nth-child(even) {
     padding-left: 1rem;
-
   }
 
   margin-bottom: 1rem;
 
   @include bp($large-bp) {
     flex-basis: 33%;
+
+    + .msf-input--checkbox {
+      margin-top: 0;
+    }
 
     &:nth-child(even) {
       padding-left: 0;
@@ -134,6 +174,6 @@
   }
 }
 
-.msf-input__checkboxes {
-  display: flex;
+.msf-input__control--checkbox {
+  padding: 0;
 }

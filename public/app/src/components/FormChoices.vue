@@ -33,7 +33,7 @@ export default {
     <button
       v-for="(choice, choiceIndex) in data.buttons"
       :key="`Choice-${index}-button-${choiceIndex}`"
-      class="c-btn c-btn--pill"
+      class="c-btn c-btn--pill msf-form__btn"
       :class="{ 'is-active' : choiceIndex === selection }"
       @click="selection = choiceIndex"
     >

@@ -3,6 +3,8 @@
    ========================================================================== */
 
 .vue-treeselect__control {
+  @include text-token('sans', 'copy', 'lg');
+
   border-radius: 4px;
   border: 2px solid map-get($brand-colors, 'black', '200');
   padding: 0.75rem;
@@ -65,6 +67,10 @@
   @include text-token('sans', 'copy', 'sm');
 
   padding: 0;
+
+  @include bp($large-bp) {
+    @include text-token('sans', 'copy', 'lg');
+  }
 }
 
 .vue-treeselect__menu {

@@ -2,6 +2,23 @@
    RANGE SLIDER
    ========================================================================== */
 
+.msf-range-slider-wrap {
+  width: 100%;
+  margin-top: 1rem;
+
+  @include bp($large-bp) {
+    margin-top: 2rem;
+  }
+
+  &:first-child {
+    margin-top: 0;
+  }
+}
+
+.msf-range-slider-wrap--pricerange {
+  max-width:  30.1875rem;
+}
+
 .msf-range-slider {
   margin-bottom: 2rem;
   margin-left: 0.875rem;

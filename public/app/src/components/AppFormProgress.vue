@@ -58,7 +58,7 @@ export default {
         const heroEl = document.querySelector('.c-hero')
         const heroElBox = heroEl.getBoundingClientRect()
 
-        progressEl.style.transform = `translateY(calc(-50% + ${heroElBox.bottom - parentBox.top}px))`
+        progressEl.style.transform = `translateY(calc(-66% + ${heroElBox.bottom - parentBox.top}px))`
       }
     }
 

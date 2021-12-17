@@ -72,25 +72,36 @@ return [
 														 ->fields([
 															 Text::make(__('Label', 'mosa'), 'label')
 																 ->wrapper([
-																	 'width' => '50%'
+																	 'width' => (100/3 * 2)
 																 ]),
+															 TrueFalse::make(__('Required', 'mosa'), 'is_required')
+																	  ->stylisedUi()
+																	  ->wrapper([
+																		  'width' => (100/3 * 1)
+																	  ]),
 															 Select::make(__('Type', 'mosa'), 'type')
 																   ->choices([
 																	   'text'  => __('Text', 'mosa'),
+																	   'number' => __('Number', 'mosa'),
 																	   'email' => __('Email', 'mosa'),
 																	   'tel'   => __('Phone', 'mosa'),
-																	   'file'  => __('File', 'mosa')
 																   ])
 																   ->defaultValue('text')
 																   ->stylisedUi()
 																   ->wrapper([
-																	   'width' => '25%'
+																	   'width' => 50
 																   ]),
-															 TrueFalse::make(__('Required', 'mosa'), 'is_required')
-																	  ->stylisedUi()
-																	  ->wrapper([
-																		  'width' => '25%'
-																	  ])
+															 Select::make(__('Size', 'mosa'), 'size')
+																   ->choices([
+																	   'full'  => __('Full', 'mosa'),
+																	   'one_third' => __('One-third', 'mosa'),
+																	   'two_third' => __('Two-third', 'mosa'),
+																   ])
+																   ->defaultValue('full')
+																   ->stylisedUi()
+																   ->wrapper([
+																	   'width' => 50
+																   ]),
 														 ]),
 												   Layout::make(__('Price Range'), 'price_range')
 														 ->fields([

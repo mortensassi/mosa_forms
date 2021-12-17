@@ -48,7 +48,7 @@ export default {
 
     return h('div',
         {
-          class: ['c-input', 'msf-input', `msf-input--${field.type}`],
+          class: ['c-input', 'msf-input', `msf-input--${field.type}`, `msf-input--size-${field.size}`],
         }, childElements)
   }
 }

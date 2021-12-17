@@ -1,5 +1,8 @@
 <template>
-  <header class="msf-step__header">
+  <header
+    class="msf-step__header"
+    :class="{ 'msf-step__header--has-image' : data.image }"
+  >
     <AppImage
       v-if="data.image"
       :image="data.image"

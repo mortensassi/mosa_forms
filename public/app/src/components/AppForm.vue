@@ -41,18 +41,18 @@ export default {
     const prepareCompName = (name) => _capitalize(_camelCase(name))
     const goToStep = async (step) => {
       if (step) {
+        await store.updateStep(store.state.form.step + step)
         const headerEl = document.querySelector('.c-header')
 
         const intersectionObserver = new IntersectionObserver(async (entries) => {
           let [entry] = entries
           if (entry.isIntersecting) {
-            await store.updateStep(store.state.form.step + step)
             intersectionObserver.unobserve(headerEl)
           }
         })
 
         await intersectionObserver.observe(headerEl)
-        headerEl.scrollIntoView({ behavior: 'smooth' })
+        headerEl.scrollIntoView({behavior: 'smooth'})
       }
     }
 
@@ -77,7 +77,10 @@ export default {
     class="msf-form"
   >
     <AppFormProgress />
-    <AppFormHeader v-if="step.header" :data="step.header" />
+    <AppFormHeader
+      v-if="step.header"
+      :data="step.header"
+    />
 
     <div class="msf-form__steps">
       <transition
@@ -99,14 +102,16 @@ export default {
                 </h2>
               </div>
               <div class="column is-12 is-8-desktop is-offset-1-desktop">
-                <component
-                  :is="`Form${prepareCompName(input.acf_fc_layout)}`"
-                  v-for="(input, inputIndex) in group.fields"
-                  :key="`mosa-forms_s-${currentStep}-g-${groupIndex}-i-${inputIndex}`"
-                  :data-comp-name="`Form${prepareCompName(input.acf_fc_layout)}`"
-                  :data="input"
-                  :index="`${currentStep}-${groupIndex}-${inputIndex}`"
-                />
+                <div class="msf-step__group-wrap">
+                  <component
+                      :is="`Form${prepareCompName(input.acf_fc_layout)}`"
+                      v-for="(input, inputIndex) in group.fields"
+                      :key="`mosa-forms_s-${currentStep}-g-${groupIndex}-i-${inputIndex}`"
+                      :data-comp-name="`Form${prepareCompName(input.acf_fc_layout)}`"
+                      :data="input"
+                      :index="`${currentStep}-${groupIndex}-${inputIndex}`"
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -114,9 +119,9 @@ export default {
       </transition>
     </div>
 
-    <div class="msf-form__controls">
-      <div class="columns">
-        <div class="column is-12 is-8-desktop is-offset-4-desktop">
+    <div class="columns">
+      <div class="column is-12 is-8-desktop is-offset-4-desktop">
+        <div class="msf-form__controls">
           <button
             v-if="currentStep > 0"
             class="msf-form__btn c-btn c-btn--secondary"
@@ -152,12 +157,11 @@ export default {
 <style lang="scss">
 .move-up-enter-active,
 .move-up-leave-active {
-  @include anim($dur: 0.2s);
+  @include anim($dur: 200ms, $prop: opacity);
 }
 
 .move-up-enter-from,
 .move-up-leave-to {
   opacity: 0;
-  transform: translateY(2rem)
 }
 </style>

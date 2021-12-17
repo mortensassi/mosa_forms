@@ -11,15 +11,19 @@
   }
 }
 
-.msf-step__header {
-
-}
-
 .msf-step__header-content {
   padding-top: 6.0625rem;
 
+  .msf-step__header--has-image & {
+
+  }
+
   @include bp($large-bp) {
-    padding-top: 12.125rem;
+    padding-top: 9.733125rem;
+
+    .msf-step__header--has-image & {
+      padding-top: 12.125rem;
+    }
   }
 }
 
@@ -40,6 +44,11 @@
     padding: 3rem 0;
     margin-top: 3rem;
   }
+}
+
+.msf-step__group-wrap {
+  display: flex;
+  flex-flow: row wrap;
 }
 
 .msf-step__group-title {
