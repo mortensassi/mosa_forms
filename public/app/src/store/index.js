@@ -8,22 +8,33 @@ const store = {
             step: 0,
             stepImage : false,
             entries: {
-                fields: []
+                steps: []
             }
         }
     }),
 
     async getFormData(url) {
-        const storedFields = this.state.form.entries.fields
+        const storedSteps = this.state.form.entries.steps
         this.state.form.data = await fetchData(url);
         const data = this.state.form.data
 
         if (data.acf) {
             data.acf.steps.forEach((step, index) => {
-                storedFields.push({
-                    step: index,
-                    fields: []
-                })
+                const groups = step.groups
+                const stepStoreObject = {
+                    title: step.header.title
+                }
+
+                if (groups) {
+                    stepStoreObject.groups = step.groups.map(g => {
+                        return {
+                            title: g.title,
+                            fields: []
+                        }
+                    })
+                }
+
+                storedSteps.push(stepStoreObject)
             })
         }
     },
@@ -37,21 +48,16 @@ const store = {
     },
 
     setFormEntry(entry) {
-        const storedFields = this.state.form.entries.fields
-        const stepFields = storedFields.find(s => s.step === this.state.form.step)
-        const field = stepFields.fields.find(s => s.id === entry.id)
-        const fieldData = {
-            id: entry.id,
-            name: entry.name,
-            value: entry.value
-        }
+        const { step, group, id, name, value } = entry
+        const storeGroupFields = this.state.form.entries.steps[step].groups[group].fields
+        const storeEntry = storeGroupFields.find(field => field.id === id)
 
-        if (field) {
-            console.log(field)
+        if (storeEntry) {
+            storeGroupFields[id] = { step, group, id, name, value }
         } else {
-            stepFields.push(fieldData)
+            storeGroupFields.push({ step, group, id, name, value })
         }
-    }
+    },
 }
 
 export default store;

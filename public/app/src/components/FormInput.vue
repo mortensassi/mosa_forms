@@ -1,5 +1,6 @@
 <script>
-import {h} from 'vue'
+import { ref } from 'vue'
+import {h, onMounted} from 'vue'
 
 export default {
   name: 'FormInput',
@@ -11,6 +12,14 @@ export default {
     index: {
       type: String,
       default: ''
+    },
+    inputIndex: {
+      type: Number,
+      default: null
+    },
+    storeEntry: {
+      type: Object,
+      default: null
     }
   },
 
@@ -19,6 +28,25 @@ export default {
       type: String,
       default: ''
     }
+  },
+
+  setup(props) {
+    const root = ref(null)
+
+    onMounted(() => {
+      if (props.storeEntry) {
+        if (props.storeEntry.type === 'checkbox') {
+
+          const { selection } = props.storeEntry
+
+          if (selection.find(item => item.id === props.inputIndex)) {
+            root.value.querySelector('.c-input__control').checked = true
+          }
+        }
+      }
+    })
+
+    return { root }
   },
 
   render() {
@@ -49,6 +77,7 @@ export default {
     return h('div',
         {
           class: ['c-input', 'msf-input', `msf-input--${field.type}`, `msf-input--size-${field.size}`],
+          ref: 'root'
         }, childElements)
   }
 }

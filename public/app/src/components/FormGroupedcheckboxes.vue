@@ -23,6 +23,10 @@ export default {
     index: {
       type: String,
       default: null
+    },
+    inputIndex: {
+      type: Number,
+      default: null
     }
   },
 
@@ -30,23 +34,36 @@ export default {
     const setFormEntry = inject('setFormEntry')
     const formEntries = ref(store.state.form.entries)
     const checkboxesEl = ref(null)
+    const currentStep = ref(store.state.form.step)
     const selection = ref([])
-    const updateSelection = (val) => {
-      if (selection.value.includes(val)) {
-        const index = selection.value.indexOf(val)
-        if (index > -1) {
-          selection.value.splice(selection.value.indexOf(val), 1)
-        }
+    const updateSelection = (id, val) => {
+      const foundItem = selection.value.find(item => item.value === val)
+      if (foundItem) {
+        selection.value.splice(selection.value.indexOf(foundItem), 1)
       } else {
-        selection.value.push(val)
+        selection.value.push({ id, value: val.checkbox  })
       }
 
-      setFormEntry({id: props.fieldKey, name: props.group.title, value: { location: props.data.groups.name, selection: selection.value }})
+      setFormEntry({
+        step: currentStep.value,
+        group: currentGroup.value,
+        id: props.fieldKey,
+        name: props.group.title,
+        value: {
+          location: props.data.groups[currentGroup.value].name,
+          selection: selection.value
+        }
+      })
     }
     const currentGroup = ref(0)
+    const storedFields = store.state.form.entries.steps[currentStep.value].groups[currentGroup.value].fields
+    const fieldInStore = storedFields.find(
+        field => field.id === props.fieldKey
+    )
     const checkboxes = computed(() => props.data.groups[currentGroup.value].checkboxes)
     const collapseList = computed(() => checkboxes.value.length > 9)
     const maxHeight = ref(0)
+    const storeEntry = ref(store.state.form.entries.steps[currentStep.value].groups[currentGroup.value].fields.find(field => field.id === props.fieldKey))
     const listIsCollapsed = ref(true)
     const setMaxHeight = (reset, once) => {
       if (!collapseList.value) return
@@ -70,9 +87,19 @@ export default {
       }
     }
 
-    const setCurrentGroup = (index) => currentGroup.value = index
+    const setCurrentGroup = (index) => {
+      currentGroup.value = index
+
+      if (fieldInStore) {
+        // TODO: RESET SELECTION
+      }
+    }
 
     onMounted(() => {
+      if (fieldInStore) {
+        selection.value = fieldInStore.value.selection
+      }
+
       setMaxHeight(true, true)
       if (collapseList.value && listIsCollapsed.value) {
         setMaxHeightVariable()
@@ -94,6 +121,8 @@ export default {
       setMaxHeightVariable,
       updateSelection,
       setCurrentGroup,
+      currentStep,
+      storeEntry
     }
   }
 }
@@ -124,8 +153,10 @@ export default {
           v-for="(input, inputIndex) in checkboxes"
           :key="`GroupedCheckboxes-${currentGroup}-checkbox-${inputIndex}`"
           :data="{ type: 'checkbox', label: input.checkbox }"
+          :store-entry="storeEntry ? { type: 'checkbox', selection: storeEntry.value.selection } : null"
           :index="`${index}-GroupedCheckboxes-${currentGroup}-checkbox-${inputIndex}`"
-          @change="updateSelection"
+          :input-index="inputIndex"
+          @change="updateSelection(inputIndex, input)"
         />
       </div>
       <button

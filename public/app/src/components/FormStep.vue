@@ -89,6 +89,7 @@ export default {
               :field-key="`mosa-forms_s-${currentStep}-g-${groupIndex}-i-${inputIndex}`"
               :data-comp-name="`Form${prepareCompName(input.acf_fc_layout)}`"
               :data="input"
+              :input-index="inputIndex"
               :index="`${currentStep}-${groupIndex}-${inputIndex}`"
               :group="group"
               @duplicate="duplicateFields"
