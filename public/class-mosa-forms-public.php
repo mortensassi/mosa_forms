@@ -59,7 +59,7 @@ class Mosa_Forms_Public {
 
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
-		$this->manifest_path = plugin_dir_url( __FILE__ ) . 'app/dist/manifest.json';
+		$this->manifest_path = plugin_dir_path( __FILE__ ) . 'app/dist/manifest.json';
 
 		if (file_exists($this->manifest_path)) {
 			$manifest = json_decode(file_get_contents($this->manifest_path), TRUE);
@@ -68,7 +68,6 @@ class Mosa_Forms_Public {
 		}
 
 		$this->manifest = $manifest;
-
 	}
 
 	/**

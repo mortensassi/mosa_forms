@@ -1,12 +1,21 @@
 <script>
+import store from '@/store'
 import _throttle from 'lodash.throttle'
-import {ref, computed, onMounted} from 'vue'
+import {ref, computed, onMounted, inject} from 'vue'
 import FormInput from '@/components/FormInput.vue'
 
 export default {
   name: 'FormGroupedCheckboxes',
   components: {FormInput},
   props: {
+    fieldKey: {
+      type: String,
+      default: null,
+    },
+    group: {
+      type: Object,
+      default: null
+    },
     data: {
       type: Object,
       default: null
@@ -18,6 +27,8 @@ export default {
   },
 
   setup(props) {
+    const setFormEntry = inject('setFormEntry')
+    const formEntries = ref(store.state.form.entries)
     const checkboxesEl = ref(null)
     const selection = ref([])
     const updateSelection = (val) => {
@@ -29,6 +40,8 @@ export default {
       } else {
         selection.value.push(val)
       }
+
+      setFormEntry({id: props.fieldKey, name: props.group.title, value: { location: props.data.groups.name, selection: selection.value }})
     }
     const currentGroup = ref(0)
     const checkboxes = computed(() => props.data.groups[currentGroup.value].checkboxes)
@@ -48,6 +61,7 @@ export default {
       }
       return elBox.height - (elBox.bottom - ninthElBox.bottom) + ninthElBox.height / 2
     }
+
     const setMaxHeightVariable = (reset) => {
       checkboxesEl.value.style.setProperty('--list-max-height', `${setMaxHeight(reset)}px`)
       if (reset) {
@@ -55,6 +69,8 @@ export default {
         listIsCollapsed.value = false
       }
     }
+
+    const setCurrentGroup = (index) => currentGroup.value = index
 
     onMounted(() => {
       setMaxHeight(true, true)
@@ -70,12 +86,14 @@ export default {
       checkboxesEl,
       currentGroup,
       checkboxes,
+      selection,
       collapseList,
       listIsCollapsed,
+      formEntries,
       setMaxHeight,
       setMaxHeightVariable,
       updateSelection,
-      selection
+      setCurrentGroup,
     }
   }
 }

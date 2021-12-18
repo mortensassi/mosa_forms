@@ -2,9 +2,6 @@ import {computePosition, flip, shift, offset, arrow} from '@floating-ui/dom'
 
 const largeBreakpoint = window.matchMedia('(min-width: 1024px)')
 
-const showEvents = ['mouseover', 'focus'];
-const hideEvents = ['mouseleave', 'blur'];
-
 const updatePosition = (button, trigger, tooltipEl) => {
   const arrowEl = button.querySelector('.u-tooltip__arrow')
   const offsetVal = largeBreakpoint.matches ? 24 : 16

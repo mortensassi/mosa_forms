@@ -67,12 +67,12 @@ export default {
 
 <template>
   <article
-      class="msf-step"
+    class="msf-step"
   >
     <div
-        v-for="(group, groupIndex) in step.groups"
-        :key="`mosa-forms_s-${currentStep}-g-${groupIndex}`"
-        class="msf-step__group"
+      v-for="(group, groupIndex) in step.groups"
+      :key="`mosa-forms_s-${currentStep}-g-${groupIndex}`"
+      class="msf-step__group"
     >
       <div class="columns is-multiline">
         <div class="column is-12 is-3-desktop">
@@ -83,13 +83,15 @@ export default {
         <div class="column is-12 is-8-desktop is-offset-1-desktop">
           <div class="msf-step__group-wrap">
             <component
-                @duplicate="duplicateFields"
-                :is="`Form${prepareCompName(input.acf_fc_layout)}`"
-                v-for="(input, inputIndex) in group.fields"
-                :key="`mosa-forms_s-${currentStep}-g-${groupIndex}-i-${inputIndex}`"
-                :data-comp-name="`Form${prepareCompName(input.acf_fc_layout)}`"
-                :data="input"
-                :index="`${currentStep}-${groupIndex}-${inputIndex}`"
+              :is="`Form${prepareCompName(input.acf_fc_layout)}`"
+              v-for="(input, inputIndex) in group.fields"
+              :key="`mosa-forms_s-${currentStep}-g-${groupIndex}-i-${inputIndex}`"
+              :field-key="`mosa-forms_s-${currentStep}-g-${groupIndex}-i-${inputIndex}`"
+              :data-comp-name="`Form${prepareCompName(input.acf_fc_layout)}`"
+              :data="input"
+              :index="`${currentStep}-${groupIndex}-${inputIndex}`"
+              :group="group"
+              @duplicate="duplicateFields"
             />
           </div>
         </div>

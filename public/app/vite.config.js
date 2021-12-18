@@ -8,7 +8,8 @@ export default defineConfig({
   plugins: [vue()],
 
   build: {
-    manifest: true
+    manifest: true,
+    target: 'es2015'
   },
 
   resolve: {
