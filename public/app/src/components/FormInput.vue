@@ -1,6 +1,6 @@
 <script>
 import { ref } from 'vue'
-import {h, onMounted} from 'vue'
+import {h, computed} from 'vue'
 
 export default {
   name: 'FormInput',
@@ -17,7 +17,11 @@ export default {
       type: Number,
       default: null
     },
-    storeEntry: {
+    groupIndex: {
+      type: Number,
+      default: null
+    },
+    selection: {
       type: Object,
       default: null
     }
@@ -33,24 +37,32 @@ export default {
   setup(props) {
     const root = ref(null)
 
-    onMounted(() => {
-      if (props.storeEntry) {
-        if (props.storeEntry.type === 'checkbox') {
 
-          const { selection } = props.storeEntry
-
-          if (selection.find(item => item.id === props.inputIndex)) {
-            root.value.querySelector('.c-input__control').checked = true
-          }
-        }
+    const isChecked = computed(() => {
+      if (props.selection) {
+        return props.selection.find(item => item.id === props.inputIndex && item.group.id === props.groupIndex)
       }
     })
 
-    return { root }
+    return { root, isChecked }
   },
 
   render() {
     const field = this.data
+
+    let inputProps = {
+      id: `msf-input-${this.index}`,
+      class: ['c-input__control', 'msf-input__control', `msf-input__control--${field.type}`],
+      type: field.type,
+      required: field.is_required,
+      onChange: () => this.$emit('change', field.label)
+    }
+
+    if (this.selection) {
+      inputProps = { ...inputProps, ...{
+          checked: this.isChecked
+        } }
+    }
 
     const childElements = [
       h('label', {
@@ -58,13 +70,7 @@ export default {
         innerHTML: field.label,
         for: `msf-input-${this.index}`
       }),
-      h('input', {
-        id: `msf-input-${this.index}`,
-        class: ['c-input__control', 'msf-input__control', `msf-input__control--${field.type}`],
-        type: field.type,
-        required: field.is_required,
-        onChange: () => this.$emit('change', field.label)
-      }),
+      h('input', inputProps),
     ]
 
     const requiredElement = h('span', {

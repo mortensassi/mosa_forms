@@ -48,15 +48,10 @@ const store = {
     },
 
     setFormEntry(entry) {
-        const { step, group, id, name, value } = entry
+        const { step, group, id, name, value, realIndex } = entry
         const storeGroupFields = this.state.form.entries.steps[step].groups[group].fields
-        const storeEntry = storeGroupFields.find(field => field.id === id)
 
-        if (storeEntry) {
-            storeGroupFields[id] = { step, group, id, name, value }
-        } else {
-            storeGroupFields.push({ step, group, id, name, value })
-        }
+        storeGroupFields[realIndex] = { step, group, id, name, value, realIndex }
     },
 }
 

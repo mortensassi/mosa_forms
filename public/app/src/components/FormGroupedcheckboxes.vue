@@ -1,7 +1,7 @@
 <script>
 import store from '@/store'
 import _throttle from 'lodash.throttle'
-import {ref, computed, onMounted, inject} from 'vue'
+import {ref, computed, onMounted, inject, watch} from 'vue'
 import FormInput from '@/components/FormInput.vue'
 
 export default {
@@ -24,7 +24,11 @@ export default {
       type: String,
       default: null
     },
-    inputIndex: {
+    realIndex: {
+      type: Number,
+      default: null
+    },
+    stepGroupIndex: {
       type: Number,
       default: null
     }
@@ -36,34 +40,34 @@ export default {
     const checkboxesEl = ref(null)
     const currentStep = ref(store.state.form.step)
     const selection = ref([])
-    const updateSelection = (id, val) => {
-      const foundItem = selection.value.find(item => item.value === val)
+    const updateSelection = (id, val, group) => {
+      const foundItem = selection.value.find(item =>
+        item.id === id && item.group.id === group
+      )
       if (foundItem) {
         selection.value.splice(selection.value.indexOf(foundItem), 1)
       } else {
-        selection.value.push({ id, value: val.checkbox  })
+        selection.value.push({ id, value: val.checkbox, group: { id: currentGroup.value, name: props.data.groups[currentGroup.value].name }  })
       }
 
       setFormEntry({
         step: currentStep.value,
-        group: currentGroup.value,
+        group: props.stepGroupIndex,
+        realIndex: props.realIndex,
         id: props.fieldKey,
         name: props.group.title,
         value: {
-          location: props.data.groups[currentGroup.value].name,
           selection: selection.value
         }
       })
     }
+
     const currentGroup = ref(0)
     const storedFields = store.state.form.entries.steps[currentStep.value].groups[currentGroup.value].fields
-    const fieldInStore = storedFields.find(
-        field => field.id === props.fieldKey
-    )
+    const storeEntry = computed(() => storedFields[props.realIndex])
     const checkboxes = computed(() => props.data.groups[currentGroup.value].checkboxes)
     const collapseList = computed(() => checkboxes.value.length > 9)
     const maxHeight = ref(0)
-    const storeEntry = ref(store.state.form.entries.steps[currentStep.value].groups[currentGroup.value].fields.find(field => field.id === props.fieldKey))
     const listIsCollapsed = ref(true)
     const setMaxHeight = (reset, once) => {
       if (!collapseList.value) return
@@ -88,16 +92,17 @@ export default {
     }
 
     const setCurrentGroup = (index) => {
-      currentGroup.value = index
-
-      if (fieldInStore) {
-        // TODO: RESET SELECTION
+      if (storeEntry.value) {
+        storeEntry.value.value.location = props.data.groups[index].name
+        storeEntry.value.value.group = index
       }
+
+      currentGroup.value = index
     }
 
     onMounted(() => {
-      if (fieldInStore) {
-        selection.value = fieldInStore.value.selection
+      if (storeEntry.value) {
+        selection.value = storeEntry.value.value.selection
       }
 
       setMaxHeight(true, true)
@@ -122,7 +127,7 @@ export default {
       updateSelection,
       setCurrentGroup,
       currentStep,
-      storeEntry
+      storeEntry,
     }
   }
 }
@@ -139,9 +144,9 @@ export default {
         :key="`FormGroupedcheckboxes-button-${groupIndex}`"
         class="c-btn c-btn--pill msf-form__btn"
         :class="{ 'is-hovered' : groupIndex === currentGroup }"
-        @click="currentGroup = groupIndex"
+        @click="setCurrentGroup(groupIndex)"
       >
-        <span class="c-btn__label">{{ `${button.name}` }} <span v-if="groupIndex === currentGroup">({{ selection.length }})</span> </span>
+        <span class="c-btn__label">{{ `${button.name}` }} <span>({{ selection.filter(item => item.group.id === groupIndex).length }})</span> </span>
       </button>
 
       <div
@@ -151,12 +156,13 @@ export default {
       >
         <FormInput
           v-for="(input, inputIndex) in checkboxes"
-          :key="`GroupedCheckboxes-${currentGroup}-checkbox-${inputIndex}`"
+          :key="`GroupedCheckboxes-g-${currentGroup}-c-${inputIndex}`"
           :data="{ type: 'checkbox', label: input.checkbox }"
-          :store-entry="storeEntry ? { type: 'checkbox', selection: storeEntry.value.selection } : null"
-          :index="`${index}-GroupedCheckboxes-${currentGroup}-checkbox-${inputIndex}`"
+          :selection="selection"
+          :index="`GroupedCheckboxes-g-${currentGroup}-c-${inputIndex}`"
           :input-index="inputIndex"
-          @change="updateSelection(inputIndex, input)"
+          :group-index="currentGroup"
+          @change="updateSelection(inputIndex, input, currentGroup)"
         />
       </div>
       <button
