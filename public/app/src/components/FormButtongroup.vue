@@ -1,6 +1,7 @@
 <script>
-import {inject, onMounted, ref} from 'vue'
-import { computePosition, flip, shift, offset, arrow } from '@floating-ui/dom'
+import {computed, inject, onMounted, ref} from 'vue'
+import store from '@/store'
+
 export default {
   name: 'FormButtongroup',
   props: {
@@ -11,13 +12,31 @@ export default {
     index: {
       type: String,
       default: null
-    }
+    },
+    fieldKey: {
+      type: String,
+      default: ''
+    },
+    realIndex: {
+      type: Number,
+      default: null
+    },
+    stepGroupIndex: {
+      type: Number,
+      default: null
+    },
   },
 
-  setup() {
+  setup(props) {
     const selection = ref([])
     const showTooltip = inject('showTooltip')
     const hideTooltip = inject('hideTooltip')
+    const buttonGroup = ref(null)
+    const currentStep = ref(store.state.form.step)
+    const storedFields = store.state.form.entries.steps[currentStep.value].groups[props.stepGroupIndex].fields
+    const storeEntry = computed(() => storedFields[props.realIndex])
+    const setFormEntry = inject('setFormEntry')
+
     const toggleSelection = (buttonIndex) => {
       if (selection.value.includes(buttonIndex)) {
         const pos = selection.value.indexOf(buttonIndex)
@@ -25,13 +44,22 @@ export default {
       } else {
         selection.value.push(buttonIndex)
       }
-    }
-    const buttonGroup = ref(null)
 
-    const showEvents = ['mouseover', 'focus'];
-    const hideEvents = ['mouseleave', 'blur'];
+      setFormEntry({
+        step: currentStep.value,
+        group: props.stepGroupIndex,
+        realIndex: props.realIndex,
+        id: props.fieldKey,
+        name: props.data.label,
+        value: selection.value
+      })
+    }
 
     onMounted(() => {
+      if (storeEntry.value) {
+        selection.value = storeEntry.value['value']
+      }
+
       if (buttonGroup.value) {
         const buttons = buttonGroup.value.querySelectorAll('.c-btn--pill')
         buttons.forEach(button => {
@@ -39,6 +67,9 @@ export default {
           const tooltipEl = button.querySelector('.u-tooltip__content')
 
           if (tooltipEl) {
+            const showEvents = ['mouseover', 'focus'];
+            const hideEvents = ['mouseleave', 'blur'];
+
             showEvents.forEach(e => {
               trigger.addEventListener(e, () => showTooltip(button, trigger, tooltipEl))
             })
