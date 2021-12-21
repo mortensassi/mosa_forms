@@ -1,5 +1,6 @@
 <script>
-import { ref, watch } from 'vue'
+import {computed, inject, onMounted, ref, watch} from 'vue'
+import store from '@/store'
 
 export default {
   name: 'FormInputCounter',
@@ -11,11 +12,28 @@ export default {
     index: {
       type: String,
       default: null
-    }
+    },
+    fieldKey: {
+      type: String,
+      default: ''
+    },
+    realIndex: {
+      type: Number,
+      default: null
+    },
+    stepGroupIndex: {
+      type: Number,
+      default: null
+    },
   },
 
   setup(props) {
     const inputValue = ref([0, 0])
+    const currentStep = ref(store.state.form.step)
+    const storedFields = store.state.form.entries.steps[currentStep.value].groups[props.stepGroupIndex].fields
+    const storeEntry = computed(() => storedFields[props.realIndex])
+    const setFormEntry = inject('setFormEntry')
+
     const updateInputValue = (type, counter, index) => {
       if (inputValue.value[index] >= 0 && inputValue.value[index] < Number(counter.max_val) ) {
         if (type === 'increment') {
@@ -26,9 +44,19 @@ export default {
       } else {
         inputValue.value[index] = 0
       }
+
+      setFormEntry({
+        step: currentStep.value,
+        group: props.stepGroupIndex,
+        realIndex: props.realIndex,
+        id: props.fieldKey,
+        name: props.data.label,
+        value: inputValue.value
+      })
     }
 
     watch(inputValue, (arr) => {
+      // Control max value handling
       arr.forEach((val, valI) => {
         if (val > props.data.inputs[valI].max_val) {
           arr[valI] = Number(props.data.inputs[valI].max_val)
@@ -37,6 +65,12 @@ export default {
         }
       })
     }, { deep: true})
+
+    onMounted(() => {
+      if (storeEntry.value) {
+        inputValue.value = storeEntry.value['value']
+      }
+    })
 
     return {
       value: inputValue,
