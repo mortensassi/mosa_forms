@@ -1,5 +1,6 @@
 <script>
-import { ref } from 'vue'
+import store from '@/store'
+import {computed, inject, onMounted, ref, watch} from 'vue'
 
 export default {
   name: 'FormChoices',
@@ -11,10 +12,43 @@ export default {
     index: {
       type: String,
       default: null
-    }
+    },
+    fieldKey: {
+      type: String,
+      default: ''
+    },
+    realIndex: {
+      type: Number,
+      default: null
+    },
+    stepGroupIndex: {
+      type: Number,
+      default: null
+    },
   },
-  setup() {
+  setup(props) {
     const selection = ref(0)
+    const currentStep = ref(store.state.form.step)
+    const storedFields = store.state.form.entries.steps[currentStep.value].groups[props.stepGroupIndex].fields
+    const storeEntry = computed(() => storedFields[props.realIndex])
+    const setFormEntry = inject('setFormEntry')
+
+    watch(selection, (n) => {
+      setFormEntry({
+        step: currentStep.value,
+        group: props.stepGroupIndex,
+        realIndex: props.realIndex,
+        id: props.fieldKey,
+        name: props.data.label,
+        value: n
+      })
+    })
+
+    onMounted(() => {
+      if (storeEntry.value) {
+        selection.value = storeEntry.value['value']
+      }
+    })
 
     return { selection }
   }
