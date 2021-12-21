@@ -6,6 +6,7 @@ import { computed } from 'vue'
 import FormInput from '@/components/FormInput.vue'
 import FormCounter from '@/components/FormCounter.vue'
 import FormSelect from '@/components/FormSelect.vue'
+import FormMultiselect from '@/components/FormMultiselect.vue'
 import FormTextarea from '@/components/FormTextarea.vue'
 import FormCards from '@/components/FormCards.vue'
 import FormGroupedcheckboxes from '@/components/FormGroupedcheckboxes.vue'
@@ -22,6 +23,7 @@ export default {
     FormInput,
     FormCounter,
     FormSelect,
+    FormMultiselect,
     FormTextarea,
     FormCards,
     FormGroupedcheckboxes,

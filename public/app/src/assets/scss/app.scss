@@ -6,10 +6,8 @@
 @import "../../../../../../../../../src/styles/tools/mixins";
 @import "../../../../../../../../../src/styles/tools/functions";
 
-@import "vue-select/src/scss/vue-select";
-
 @import "abstracts/variables";
 @import "abstracts/placeholder";
 
 @import "base/base";
-@import "vendor/treeselect";
+@import "vendor/vSelect";

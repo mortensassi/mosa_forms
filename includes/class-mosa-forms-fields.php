@@ -236,6 +236,37 @@ return [
 																				 ])
 																	 ])
 														 ]),
+												   Layout::make(__('Multiselect', 'mosa'), 'multiselect')
+														 ->fields([
+															 Text::make(__('Label', 'mosa'), 'label')
+																 ->wrapper([
+																	 'width' => '75%'
+																 ]),
+															 TrueFalse::make(__('Required', 'mosa'), 'is_required')
+																	  ->stylisedUi()
+																	  ->wrapper([
+																		  'width' => '25%'
+																	  ]),
+															 Text::make(__('Title', 'mosa'), 'title'),
+															 Repeater::make(__('Choices', 'mosa'), 'choices')
+																	 ->buttonLabel(__('+ Add Choice', 'mosa'))
+																	 ->fields([
+																		 Text::make(__('Group', 'mosa'), 'group'),
+																		 Repeater::make(
+																			 __('Choices', 'mosa'),
+																			 'choices'
+																		 )
+																				 ->buttonLabel(
+																					 __('+ Add Choice', 'mosa')
+																				 )
+																				 ->fields([
+																					 Text::make(
+																						 __('Choice', 'mosa'),
+																						 'choice'
+																					 ),
+																				 ])
+																	 ])
+														 ]),
 												   Layout::make(__('Checkbox', 'mosa'), 'checkbox')
 														 ->fields([
 															 Text::make(__('Label', 'mosa'), 'label')

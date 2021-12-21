@@ -11,10 +11,12 @@
     "fuse.js": "^6.4.6",
     "lodash.camelcase": "^4.3.0",
     "lodash.capitalize": "^4.2.1",
+    "lodash.groupby": "^4.6.0",
     "lodash.throttle": "^4.1.1",
     "lozad": "^1.16.0",
     "uuid": "^8.3.2",
     "vue": "^3.2.16",
+    "vue-multiselect": "^3.0.0-alpha.2",
     "vue-select": "^4.0.0-beta.1",
     "vue-slider-component": "^4.0.0-beta.4",
     "vue3-treeselect": "^0.1.10"

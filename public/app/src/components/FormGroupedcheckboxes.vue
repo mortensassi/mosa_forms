@@ -63,7 +63,7 @@ export default {
     }
 
     const currentGroup = ref(0)
-    const storedFields = store.state.form.entries.steps[currentStep.value].groups[currentGroup.value].fields
+    const storedFields = store.state.form.entries.steps[currentStep.value].groups[props.stepGroupIndex].fields
     const storeEntry = computed(() => storedFields[props.realIndex])
     const checkboxes = computed(() => props.data.groups[currentGroup.value].checkboxes)
     const collapseList = computed(() => checkboxes.value.length > 9)
