@@ -1,5 +1,7 @@
 <script>
-import {ref} from 'vue'
+import store from '@/store'
+import _throttle from 'lodash.throttle'
+import {computed, inject, onMounted, ref, watch} from 'vue'
 import VueSlider from 'vue-slider-component'
 
 export default {
@@ -13,18 +15,54 @@ export default {
     index: {
       type: String,
       default: null
-    }
+    },
+    fieldKey: {
+      type: String,
+      default: ''
+    },
+    realIndex: {
+      type: Number,
+      default: null
+    },
+    stepGroupIndex: {
+      type: Number,
+      default: null
+    },
+
   },
   setup(props) {
     const priceRange = ref(null)
     const inputData = ref([Number(0), Number(props.data.max_val)])
+    const currentStep = ref(store.state.form.step)
+    const storedFields = store.state.form.entries.steps[currentStep.value].groups[props.stepGroupIndex].fields
+    const storeEntry = computed(() => storedFields[props.realIndex])
+    const setFormEntry = inject('setFormEntry')
 
     const updateInputData = () => {
       const current = inputData.value
       priceRange.value.setValue(current)
     }
 
-    return { value: inputData, priceRange, updateInputData }
+    watch(inputData,(n) => {
+      if (n) {
+        setFormEntry({
+          step: currentStep.value,
+          group: props.stepGroupIndex,
+          realIndex: props.realIndex,
+          id: props.fieldKey,
+          name: props.data.label,
+          value: n
+        })
+      }
+    })
+
+    onMounted(() => {
+      if (storeEntry.value) {
+        inputData.value = storeEntry.value['value']
+      }
+    })
+
+    return { inputData, priceRange, updateInputData, storeEntry }
   }
 }
 </script>
@@ -40,7 +78,7 @@ export default {
     </span>
     <vue-slider
       ref="priceRange"
-      v-model="value"
+      v-model="inputData"
       :enable-cross="false"
       :max="data.max_val"
       :tooltip="'none'"
@@ -74,10 +112,10 @@ export default {
         <div class="c-input__currency-wrap">
           <input
             :id="`Pricerange-${index}-${inputIndex === 0 ? 'min' : 'max'}-input`"
-            v-model="value[inputIndex]"
+            v-model="inputData[inputIndex]"
             type="number"
             class="c-input__control c-input__control--prepend-with-currency"
-            :placeholder="`€ ${value[inputIndex]}`"
+            :placeholder="`€ ${inputData[inputIndex]}`"
             @change="updateInputData"
           >
         </div>
