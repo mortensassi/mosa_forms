@@ -155,8 +155,24 @@ $sizes: (
   margin-bottom: 1rem;
 }
 
+.msf-input__label--counter {
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
 .msf-input__control {
   display: block;
+
+  &[type="number"] {
+    -moz-appearance: textfield;
+
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      /* display: none; <- Crashes Chrome on hover */
+      -webkit-appearance: none;
+      margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+    }
+  }
 }
 
 .msf-input__control--count {

@@ -13,7 +13,19 @@ export default {
     index: {
       type: String,
       default: null
-    }
+    },
+    fieldKey: {
+      type: String,
+      default: ''
+    },
+    realIndex: {
+      type: Number,
+      default: null
+    },
+    stepGroupIndex: {
+      type: Number,
+      default: null
+    },
   },
 
   setup(props) {
@@ -24,13 +36,9 @@ export default {
 
     const countries = computed(() => {
       return countriesList.reduce((r, e) => {
-        // get first letter of name of current element
         let group = e.name[0];
-        // if there is no property in accumulator with this letter create it
         if (!r[group]) r[group] = {group, children: [e]}
-        // if there is push current element to children array for that letter
         else r[group].children.push(e);
-        // return accumulator
         return r;
       }, {})
     })
@@ -114,6 +122,7 @@ export default {
               @keydown.enter="setSelection"
               @focus="toggleDropdown(true)"
               @click="setSelection(true)"
+              @blur="toggleDropdown()"
             >
             <span
               v-if="autocompleteStr"
@@ -121,7 +130,10 @@ export default {
             >{{ autocompleteStr }}</span>
           </div>
           <transition name="moveup">
-            <div class="msf-select__group-wrapper" v-if="showDropdown">
+            <div
+              v-if="showDropdown"
+              class="msf-select__group-wrapper"
+            >
               <div
                 v-for="(country, countryIndex) in countries"
                 :key="`Countries-${index}-group-${countryIndex}`"
@@ -133,7 +145,7 @@ export default {
                   :key="`Countries-${index}-group-${countryIndex}-child-${childIndex}`"
                   :class="{'is-selected' : child.name === selection}"
                   class="msf-select__choice"
-                  @click="setSelection(child.name)"
+                  @mousedown="setSelection(child.name)"
                 >
                   {{ child.name }}
                 </button>

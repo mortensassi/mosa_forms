@@ -33,24 +33,33 @@ export default {
     const storeEntry = computed(() => storedFields[props.realIndex])
     const setFormEntry = inject('setFormEntry')
 
-    watch(selection, (n) => {
+    const makeChoice = (choice) => {
       setFormEntry({
         step: currentStep.value,
         group: props.stepGroupIndex,
         realIndex: props.realIndex,
         id: props.fieldKey,
         name: props.data.label,
-        value: n
+        value: {
+          name: props.data.buttons[choice].text,
+          id: choice
+        }
       })
+    }
+
+    watch(storeEntry, (v) => {
+      selection.value = v.value.id
     })
 
     onMounted(() => {
       if (storeEntry.value) {
-        selection.value = storeEntry.value['value']
+        selection.value = storeEntry.value['value'].id
+      } else {
+        makeChoice(0)
       }
     })
 
-    return { selection }
+    return { selection, storeEntry, makeChoice }
   }
 }
 </script>
@@ -69,7 +78,7 @@ export default {
       :key="`Choice-${index}-button-${choiceIndex}`"
       class="c-btn c-btn--pill msf-form__btn"
       :class="{ 'is-active' : choiceIndex === selection }"
-      @click="selection = choiceIndex"
+      @click="makeChoice(choiceIndex)"
     >
       {{ choice.text }}
     </button>

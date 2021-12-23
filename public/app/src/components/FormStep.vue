@@ -1,7 +1,8 @@
 <script>
 import _capitalize from 'lodash.capitalize'
 import _camelCase from 'lodash.camelcase'
-import { computed } from 'vue'
+import {computed, onMounted, ref} from 'vue'
+import store from '@/store'
 
 import FormInput from '@/components/FormInput.vue'
 import FormCounter from '@/components/FormCounter.vue'
@@ -49,20 +50,40 @@ export default {
   setup(props) {
     const prepareCompName = (name) => _capitalize(_camelCase(name))
     const groups = computed(() => props.step.groups)
-    const duplicates = computed(() => [])
+    const storedFormEntries = computed(() => store.state.form.entries)
+
+    const duplicateCount = ref(0)
+    const duplicates = ref([])
     const duplicateFields = () => {
+      duplicateCount.value += 1
       groups.value.forEach((group, groupIndex) => {
-        const hasDuplicator = group.fields.find(field => field['acf_fc_layout'] === 'duplicate')
+        const { fields } = groups.value[groupIndex]
+        const duplicator = fields.find(field => field['acf_fc_layout'] === 'duplicate')
 
-        if (hasDuplicator) {
-          const { fields } = groups.value[groupIndex]
+        if (duplicator) {
+          const index = duplicateCount.value
+          const duplicatorPosition = fields.indexOf(duplicator)
+          const coreFields = fields.filter(field => !field.duplicate && field['acf_fc_layout'] !== 'duplicate')
+          duplicates.value = coreFields.map(field => {
+            return {
+              ...field,
+              duplicate: index
+            }
+          })
 
-          groups.value[groupIndex].fields = [...fields, ...fields]
+          groups.value[groupIndex].fields = [...fields, ...duplicates.value]
+          groups.value[groupIndex].fields.push(groups.value[groupIndex].fields.splice(duplicatorPosition, 1)[0])
+
+          store.duplicateFields({
+            index: props.currentStep,
+            groupIndex,
+            fields: groups.value[groupIndex].fields
+          })
         }
       })
     }
 
-    return { prepareCompName, duplicateFields, groups, duplicates }
+    return { prepareCompName, duplicateFields, groups, storedFormEntries }
   }
 }
 </script>

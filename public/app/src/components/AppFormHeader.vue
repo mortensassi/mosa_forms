@@ -9,7 +9,10 @@
     />
     <div class="msf-step__header-content">
       <div class="columns is-multiline">
-        <div class="column is-12 is-3-desktop">
+        <div
+          class="column"
+          :class="data.overview ? 'is-12 is-9-desktop' : 'is-12 is-3-desktop'"
+        >
           <h1
             class="msf-step__headline"
             v-html="data.title"

@@ -1,9 +1,10 @@
 <script>
-import {computed} from 'vue'
+import {ref, computed} from 'vue'
 import store from '@/store'
 import AppFormHeader from '@/components/AppFormHeader.vue'
 import AppFormProgress from '@/components/AppFormProgress.vue'
 import FormStep from '@/components/FormStep.vue'
+import FormOverview from '@/components/FormOverview.vue'
 
 export default {
   name: 'AppForm',
@@ -11,13 +12,26 @@ export default {
   components: {
     AppFormProgress,
     AppFormHeader,
-    FormStep
+    FormStep,
+    FormOverview
   },
 
   setup() {
+    const showOverview = ref(false)
     const goToStep = async (step) => {
       if (step) {
-        await store.updateStep(store.state.form.step + step)
+        if (step === 'overview') {
+          showOverview.value = true
+        } else {
+          if (showOverview.value === true) {
+            if (step === -1) {
+              showOverview.value = false
+            }
+          } else {
+            await store.updateStep(store.state.form.step + step)
+          }
+        }
+
         const headerEl = document.querySelector('.c-header')
 
         const intersectionObserver = new IntersectionObserver(async (entries) => {
@@ -40,7 +54,8 @@ export default {
       step,
       formData,
       currentStep,
-      goToStep
+      goToStep,
+      showOverview
     }
   }
 }
@@ -53,7 +68,11 @@ export default {
   >
     <AppFormProgress />
     <AppFormHeader
-      v-if="step.header"
+      v-if="showOverview"
+      :data="{ title: 'Fast geschafft!<br>Hier können Sie Ihre Angaben nochmals überprüfen', overview: true }"
+    />
+    <AppFormHeader
+      v-else-if="step.header"
       :data="step.header"
     />
 
@@ -61,7 +80,12 @@ export default {
       <transition
         name="move-up"
       >
+        <FormOverview
+          v-if="showOverview"
+          @close-overview="showOverview = false"
+        />
         <FormStep
+          v-else
           :key="`mosa-forms_step-${currentStep}`"
           :current-step="currentStep"
           :step="step"
@@ -92,8 +116,9 @@ export default {
             v-else
             class="msf-form__btn msf-form__btn--submit c-btn c-btn--primary"
             type="button"
+            @click="goToStep('overview')"
           >
-            Absenden
+            Zur Übersicht
           </button>
         </div>
       </div>

@@ -1,11 +1,11 @@
 <script>
-import {ref, computed} from 'vue'
-import Treeselect from 'vue3-treeselect'
-import 'vue3-treeselect/dist/vue3-treeselect.css'
+import {ref, computed, onMounted, watch, inject} from 'vue'
+import store from '@/store'
+import vSelect from 'vue-select'
 
 export default {
   name: 'FormSelect',
-  components: {Treeselect},
+  components: {vSelect},
   props: {
     data: {
       type: Object,
@@ -14,44 +14,58 @@ export default {
     index: {
       type: String,
       default: ''
-    }
+    },
+    fieldKey: {
+      type: String,
+      default: ''
+    },
+    realIndex: {
+      type: Number,
+      default: null
+    },
+    stepGroupIndex: {
+      type: Number,
+      default: null
+    },
   },
 
   setup(props) {
-    const value = ref(null)
-    const options = computed(() => {
-      const data = props.data
+    const rootEl = ref(null)
+    const selection = ref([])
+    const currentStep = ref(store.state.form.step)
+    const storedFields = store.state.form.entries.steps[currentStep.value].groups[props.stepGroupIndex].fields
+    const storeEntry = computed(() => storedFields[props.realIndex])
+    const setFormEntry = inject('setFormEntry')
 
-      return data.choices.map((item, index) => {
-        let choiceOptions = {
-          id: `choice-${index}`,
-          label: item.choice
-        }
-
-        if (item.is_grouped) {
-          const childrenOptions = {
-            children: item.choices.map((nestedItem, nestedIndex) => {
-              return {
-                id: `choice-${index}-child-${nestedIndex}`,
-                label: nestedItem.choice,
-              }
-            })
-          }
-
-          choiceOptions = {...choiceOptions, ...childrenOptions}
-        }
-
-        return choiceOptions
-      })
+    onMounted(() => {
+      if (storeEntry.value && storeEntry.value['value']) {
+        selection.value = storeEntry.value['value']
+      }
     })
 
-    return {value, options}
+    const makeSelection = (value) => {
+      selection.value = value
+
+      setFormEntry({
+        step: currentStep.value,
+        group: props.stepGroupIndex,
+        realIndex: props.realIndex,
+        id: props.fieldKey,
+        name: props.data.label,
+        value: selection
+      })
+    }
+
+    return {storeEntry, selection, rootEl, currentStep, makeSelection }
   }
 }
 </script>
 
 <template>
-  <div class="msf-input msf-input--select">
+  <div
+    ref="rootEl"
+    class="msf-input msf-input--select"
+  >
     <label
       :for="`msf-select-${index}`"
       class="msf-input__label ms-input__label--select"
@@ -59,14 +73,27 @@ export default {
       v-if="data.is_required"
       class="c-txt c-txt--highlight"
     >*</span> </label>
-    <treeselect
-      v-if="options"
+    <v-select
       :id="`msf-select-${index}`"
-      v-model="value"
-      :multiple="true"
-      :options="options"
-      :placeholder="data.title"
-      :default-expand-level="1"
-    />
+      @option:selected="makeSelection"
+      :modelValue="selection"
+      label="choice"
+      :options="data.choices"
+    >
+      <template #open-indicator="{ attributes }">
+        <svg v-bind="attributes"><use xlink:href="#icon-chevron-down"></use></svg>
+      </template>
+    </v-select>
   </div>
 </template>
+
+<style src="vue-multiselect/dist/vue-multiselect.css"></style>
+
+<style scoped>
+  .is-child {
+    margin-left: 1rem;
+  }
+  .is-selected {
+    background-color: hsl(100deg, 20%, 40%);
+  }
+</style>

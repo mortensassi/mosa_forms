@@ -1,5 +1,6 @@
 <script>
-import { ref } from 'vue'
+import store from '@/store'
+import {inject, onMounted, ref} from 'vue'
 import {h, computed} from 'vue'
 
 export default {
@@ -24,7 +25,19 @@ export default {
     selection: {
       type: Object,
       default: null
-    }
+    },
+    fieldKey: {
+      type: String,
+      default: ''
+    },
+    realIndex: {
+      type: Number,
+      default: null
+    },
+    stepGroupIndex: {
+      type: Number,
+      default: null
+    },
   },
 
   emits: {
@@ -35,16 +48,33 @@ export default {
   },
 
   setup(props) {
+    const value = ref(null)
     const root = ref(null)
+    const currentStep = ref(store.state.form.step)
+    const setFormEntry = inject('setFormEntry')
+    let storedFields = null
+    let storeEntry = null
 
+    if (!props.selection) {
+      storedFields = store.state.form.entries.steps[currentStep.value].groups[props.stepGroupIndex].fields
+      storeEntry = computed(() => storedFields[props.realIndex])
+    }
 
     const isChecked = computed(() => {
       if (props.selection) {
         return props.selection.find(item => item.id === props.inputIndex && item.group.id === props.groupIndex)
       }
+      return false
     })
 
-    return { root, isChecked }
+    onMounted(() => {
+      if (storeEntry && storeEntry.value) {
+        value.value = storeEntry.value['value']
+        root.value.querySelector('.c-input__control')['value'] = storeEntry.value['value']
+      }
+    })
+
+    return { root, isChecked, currentStep, setFormEntry, value, storeEntry }
   },
 
   render() {
@@ -55,7 +85,24 @@ export default {
       class: ['c-input__control', 'msf-input__control', `msf-input__control--${field.type}`],
       type: field.type,
       required: field.is_required,
-      onChange: () => this.$emit('change', field.label)
+      onChange: () => {
+        if (this.selection) { //checkbox handler
+          this.$emit('change', field.label)
+        }
+      },
+      onInput: (v) => {
+        this.value = v.target.value
+        if (!this.selection) {
+          this.setFormEntry({
+            step: this.currentStep,
+            group: this.stepGroupIndex,
+            realIndex: this.realIndex,
+            id: this.fieldKey,
+            name: this.data.label,
+            value: v.target.value
+          })
+        }
+      }
     }
 
     if (this.selection) {

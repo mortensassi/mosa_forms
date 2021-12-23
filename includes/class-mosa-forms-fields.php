@@ -197,43 +197,11 @@ return [
 														 ]),
 												   Layout::make(__('Select', 'mosa'), 'select')
 														 ->fields([
-															 Text::make(__('Label', 'mosa'), 'label')
-																 ->wrapper([
-																	 'width' => '75%'
-																 ]),
-															 TrueFalse::make(__('Required', 'mosa'), 'is_required')
-																	  ->stylisedUi()
-																	  ->wrapper([
-																		  'width' => '25%'
-																	  ]),
-															 Text::make(__('Title', 'mosa'), 'title'),
+															 Text::make(__('Label', 'mosa'), 'label'),
 															 Repeater::make(__('Choices', 'mosa'), 'choices')
 																	 ->buttonLabel(__('+ Add Choice', 'mosa'))
 																	 ->fields([
 																		 Text::make(__('Choice', 'mosa'), 'choice'),
-																		 TrueFalse::make(
-																			 __('Is Grouped?', 'mosa'),
-																			 'is_grouped'
-																		 )
-																				  ->stylisedUi(),
-																		 Repeater::make(
-																			 __('Choices', 'mosa'),
-																			 'choices'
-																		 )
-																				 ->buttonLabel(
-																					 __('+ Add Choice', 'mosa')
-																				 )
-																				 ->fields([
-																					 Text::make(
-																						 __('Choice', 'mosa'),
-																						 'choice'
-																					 ),
-																				 ])
-																				 ->conditionalLogic([
-																					 ConditionalLogic::if(
-																						 'is_grouped'
-																					 )->equals(1)
-																				 ])
 																	 ])
 														 ]),
 												   Layout::make(__('Multiselect', 'mosa'), 'multiselect')
@@ -341,7 +309,7 @@ return [
 													]),
 												   Layout::make(__('Duplicate fields', 'mosa'), 'duplicate')
 												   	->fields([
-														   TrueFalse::make(__('Duplicate fields from this step', 'mosa'), 'duplicate_fields')
+														   TrueFalse::make(__('Duplicate fields from this group', 'mosa'), 'duplicate_fields')
 														->stylisedUi()
 															   ->wrapper([
 																   'width' => '25%'

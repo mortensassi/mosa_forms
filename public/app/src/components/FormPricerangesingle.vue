@@ -1,5 +1,6 @@
 <script>
-import {inject, onMounted, ref} from 'vue'
+import store from '@/store'
+import {computed, inject, onMounted, ref, watch} from 'vue'
 import VueSlider from 'vue-slider-component'
 
 export default {
@@ -13,29 +14,49 @@ export default {
     index: {
       type: String,
       default: null
-    }
+    },
+    fieldKey: {
+      type: String,
+      default: ''
+    },
+    realIndex: {
+      type: Number,
+      default: null
+    },
+    stepGroupIndex: {
+      type: Number,
+      default: null
+    },
   },
   setup(props) {
     const showTooltip = inject('showTooltip')
     const hideTooltip = inject('hideTooltip')
     const priceRange = ref(null)
     const inputData = ref(0)
+    const currentStep = ref(store.state.form.step)
+    const storedFields = store.state.form.entries.steps[currentStep.value].groups[props.stepGroupIndex].fields
+    const storeEntry = computed(() => storedFields[props.realIndex])
+    const setFormEntry = inject('setFormEntry')
 
     const updateInputData = () => {
       const current = inputData.value
       priceRange.value.setValue(current)
     }
 
-    const showEvents = ['mouseover', 'focus'];
-    const hideEvents = ['mouseleave', 'blur'];
-
     onMounted(() => {
+      if (storeEntry.value) {
+        inputData.value = storeEntry.value['value']
+      }
+
       if (props.data.info) {
         const tooltip = document.getElementById(`Pricerangesingle-${props.index}-tooltip`)
         const trigger = tooltip.querySelector('.u-tooltip__icon-wrap')
         const tooltipEl = tooltip.querySelector('.u-tooltip__content')
 
         if (tooltipEl) {
+          const showEvents = ['mouseover', 'focus'];
+          const hideEvents = ['mouseleave', 'blur'];
+
           showEvents.forEach(e => {
             trigger.addEventListener(e, () => showTooltip(tooltip, trigger, tooltipEl))
           })
@@ -43,6 +64,19 @@ export default {
             trigger.addEventListener(e, () => hideTooltip(tooltipEl))
           })
         }
+      }
+    })
+
+    watch(inputData, (n) => {
+      if (n) {
+        setFormEntry({
+          step: currentStep.value,
+          group: props.stepGroupIndex,
+          realIndex: props.realIndex,
+          id: props.fieldKey,
+          name: props.data.label,
+          value: n
+        })
       }
     })
 
