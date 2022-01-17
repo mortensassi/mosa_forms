@@ -1,6 +1,8 @@
 <script>
+import {useVuelidate} from '@vuelidate/core'
+import {required, email, helpers, numeric} from '@vuelidate/validators'
 import store from '@/store'
-import {inject, onMounted, ref} from 'vue'
+import {inject, onMounted, ref, watch, reactive} from 'vue'
 import {h, computed} from 'vue'
 
 export default {
@@ -54,6 +56,28 @@ export default {
     const setFormEntry = inject('setFormEntry')
     let storedFields = null
     let storeEntry = null
+    const validationRules = computed(() => {
+      const rules = {}
+
+      if (props.data.is_required) {
+        rules.required = required
+      }
+
+      if (props.data.type === 'email') {
+        rules.email = email
+      }
+
+      if (props.data.type === 'number') {
+        rules.number = numeric
+      }
+
+      return rules
+    })
+    const validation = reactive({
+      result: null,
+      type: '',
+      message: ''
+    })
 
     if (!props.selection) {
       storedFields = store.state.form.entries.steps[currentStep.value].groups[props.stepGroupIndex].fields
@@ -67,6 +91,20 @@ export default {
       return false
     })
 
+    let v$ = null
+
+    v$ = useVuelidate(validationRules, value)
+
+    watch(validation, (n) => {
+      if (n.result) {
+        validation.type = 'success'
+        validation.message = 'Diese Eingabe war ein Erfolg, ja!'
+      } else {
+        validation.type = 'error'
+        validation.message = 'Hier scheint etwas nicht zu passen!'
+      }
+    }, { deep: true })
+
     onMounted(() => {
       if (storeEntry && storeEntry.value) {
         value.value = storeEntry.value['value']
@@ -74,7 +112,7 @@ export default {
       }
     })
 
-    return { root, isChecked, currentStep, setFormEntry, value, storeEntry }
+    return {root, isChecked, currentStep, setFormEntry, value, storeEntry, v$, validation}
   },
 
   render() {
@@ -92,6 +130,7 @@ export default {
       },
       onInput: (v) => {
         this.value = v.target.value
+
         if (!this.selection) {
           this.setFormEntry({
             step: this.currentStep,
@@ -102,13 +141,18 @@ export default {
             value: v.target.value
           })
         }
+      },
+      onBlur: () => {
+        this.validation.result = this.v$.$validate()
       }
     }
 
     if (this.selection) {
-      inputProps = { ...inputProps, ...{
+      inputProps = {
+        ...inputProps, ...{
           checked: this.isChecked
-        } }
+        }
+      }
     }
 
     const childElements = [
@@ -118,6 +162,10 @@ export default {
         for: `msf-input-${this.index}`
       }),
       h('input', inputProps),
+      h('span', {
+        innerHTML: this.validation.message,
+        class: ['c-input__validation', `c-input__validation--${this.validation.type}`]
+      })
     ]
 
     const requiredElement = h('span', {
@@ -129,7 +177,7 @@ export default {
 
     return h('div',
         {
-          class: ['c-input', `c-input--${field.type}`, 'msf-input', `msf-input--${field.type}`, `msf-input--size-${field.size}`],
+          class: ['c-input', `c-input--${field.type}`, this.validation ? `c-input--${this.validation.type}` : '', 'msf-input', `msf-input--${field.type}`, `msf-input--size-${field.size}`],
           ref: 'root'
         }, childElements)
   }

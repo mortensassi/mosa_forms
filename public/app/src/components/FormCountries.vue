@@ -1,7 +1,8 @@
 <script>
 import Fuse from 'fuse.js'
-import {ref, computed, watch} from 'vue'
-import countriesList from "@/assets/countries.json";
+import {ref, computed, watch, inject, onMounted} from 'vue'
+import countriesList from "@/assets/countries.json"
+import store from '@/store'
 
 export default {
   name: 'FormCountryselect',
@@ -33,6 +34,10 @@ export default {
     const autocompleteStr = ref('')
     const selection = ref(null)
     const showDropdown = ref(false)
+    const currentStep = ref(store.state.form.step)
+    const storedFields = store.state.form.entries.steps[currentStep.value].groups[props.stepGroupIndex].fields
+    const storeEntry = computed(() => storedFields[props.realIndex])
+    const setFormEntry = inject('setFormEntry')
 
     const countries = computed(() => {
       return countriesList.reduce((r, e) => {
@@ -81,6 +86,21 @@ export default {
       if (n) {
         document.getElementById(`Countries-${props.index}-input`).blur()
         toggleDropdown(false)
+        setFormEntry({
+          step: currentStep.value,
+          group: props.stepGroupIndex,
+          realIndex: props.realIndex,
+          id: props.fieldKey,
+          name: props.data.label,
+          value: n
+        })
+      }
+    })
+    
+    onMounted(() => {
+      if (storeEntry.value) {
+        selection.value = storeEntry.value['value']
+        searchInput.value = storeEntry.value['value']
       }
     })
 
@@ -92,7 +112,8 @@ export default {
       setSelection,
       selection,
       toggleDropdown,
-      showDropdown
+      showDropdown,
+      storeEntry
     }
   }
 }
