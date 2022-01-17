@@ -12,10 +12,23 @@
   flex: 1;
   padding: 0.75rem 3rem 0.75rem 0.75rem;
   border-radius: 0.25rem;
-  border: 0.125rem solid map-get($brand-colors, 'black', '200');
+  border: 0.09375rem solid map-get($brand-colors, 'black', '200');
 
   @include bp($large-bp) {
     padding: 0.625rem 2.5rem 0.625rem 0.625rem;
+    border-width: 0.125rem;
+  }
+
+  .multiselect--active & {
+    border-color: map-get($brand-colors, 'green', '800');
+  }
+
+  .multiselect--active:not(.multiselect--above) & {
+    border-bottom-color: transparent;
+  }
+
+  .multiselect--above.multiselect--active & {
+      border-top-color: transparent;
   }
 }
 
@@ -45,7 +58,7 @@
 
 .multiselect__select {
   top: 50%;
-  right: 2rem;
+  right: 1.5rem;
   transform: translate(-50%, -50%);
   stroke: map-get($brand-colors, 'black', '900-25');
   width: 1rem;
@@ -66,14 +79,37 @@
 .multiselect__content-wrapper {
   top: 100%;
 
+  &,
+  .multiselect--above & {
+    border-width: 0.09375rem;
+
+    @include bp($large-bp) {
+      border-width: 0.125rem;
+    }
+  }
+
   .multiselect--above & {
     top: initial;
   }
+
+  .multiselect--active & {
+    border-color: map-get($brand-colors, 'green', '800');
+    transform: translateY(-2px);
+  }
+
+  .multiselect--above.multiselect--active & {
+    transform: translateY(2px);
+  }
+}
+
+.multiselect__content {
+  padding: 0 0.625rem;
 }
 
 .multiselect__element {
   @include text-token('sans', 'copy', 'sm');
 
+  margin-top: 0.25rem;
 
   @include bp($large-bp) {
     @include text-token('sans', 'copy', 'md');
@@ -83,6 +119,36 @@
 .multiselect__option {
   display: flex;
   align-items: center;
+  margin-left: 1rem;
+  border-radius: 0.25rem;
+
+  &:hover {
+    background-color: map-get($brand-colors, 'warm-grey', '100');
+  }
+}
+
+.multiselect__option--group {
+  margin-left: 0;
+  background-color: transparent;
+
+  &.multiselect__option--highlight {
+    color: map-get($brand-colors, 'green', '900');
+    background-color: map-get($brand-colors, 'warm-grey', '100');
+  }
+}
+
+.multiselect__option--selected,
+.multiselect__option--highlight {
+  background-color: map-get($brand-colors, 'warm-grey', '100');
+  color: map-get($brand-colors, 'green', '900');
+  font-weight: normal;
+}
+
+.multiselect__option--selected {
+  &.multiselect__option--highlight {
+    color: map-get($brand-colors, 'green', '900');
+    background-color: map-get($brand-colors, 'warm-grey', '100');
+  }
 }
 
 .option__desc {

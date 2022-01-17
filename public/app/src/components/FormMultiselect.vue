@@ -30,6 +30,17 @@ export default {
   },
 
   setup(props) {
+    const choices = computed(() => {
+      const data = props.data.choices
+
+      data.forEach((group, groupIndex) => {
+        group.choices.forEach((choice, choiceIndex) => {
+          choice.index = `${groupIndex}-${choiceIndex}`
+        })
+      })
+
+      return data
+    })
     const selection = ref([])
     const currentStep = ref(store.state.form.step)
     const storedFields = store.state.form.entries.steps[currentStep.value].groups[props.stepGroupIndex].fields
@@ -53,7 +64,7 @@ export default {
       }
     })
 
-    return { selection, storeEntry }
+    return { choices, selection, storeEntry }
 
   }
 }
@@ -63,12 +74,12 @@ export default {
   <multiselect
     :id="`msf-select-${index}`"
     v-model="selection"
-    :options="data.choices"
+    :options="choices"
     :multiple="true"
     group-values="choices"
     group-label="group"
     label="choice"
-    track-by="choice"
+    track-by="index"
     placeholder="Wählen Sie Ihr Wohnprojekt aus"
     :show-labels="false"
     :group-select="true"
