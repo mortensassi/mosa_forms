@@ -1,7 +1,7 @@
 <script>
 import _capitalize from 'lodash.capitalize'
 import _camelCase from 'lodash.camelcase'
-import {computed, onMounted, ref} from 'vue'
+import {computed, ref} from 'vue'
 import store from '@/store'
 
 import FormInput from '@/components/FormInput.vue'

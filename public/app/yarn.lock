@@ -95,6 +95,11 @@
     "@vue/compiler-dom" "3.2.24"
     "@vue/shared" "3.2.24"
 
+"@vue/devtools-api@^6.0.0-beta.15":
+  version "6.0.0-beta.21.1"
+  resolved "https://registry.yarnpkg.com/@vue/devtools-api/-/devtools-api-6.0.0-beta.21.1.tgz#f1410f53c42aa67fa3b01ca7bdba891f69d7bc97"
+  integrity sha512-FqC4s3pm35qGVeXRGOjTsRzlkJjrBLriDS9YXbflHLsfA9FrcKzIyWnLXoNm+/7930E8rRakXuAc2QkC50swAw==
+
 "@vue/reactivity@3.2.24":
   version "3.2.24"
   resolved "https://registry.yarnpkg.com/@vue/reactivity/-/reactivity-3.2.24.tgz#4b24301ff7af0607c49a1e6976a22b4f62eab1a4"
@@ -1064,6 +1069,13 @@ v8-compile-cache@^2.0.3:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/v8-compile-cache/-/v8-compile-cache-2.3.0.tgz#2de19618c66dc247dcfb6f99338035d8245a2cee"
   integrity sha512-l8lCEmLcLYZh4nbunNZvQCJc5pv7+RCwa8q/LdUx8u7lsWvPDKmpodJAJNwkAhJC//dFY48KuIEmjtd4RViDrA==
+
+vee-validate@^4.5.7:
+  version "4.5.7"
+  resolved "https://registry.yarnpkg.com/vee-validate/-/vee-validate-4.5.7.tgz#457f1621cf978a3f7eac4866faa480e020981867"
+  integrity sha512-EcpvOikBP5LlRIKwULfwRDeyIaERuOJztZUPWRmSIeWpeQWD6hs9qQ8A3CmVVteqEohbUM07gV/ea8lPXCfCJQ==
+  dependencies:
+    "@vue/devtools-api" "^6.0.0-beta.15"
 
 vite@^2.6.4:
   version "2.7.1"

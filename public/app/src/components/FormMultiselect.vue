@@ -1,11 +1,11 @@
 <script>
-import VueMultiselect from 'vue-multiselect'
+import Multiselect from 'vue-multiselect'
 import {computed, inject, onMounted, ref, watch} from 'vue'
 import store from '@/store'
 
 export default {
   name: 'FormMultiselect',
-  components: {VueMultiselect},
+  components: {Multiselect},
   props: {
     data: {
       type: Object,
@@ -60,19 +60,61 @@ export default {
 </script>
 
 <template>
-  <VueMultiselect
-      :id="`msf-select-${index}`"
-      :multiple="true"
-      v-model="selection"
-      :options="data.choices"
-      group-values="choices"
-      label="choice"
-      group-label="group"
-      :group-select="true"
-      track-by="choice"
-  />
+  <multiselect
+    :id="`msf-select-${index}`"
+    v-model="selection"
+    :options="data.choices"
+    :multiple="true"
+    group-values="choices"
+    group-label="group"
+    label="choice"
+    track-by="choice"
+    placeholder="Wählen Sie Ihr Wohnprojekt aus"
+    :show-labels="false"
+    :group-select="true"
+    :close-on-select="false"
+    :clear-on-select="false"
+  >
+    <template #caret>
+      <svg class="multiselect__select">
+        <use xlink:href="#icon-chevron-down" />
+      </svg>
+    </template>
+    <template #option="props">
+      <div class="option__checkmark">
+        <svg
+          class="option__icon"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 12 4"
+        ><rect
+          x=".167"
+          y=".75"
+          width="11.667"
+          height="2.5"
+          rx="1"
+        /></svg>
+      </div>
+      <div
+        v-if="props.option.$isLabel"
+        class="option__desc"
+      >
+        {{ props.option.$groupLabel }}
+      </div>
+      <div
+        v-else
+        class="option__desc"
+      >
+        {{ props.option.choice }}
+      </div>
+    </template>
+    <template #selection="{ values, search, isOpen }">
+      <span
+        v-if="values.length &amp;&amp; !isOpen"
+        class="multiselect__placeholder"
+      >{{ `${values.length} ${values.length < 2 ? 'Option' : 'Optionen'} ausgewählt` }}</span>
+    </template>
+  </multiselect>
 </template>
 
-<style scoped>
-
-</style>
+<style src="@styles/vendor/_multiselect.scss"></style>
