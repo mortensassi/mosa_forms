@@ -1,0 +1,83 @@
+/* ==========================================================================
+   TREESELECT
+   ========================================================================== */
+
+$vs-border-width: 2px;
+$vs-state-active-bg: map-get($brand-colors, 'warm-grey', '100');
+$vs-state-active-color: #000;
+
+
+@import "vue-select/src/scss/vue-select.scss";
+
+.vs__dropdown-toggle {
+  border: 2px solid map-get($brand-colors, 'black', '200');
+
+  &:hover,
+  .vs--open & {
+    border-color: map-get($brand-colors, 'green', '900')
+  }
+}
+
+.vs__open-indicator {
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 0.375rem 0.1875rem;
+  margin-right: 0.1875rem;
+  stroke: map-get($brand-colors, 'black', '900-50');
+
+  @include bp($large-bp) {
+    margin-right: 18px;
+  }
+}
+
+.v-select {
+  @include text-token('sans', 'copy', 'sm');
+
+  @include bp($large-bp) {
+    @include text-token('sans', 'copy', 'md');
+  }
+}
+
+.vs__clear {
+  display: none;
+}
+
+.vs__search,
+.vs__search:focus {
+  padding: 12px 18px 12px 12px;
+
+  @include bp($large-bp) {
+    padding: 16px 32px 16px 18px;
+  }
+}
+
+.vs__selected-options {
+  align-items: center;
+}
+
+.vs__selected {
+  padding: 0;
+  margin: 0;
+  margin-left: 18px;
+
+  .vs--opened & {
+    opacity: 1;
+    margin-left: 0;
+  }
+}
+
+.vs--single.vs--open .vs__selected, .vs--single.vs--loading .vs__selected {
+  color: map-get($brand-colors, 'black', '200');
+  opacity: 1;
+}
+
+.vs__dropdown-menu {
+  box-shadow: none;
+  border: 2px solid map-get($brand-colors, 'green', '900');
+  border-top: none;
+}
+
+.vs__dropdown-option {
+  padding: 8px;
+  margin: 0 10px;
+}
