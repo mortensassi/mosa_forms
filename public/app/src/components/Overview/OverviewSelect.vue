@@ -11,5 +11,5 @@ export default {
 </script>
 <template>
   <div class="msf-overview-element__title">{{ data.name }}</div>
-  <div class="msf-overview-element__value">{{ data.value.choice }}</div>
+  <div class="msf-overview-element__value">{{ data.value.userInput.choice }}</div>
 </template>

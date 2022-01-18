@@ -13,7 +13,7 @@ export default {
 
 <template>
   <div class="msf-overview-element__title">{{ data.name }}</div>
-  <div class="msf-overview-element__value">{{ data.value.map(el => el.label).join(', ') }}</div>
+  <div class="msf-overview-element__value">{{ data.value.selection.map(el => el.label).join(', ') }}</div>
 </template>
 
 <style scoped lang="scss" src=""></style>

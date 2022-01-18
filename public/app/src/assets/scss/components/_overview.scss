@@ -2,11 +2,48 @@
    OVERVIEW
    ========================================================================== */
 
+.msf-overview {
+  width: 100%;
+}
+
+.msf-overview__step {
+  padding-top: 1.5rem;
+  margin-top: 1.5rem;
+  border-top: 1px solid map-get($brand-colors, 'warm-grey', '400');
+
+  @include bp($large-bp) {
+    padding-top: 3rem;
+    margin-top: 3rem;
+  }
+}
+
+.msf-overview-element {
+  + .msf-overview-element {
+    margin-top: 1rem;
+
+    @include bp($large-bp) {
+      margin-top: 1.5rem;
+    }
+  }
+}
+
 .msf-overview-element__title {
   @include text-token('sans', 'copy', 'sm');
 
+  .msf-overview-element__field & {
+    @include text-token('sans', 'copy', 'xs');
+
+    color: map-get($brand-colors, 'black', '900-50');
+  }
+
   @include bp($large-bp) {
     @include text-token('sans', 'copy', 'lg');
+
+    flex: 1;
+
+    .msf-overview-element__field & {
+      @include text-token('sans', 'copy', 'md');
+    }
   }
 }
 
@@ -17,6 +54,7 @@
 
   @include bp($large-bp) {
     @include text-token('sans', 'copy', 'md');
+    flex: 1;
   }
 }
 
@@ -26,3 +64,41 @@
   }
 }
 
+.msf-overview-element__group-column {
+  @include bp($large-bp) {
+      flex: 1;
+  }
+}
+
+.msf-overview-element__field {
+  @include bp($large-bp) {
+    display: flex;
+    align-items: center;
+  }
+}
+
+.msf-overview-button {
+  margin: 2rem 0 0;
+
+  @include bp($large-bp) {
+    margin-top: 4rem;
+  }
+}
+
+.msf-overview-compliance-text {
+  @include text-token('sans', 'copy', 'xs');
+
+  color: map-get($brand-colors, 'black', '400');
+
+  @include bp($large-bp) {
+    @include text-token('sans', 'copy', 'sm');
+  }
+}
+
+.msf-overview-compliance-text {
+  margin-top: 1.5rem;
+
+  @include bp($large-bp) {
+    margin-top: 3rem;
+  }
+}

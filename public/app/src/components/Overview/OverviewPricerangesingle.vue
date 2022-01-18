@@ -14,5 +14,6 @@ export default {
 }
 </script>
 <template>
-  Pricerangesingle
+  <div class="msf-overview-element__title">{{ data.name }}</div>
+  <div class="msf-overview-element__value">&euro; {{ data.value.userInput }}</div>
 </template>

@@ -32,20 +32,9 @@ export default {
     const currentStep = ref(store.state.form.step)
     const storedFields = store.state.form.entries.steps[currentStep.value].groups[props.stepGroupIndex].fields
     const storeEntry = computed(() => storedFields[props.realIndex])
-    const setFormEntry = inject('setFormEntry')
-
-    const updateInputValue = (type, counter, index) => {
-      if (inputValue.value[index] >= 0 && inputValue.value[index] < Number(counter.max_val) ) {
-        if (type === 'increment') {
-          inputValue.value[index] += 1
-        } else {
-          inputValue.value[index] -= 1
-        }
-      } else {
-        inputValue.value[index] = 0
-      }
-
-      setFormEntry({
+    const setFormEntryHelper = inject('setFormEntry')
+    const setFormEntry = () => {
+      setFormEntryHelper({
         step: currentStep.value,
         group: props.stepGroupIndex,
         realIndex: props.realIndex,
@@ -64,6 +53,20 @@ export default {
       })
     }
 
+    const updateInputValue = (type, counter, index) => {
+      if (inputValue.value[index] >= 0 && inputValue.value[index] < Number(counter.max_val) ) {
+        if (type === 'increment') {
+          inputValue.value[index] += 1
+        } else {
+          inputValue.value[index] -= 1
+        }
+      } else {
+        inputValue.value[index] = 0
+      }
+
+      setFormEntry()
+    }
+
     watch(inputValue, (arr) => {
       // Control max value handling
       arr.forEach((val, valI) => {
@@ -78,6 +81,8 @@ export default {
     onMounted(() => {
       if (storeEntry.value) {
         inputValue.value = storeEntry.value['value'].userInput.map(val => val.value)
+      } else {
+        setFormEntry()
       }
     })
 

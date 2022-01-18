@@ -1,9 +1,8 @@
 <script>
+import { ref, computed } from 'vue'
 import _capitalize from 'lodash.capitalize'
 import _camelCase from 'lodash.camelcase'
-import _groupBy from 'lodash.groupby'
 import store from '@/store'
-import {computed, ref} from 'vue'
 import Groupedcheckboxes from '@/components/Overview/OverviewGroupedcheckboxes.vue'
 import Multiselect from '@/components/Overview/OverviewMultiselect.vue'
 import Pricerange from '@/components/Overview/OverviewPricerange.vue'
@@ -36,46 +35,65 @@ export default {
     data: {
       type: Object,
       default: null
+    },
+    acf: {
+      type: Object,
+      default: null
+    },
+    collection: {
+      type: Object,
+      default: null
+    },
+    currentStep: {
+      type: Number,
+      default: 0
+    },
+    showOverview: {
+      type: Boolean,
+      default: false
     }
   },
 
-  emits: ['closeOverview'],
+  emits: {
+    closeOverview: {
+      type: Boolean,
+      default: false
+    },
+    goToStep: {
+      type: Number|String,
+      default: null
+    }
+  },
 
   setup(props, { emit }) {
     const { entries } = store.state.form
+    const complianceUserOptIn = ref(0)
+    const userCompliance = computed(() => {
+      const complianceCount = props.acf.compliance_opt_check.length
+      return complianceCount === complianceUserOptIn.value
+    })
 
     const goToStep = async (step) => {
       await emit('closeOverview')
       store.updateStep(step)
     }
 
-    const collection = computed(() => {
-      const { steps } = store.state.form.entries
-      const stepsCopy = JSON.parse(JSON.stringify(steps))
-
-
-      stepsCopy.forEach(step => {
-        step.groups.forEach(group => {
-          if (group.fields.find(entry => {
-            if (!entry) return
-            return entry.subgroup !== undefined
-          })) {
-            group.fields = _groupBy(group.fields, 'subgroup')
-          }
-        })
-      })
-
-      return stepsCopy
-    })
-
     const fieldFileName = (value) => {
       return _capitalize(_camelCase(value))
     }
 
-    const doInquiryOfPetition = async () => {
+    const updateComplianceState = (evt) => {
+      if (evt.target.checked) {
+        complianceUserOptIn.value += 1
+      } else {
+        complianceUserOptIn.value -= 1
+      }
+    }
+
+    const submitRequest = async () => {
       const { vowo } = window;
 
-      const data = collection.value
+      const data = store.state.form.entries.steps
       const inquiry =  []
 
       data.forEach(step => {
@@ -84,30 +102,28 @@ export default {
             if (field && field.type === 'field.name') {
               inquiry.push({ [field.name] : [field.value.selection.map(option => option.value).join(',')] })
             } else if(field && field.type === 'multiselect') {
-              inquiry.push({ [field.name] : [field.value.map(option => option.choice).join(',')] })
+              inquiry.push({ [field.name] : [field.value.selection.map(option => option.choice).join(',')] })
             } else if(field && field.type === 'grouped_checkboxes') {
               inquiry.push({ [field.name] : [field.value.selection.map(option => option.value).join(',')] })
             } else if(field && field.type === 'choices') {
               inquiry.push({ [field.name] : [field.value.name] })
             } else if(field && field.type === 'price_range') {
-              inquiry.push({ [field.name] : [field.value.join(',')] })
+              inquiry.push({ [field.name] : [field.value.inputData.join(',')] })
             } else if(field && field.type === 'button_group') {
-              inquiry.push({ [field.name] : [field.value.map(option => option.label).join(',')] })
+              inquiry.push({ [field.name] : [field.value.selection.map(option => option.label).join(',')] })
             } else if(field && field.type === 'counter') {
-              inquiry.push({ [field.name] : [field.value.map(option => option.value).join(',')] })
+              inquiry.push({ [field.name] : [field.value.userInput.map(option => option.value).join(',')] })
             } else if(field && field.type === 'select') {
-              inquiry.push({ [field.name] : [field.value.choice] })
+              inquiry.push({ [field.name] : [field.value.userInput.choice] })
             }
           })
         })
       })
 
-      console.log(inquiry)
-
       const formData = new FormData();
-      formData.append('action', 'doInquiryOfPetition');
+      formData.append('action', 'doInquiryOfPetition')
       formData.append('nonce',  vowo.nonce);
-      formData.append('inquiry', JSON.stringify(inquiry)); // Feldnamen laut doku, diese werden mit den Feldern mandatorId & presentationId gemerged und an die Api geschickt, du bekommst dann ein JSON zurück bestehend aus ['success' => true / false, 'message' => 'Yeeee / Fehlermeldung']
+      formData.append('inquiry', JSON.stringify(inquiry))
 
       let response = await fetch(vowo.ajaxurl, {
         method: 'POST',
@@ -115,13 +131,14 @@ export default {
       });
 
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        throw new Error(`HTTP error! status: ${response.status}`)
       }
 
-      return await response.json();
+      return await response.json()
     };
 
-    return { entries, goToStep, collection, fieldFileName, doInquiryOfPetition }
+
+    return { entries, goToStep, fieldFileName, userCompliance, updateComplianceState, submitRequest }
   }
 }
 </script>
@@ -149,29 +166,11 @@ export default {
               class="msf-overview-element__fields"
               :class="{ 'msf-overview-element__fields--with-duplicates' : group.duplicates }"
             >
-              <div v-if="typeof group.fields === Object">
-                <pre>'yoo'</pre>
-                <div
-                  v-for="(subgroup, subgroupIndex) in group.fields"
-                  :key="`step-${stepIndex}-group-${groupIndex}-subgroup-${subgroupIndex}`"
-                >
-                  <div
-                    v-for="(field, fieldIndex) in subgroup"
-                    :key="`step-${stepIndex}-group-${groupIndex}-subgroup-${subgroupIndex}-field-${fieldIndex}`"
-                  >
-                    <div v-if="field && field.type">
-                      <component
-                        :is="fieldFileName(field.type)"
-                        :data="field"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div v-else>
+              <div v-if="Array.isArray(group.fields)" style="display: contents;">
                 <div
                   v-for="(field, fieldIndex) in group.fields"
                   :key="`step-${stepIndex}-group-${groupIndex}-field-${fieldIndex}`"
+                  class="msf-overview-element"
                 >
                   <div v-if="field && field.type">
                     <component
@@ -181,10 +180,35 @@ export default {
                   </div>
                 </div>
               </div>
+              <div v-else>
+                <div
+                  v-for="(subgroup, subgroupIndex) in group.fields"
+                  :key="`step-${stepIndex}-group-${groupIndex}-subgroup-${subgroupIndex}`"
+                  class="msf-overview-element__fields msf-overview-element__fields--sub"
+                >
+                  <div class="msf-overview-element__title">
+                    {{ `${group.title} ${group.fields.length > 0 ? Number(subgroupIndex) + 1 : ''}` }}
+                  </div>
+                  <div
+                    v-for="(field, fieldIndex) in subgroup"
+                    :key="`step-${stepIndex}-group-${groupIndex}-subgroup-${subgroupIndex}-field-${fieldIndex}`"
+                  >
+                    <div
+                      v-if="field && field.type"
+                      class="msf-overview-element__field"
+                    >
+                      <component
+                        :is="fieldFileName(field.type)"
+                        :data="field"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
           <button
-            class="c-btn c-btn--secondary"
+            class="c-btn c-btn--secondary msf-overview-button"
             @click="goToStep(stepIndex)"
           >
             Angaben Bearbeiten
@@ -192,12 +216,68 @@ export default {
         </div>
       </div>
     </div>
-    <button
-      class="c-btn c-btn--primary"
-      @click="doInquiryOfPetition"
-    >
-      Absenden
-    </button>
+    <div class="msf-overview__step columns is-multiline">
+      <div class="column is-12 is-3-desktop">
+        <h2 class="msf-step__group-title">
+          {{ acf.compliance_headline }}
+        </h2>
+      </div>
+      <div class="column is-12 is-8-desktop is-offset-1-desktop">
+        <div v-if="acf.compliance_opt_check">
+          <div
+            v-for="(input, inputIndex) in acf.compliance_opt_check"
+            :key="`Compliance-c-${inputIndex}`"
+          >
+            <div class="c-input c-input--checkbox msf-input msf-input--checkbox">
+              <label
+                :for="`Compliance-c-${inputIndex}`"
+                class="c-input__label msf-input__label msf-input__label--checkbox"
+              >{{ input.text }}</label>
+              <input
+                :id="`Compliance-c-${inputIndex}`"
+                class="c-input__control msf-input__control msf-input__control--checkbox"
+                type="checkbox"
+                name="checkbox"
+                :required="input.is_required"
+                @change="updateComplianceState"
+              >
+            </div>
+          </div>
+        </div>
+        <div
+          v-if="acf.compliance_additional_info"
+          class="msf-overview-compliance-text"
+        >
+          <div
+            v-for="(row, rowIndex) in acf.compliance_additional_info"
+            :key="`compliance-additional-info-${rowIndex}`"
+            v-html="row.text"
+          />
+        </div>
+      </div>
+    </div>
+    <div class="columns">
+      <div class="column is-12 is-8-desktop is-offset-4-desktop">
+        <div class="msf-form__controls">
+          <button
+              class="msf-form__btn c-btn c-btn--secondary"
+              type="button"
+              @click="$emit('goToStep', -1)"
+          >
+            Zurück
+          </button>
+          <button
+              v-if="showOverview"
+              class="msf-form__btn msf-form__btn--submit c-btn c-btn--primary"
+              :class="{ 'is-disabled' : !userCompliance }"
+              type="button"
+              @click="submitRequest"
+          >
+            Mietgesuch aufgeben
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 

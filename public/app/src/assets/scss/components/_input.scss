@@ -110,9 +110,13 @@ $sizes: (
 .msf-input--checkbox {
   display: flex;
   flex: 1 0 50%;
-  flex-direction: row-reverse;
+  flex-flow: row-reverse nowrap;
   justify-content: flex-end;
   align-items: center;
+
+  .msf-input__checkboxes & {
+    flex-wrap: wrap;
+  }
 
   &:nth-child(even) {
     padding-left: 1rem;

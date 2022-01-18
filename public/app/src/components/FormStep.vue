@@ -1,8 +1,9 @@
 <script>
 import _capitalize from 'lodash.capitalize'
 import _camelCase from 'lodash.camelcase'
-import {computed, onMounted, ref} from 'vue'
+import {computed, onMounted, ref, defineEmits} from 'vue'
 import store from '@/store'
+import { useVuelidate } from '@vuelidate/core'
 
 import FormInput from '@/components/FormInput.vue'
 import FormCounter from '@/components/FormCounter.vue'
@@ -44,13 +45,25 @@ export default {
     currentStep: {
       type: Number,
       default: 0
+    },
+    showOverview: {
+      type: Boolean,
+      default: false
+    }
+  },
+  
+  emits: {
+    goToStep: {
+      type: Number|String,
+      default: null
     }
   },
 
-  setup(props) {
+  setup(props, { emit }) {
     const prepareCompName = (name) => _capitalize(_camelCase(name))
     const groups = computed(() => props.step.groups)
     const storedFormEntries = computed(() => store.state.form.entries)
+    const formData = computed(() => store.state.form.data)
 
     const duplicateCount = ref(0)
     const duplicates = ref([])
@@ -97,7 +110,19 @@ export default {
       return groupWithDuplicate
     })
 
-    return { prepareCompName, duplicateFields, groups, storedFormEntries, duplicatorGroup }
+    const v$ = useVuelidate()
+
+    const prepareStepChange = async (step) => {
+      const result = await v$.value.$validate()
+
+      if (result) {
+        emit('goToStep', step)
+      } else {
+        await v$.value.$touch()
+      }
+    }
+
+    return { formData, prepareCompName, duplicateFields, groups, storedFormEntries, duplicatorGroup, prepareStepChange, v$ }
   }
 }
 </script>
@@ -133,6 +158,38 @@ export default {
               @duplicate="duplicateFields"
             />
           </div>
+        </div>
+      </div>
+    </div>
+    <div class="columns">
+      <div class="column is-12 is-8-desktop is-offset-4-desktop">
+        <div class="msf-form__controls">
+          <button
+            v-if="currentStep > 0"
+            class="msf-form__btn c-btn c-btn--secondary"
+            type="button"
+            @click="$emit('goToStep', -1)"
+          >
+            Zurück
+          </button>
+          <button
+            v-if="formData.acf.steps.length > currentStep + 1"
+            class="msf-form__btn msf-form__btn--next c-btn c-btn--primary"
+            :class="{ 'is-disabled' : v$.$errors.length > 0}"
+            type="button"
+            @click="prepareStepChange(1)"
+          >
+            Weiter zu Schritt {{ (currentStep + 1) + 1 }}
+          </button>
+          <button
+            v-else-if="!showOverview"
+            class="msf-form__btn msf-form__btn--submit c-btn c-btn--primary"
+            :class="{ 'is-disabled' : v$.$errors.length > 0}"
+            type="button"
+            @click="prepareStepChange('overview')"
+          >
+            Zur Übersicht
+          </button>
         </div>
       </div>
     </div>

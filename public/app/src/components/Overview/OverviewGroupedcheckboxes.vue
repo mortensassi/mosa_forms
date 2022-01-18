@@ -10,9 +10,7 @@ export default {
 }
 </script>
 <template>
-  <div class="msf-overview-element__title">
-    {{ data.name }}
-  </div>
+  <div class="msf-overview-element__title">{{ data.name }}</div>
   <div class="msf-overview-element__value">
     {{ data.value.selection.map(el => el.value).join(', ') }}
   </div>

@@ -16,7 +16,7 @@ export default {
 <template>
   <div class="msf-overview-element__group">
     <div
-      v-for="(item, itemIndex) in data.value"
+      v-for="(item, itemIndex) in data.value.userInput"
       :key="`overview-${data.id}-item-${itemIndex}`"
       class="msf-overview-element__group-column"
     >

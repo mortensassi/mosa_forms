@@ -5,6 +5,7 @@ import AppFormHeader from '@/components/AppFormHeader.vue'
 import AppFormProgress from '@/components/AppFormProgress.vue'
 import FormStep from '@/components/FormStep.vue'
 import FormOverview from '@/components/FormOverview.vue'
+import _groupBy from "lodash.groupby";
 
 export default {
   name: 'AppForm',
@@ -50,11 +51,31 @@ export default {
     const currentStep = computed(() => store.state.form.step)
     const step = computed(() => formData.value.acf.steps[currentStep.value])
 
+    const collection = computed(() => {
+      const { steps } = store.state.form.entries
+      const stepsCopy = JSON.parse(JSON.stringify(steps))
+
+
+      stepsCopy.forEach(step => {
+        step.groups.forEach(group => {
+          if (group.fields.find(entry => {
+            if (!entry) return
+            return entry.subgroup !== undefined
+          })) {
+            group.fields = _groupBy(group.fields, 'subgroup')
+          }
+        })
+      })
+
+      return stepsCopy
+    })
+
     return {
       step,
       formData,
       currentStep,
       goToStep,
+      collection,
       showOverview
     }
   }
@@ -83,6 +104,10 @@ export default {
         <FormOverview
           v-if="showOverview"
           :data="formData.acf.steps"
+          :acf="formData.acf"
+          :collection="collection"
+          :show-overview="showOverview"
+          @go-to-step="goToStep"
           @close-overview="showOverview = false"
         />
         <FormStep
@@ -90,39 +115,10 @@ export default {
           :key="`mosa-forms_step-${currentStep}`"
           :current-step="currentStep"
           :step="step"
+          :show-overview="showOverview"
+          @go-to-step="goToStep"
         />
       </transition>
-    </div>
-
-    <div class="columns">
-      <div class="column is-12 is-8-desktop is-offset-4-desktop">
-        <div class="msf-form__controls">
-          <button
-            v-if="currentStep > 0"
-            class="msf-form__btn c-btn c-btn--secondary"
-            type="button"
-            @click="goToStep(-1)"
-          >
-            Zurück
-          </button>
-          <button
-            v-if="formData.acf.steps.length > currentStep + 1"
-            class="msf-form__btn msf-form__btn--next c-btn c-btn--primary"
-            type="button"
-            @click="goToStep(1)"
-          >
-            Weiter zu Schritt {{ (currentStep + 1) + 1 }}
-          </button>
-          <button
-            v-else
-            class="msf-form__btn msf-form__btn--submit c-btn c-btn--primary"
-            type="button"
-            @click="goToStep('overview')"
-          >
-            Zur Übersicht
-          </button>
-        </div>
-      </div>
     </div>
   </div>
 </template>

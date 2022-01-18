@@ -1,4 +1,6 @@
 <script>
+import {useVuelidate} from '@vuelidate/core'
+import {required} from '@vuelidate/validators'
 import store from '@/store'
 import {computed, inject, onMounted, ref, watch} from 'vue'
 
@@ -27,13 +29,27 @@ export default {
     },
   },
   setup(props) {
-    const selection = ref(0)
+    const selection = ref()
     const currentStep = ref(store.state.form.step)
     const storedFields = store.state.form.entries.steps[currentStep.value].groups[props.stepGroupIndex].fields
     const storeEntry = computed(() => storedFields[props.realIndex])
     const setFormEntry = inject('setFormEntry')
 
-    const makeChoice = (choice) => {
+    const validationRules = computed(() => {
+      const rules = {}
+
+      if (props.data.is_required) {
+        rules.required = required
+      }
+
+      return rules
+    })
+
+    const v$ = useVuelidate(validationRules, selection)
+
+    const makeChoice = async (choice) => {
+      await v$.value.$validate()
+
       setFormEntry({
         step: currentStep.value,
         group: props.stepGroupIndex,
@@ -57,18 +73,16 @@ export default {
     onMounted(() => {
       if (storeEntry.value) {
         selection.value = storeEntry.value['value'].id
-      } else {
-        makeChoice(0)
       }
     })
 
-    return { selection, storeEntry, makeChoice }
+    return { selection, storeEntry, makeChoice, v$ }
   }
 }
 </script>
 
 <template>
-  <div class="c-input msf-input msf-input--choices">
+  <div class="c-input msf-input msf-input--choices" :class="{ 'c-input--error' : v$.$errors.length }">
     <div class="c-input__label msf-input__label msf-input__label--choices">
       {{ data.label }}
       <span

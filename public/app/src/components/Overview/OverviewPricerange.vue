@@ -11,5 +11,5 @@ export default {
 </script>
 <template>
   <div class="msf-overview-element__title">{{ data.name }}</div>
-  <div class="msf-overview-element__value">&euro; {{ data.value[1] }}</div>
+  <div class="msf-overview-element__value">&euro; {{ data.value.inputData[1] }}</div>
 </template>

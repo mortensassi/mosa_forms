@@ -341,6 +341,7 @@ return [
 							]),
 				]),
 		Tab::make(__('Compliance', 'mosa')),
+		Text::make(__('Headline', 'mosa'), 'compliance_headline'),
 		Repeater::make(__('User Opt Check', 'mosa'), 'compliance_opt_check')
 				->buttonLabel(__('Add Check', 'mosa'))
 				->layout('block')
@@ -359,6 +360,13 @@ return [
 									 'width' => '75%'
 								 ]),
 				]),
+		Repeater::make(__('Additional Info', 'mosa'), 'compliance_additional_info')
+			->buttonLabel(__('Add Info', 'mosa'))
+			->layout('block')
+			->fields([
+				Textarea::make(__('Info text', 'mosa'), 'text')
+				->newLines('br')
+			]),
 		Tab::make(__('Mail', 'mosa')),
 		Group::make(__('Mail Settings', 'mosa'), 'mail_settings')
 			 ->layout('block')

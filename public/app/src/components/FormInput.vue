@@ -155,8 +155,8 @@ export default {
           })
         }
       },
-      onBlur: () => {
-        this.validation.result = this.v$.$validate()
+      onBlur: async () => {
+        this.validation.result = await this.v$.$validate()
       }
     }
 
