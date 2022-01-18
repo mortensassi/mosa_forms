@@ -50,8 +50,14 @@ export default {
         group: props.stepGroupIndex,
         realIndex: props.realIndex,
         id: props.fieldKey,
-        name: props.data.label,
-        value: inputValue.value
+        name: 'CounterGroup',
+        value: inputValue.value.map((val, valIndex) => {
+          return {
+            value: val,
+            name: props.data.inputs[valIndex].label,
+          }
+        }),
+        type: props.data.acf_fc_layout,
       })
     }
 
@@ -68,13 +74,14 @@ export default {
 
     onMounted(() => {
       if (storeEntry.value) {
-        inputValue.value = storeEntry.value['value']
+        inputValue.value = storeEntry.value['value'].map(val => val.value)
       }
     })
 
     return {
       value: inputValue,
-      updateInputValue
+      updateInputValue,
+      storeEntry
     }
   }
 }

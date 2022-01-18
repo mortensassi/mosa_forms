@@ -56,6 +56,8 @@ export default {
         realIndex: props.realIndex,
         id: props.fieldKey,
         name: props.group.title,
+        type: props.data.acf_fc_layout,
+        test: 'test',
         value: {
           selection: selection.value
         }

@@ -28,6 +28,10 @@ export default {
       type: Object,
       default: null
     },
+    group: {
+      type: Object,
+      default: null
+    },
     fieldKey: {
       type: String,
       default: ''
@@ -37,6 +41,10 @@ export default {
       default: null
     },
     stepGroupIndex: {
+      type: Number,
+      default: null
+    },
+    subgroupIndex: {
       type: Number,
       default: null
     },
@@ -135,10 +143,12 @@ export default {
           this.setFormEntry({
             step: this.currentStep,
             group: this.stepGroupIndex,
+            subgroup: field.subgroup,
             realIndex: this.realIndex,
             id: this.fieldKey,
             name: this.data.label,
-            value: v.target.value
+            value: v.target.value,
+            type: this.data.acf_fc_layout,
           })
         }
       },

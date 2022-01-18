@@ -37,12 +37,12 @@ export default {
     const storeEntry = computed(() => storedFields[props.realIndex])
     const setFormEntry = inject('setFormEntry')
 
-    const toggleSelection = (buttonIndex) => {
-      if (selection.value.includes(buttonIndex)) {
-        const pos = selection.value.indexOf(buttonIndex)
+    const toggleSelection = (buttonIndex, label) => {
+      if (selection.value.find(button => button.index === buttonIndex)) {
+        const pos = selection.value.findIndex(button => button.index === buttonIndex)
         selection.value.splice(pos, 1)
       } else {
-        selection.value.push(buttonIndex)
+        selection.value.push({ index: buttonIndex, label })
       }
 
       setFormEntry({
@@ -51,7 +51,8 @@ export default {
         realIndex: props.realIndex,
         id: props.fieldKey,
         name: props.data.label,
-        value: selection.value
+        value: selection.value,
+        type: props.data.acf_fc_layout,
       })
     }
 
@@ -103,8 +104,8 @@ export default {
         v-for="(button, buttonIndex) in data.buttons"
         :key="`Buttongroup-${index}-button-${buttonIndex}`"
         class="c-btn c-btn--pill msf-form__btn"
-        :class="{ 'is-active' : selection.includes(buttonIndex) }"
-        @click="toggleSelection(buttonIndex)"
+        :class="{ 'is-active' : selection.find(button => button.index === buttonIndex) }"
+        @click="toggleSelection(buttonIndex, button.label)"
       >
         <span class="c-btn__label">{{ button.label }}</span>
         <span

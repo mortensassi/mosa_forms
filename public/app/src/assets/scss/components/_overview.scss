@@ -1,0 +1,28 @@
+/* ==========================================================================
+   OVERVIEW
+   ========================================================================== */
+
+.msf-overview-element__title {
+  @include text-token('sans', 'copy', 'sm');
+
+  @include bp($large-bp) {
+    @include text-token('sans', 'copy', 'lg');
+  }
+}
+
+.msf-overview-element__value {
+  @include text-token('sans', 'copy', 'xs');
+
+  color: map-get($brand-colors, 'black', '900-50');
+
+  @include bp($large-bp) {
+    @include text-token('sans', 'copy', 'md');
+  }
+}
+
+.msf-overview-element__group {
+  @include bp($large-bp) {
+    display: flex;
+  }
+}
+

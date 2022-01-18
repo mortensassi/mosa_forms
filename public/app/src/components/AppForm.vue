@@ -82,6 +82,7 @@ export default {
       >
         <FormOverview
           v-if="showOverview"
+          :data="formData.acf.steps"
           @close-overview="showOverview = false"
         />
         <FormStep

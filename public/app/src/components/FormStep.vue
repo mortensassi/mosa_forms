@@ -1,7 +1,7 @@
 <script>
 import _capitalize from 'lodash.capitalize'
 import _camelCase from 'lodash.camelcase'
-import {computed, ref} from 'vue'
+import {computed, onMounted, ref} from 'vue'
 import store from '@/store'
 
 import FormInput from '@/components/FormInput.vue'
@@ -67,7 +67,8 @@ export default {
           duplicates.value = coreFields.map(field => {
             return {
               ...field,
-              duplicate: index
+              duplicate: index,
+              subgroup: index
             }
           })
 
@@ -83,7 +84,20 @@ export default {
       })
     }
 
-    return { prepareCompName, duplicateFields, groups, storedFormEntries }
+    onMounted(() => {
+      if (duplicatorGroup.value && groups.value[duplicatorGroup.value]) {
+        const subgroupCount = duplicateCount.value
+        groups.value[duplicatorGroup.value].fields = groups.value[duplicatorGroup.value].fields.map(field => ({ ...field, ...{ subgroup: subgroupCount} }))
+      }
+    })
+
+    const duplicatorGroup = computed(() => {
+      const groupWithDuplicate = groups.value.findIndex(group => group.fields.find(field => field.acf_fc_layout === 'duplicate'))
+
+      return groupWithDuplicate
+    })
+
+    return { prepareCompName, duplicateFields, groups, storedFormEntries, duplicatorGroup }
   }
 }
 </script>

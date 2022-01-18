@@ -43,7 +43,9 @@ export default {
         value: {
           name: props.data.buttons[choice].text,
           id: choice
-        }
+        },
+        type: props.data.acf_fc_layout,
+        subgroup: props.data.subgroup,
       })
     }
 
