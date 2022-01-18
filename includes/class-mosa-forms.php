@@ -169,12 +169,12 @@ class Mosa_Forms
                 'plural' => __('Forms', 'mosa'),
             ]);
 
-            register_extended_post_type('mosa_form_signup', [
+            /*register_extended_post_type('mosa_form_signup', [
                 'supports' => ['title'],
             ], [
                 'singular' => __('Signup', 'mosa'),
                 'plural' => __('Signups', 'mosa'),
-            ]);
+            ]);*/
         });
 
         add_action('acf/init', function () {
