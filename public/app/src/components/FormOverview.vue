@@ -50,9 +50,11 @@ export default {
     }
 
     const collection = computed(() => {
-      const steps = JSON.parse(JSON.stringify(store.state.form.entries))
+      const { steps } = store.state.form.entries
+      const stepsCopy = JSON.parse(JSON.stringify(steps))
 
-      steps.forEach(step => {
+
+      stepsCopy.forEach(step => {
         step.groups.forEach(group => {
           if (group.fields.find(entry => {
             if (!entry) return
@@ -63,14 +65,63 @@ export default {
         })
       })
 
-      return steps
+      return stepsCopy
     })
 
     const fieldFileName = (value) => {
       return _capitalize(_camelCase(value))
     }
 
-    return { entries, goToStep, collection, fieldFileName }
+    const doInquiryOfPetition = async () => {
+      const { vowo } = window;
+
+      const data = collection.value
+      const inquiry =  []
+
+      data.forEach(step => {
+        step.groups.forEach(group => {
+          group.fields.forEach(field => {
+            if (field && field.type === 'field.name') {
+              inquiry.push({ [field.name] : [field.value.selection.map(option => option.value).join(',')] })
+            } else if(field && field.type === 'multiselect') {
+              inquiry.push({ [field.name] : [field.value.map(option => option.choice).join(',')] })
+            } else if(field && field.type === 'grouped_checkboxes') {
+              inquiry.push({ [field.name] : [field.value.selection.map(option => option.value).join(',')] })
+            } else if(field && field.type === 'choices') {
+              inquiry.push({ [field.name] : [field.value.name] })
+            } else if(field && field.type === 'price_range') {
+              inquiry.push({ [field.name] : [field.value.join(',')] })
+            } else if(field && field.type === 'button_group') {
+              inquiry.push({ [field.name] : [field.value.map(option => option.label).join(',')] })
+            } else if(field && field.type === 'counter') {
+              inquiry.push({ [field.name] : [field.value.map(option => option.value).join(',')] })
+            } else if(field && field.type === 'select') {
+              inquiry.push({ [field.name] : [field.value.choice] })
+            }
+          })
+        })
+      })
+
+      console.log(inquiry)
+
+      const formData = new FormData();
+      formData.append('action', 'doInquiryOfPetition');
+      formData.append('nonce',  vowo.nonce);
+      formData.append('inquiry', JSON.stringify(inquiry)); // Feldnamen laut doku, diese werden mit den Feldern mandatorId & presentationId gemerged und an die Api geschickt, du bekommst dann ein JSON zurück bestehend aus ['success' => true / false, 'message' => 'Yeeee / Fehlermeldung']
+
+      let response = await fetch(vowo.ajaxurl, {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      return await response.json();
+    };
+
+    return { entries, goToStep, collection, fieldFileName, doInquiryOfPetition }
   }
 }
 </script>
@@ -141,6 +192,12 @@ export default {
         </div>
       </div>
     </div>
+    <button
+      class="c-btn c-btn--primary"
+      @click="doInquiryOfPetition"
+    >
+      Absenden
+    </button>
   </div>
 </template>
 

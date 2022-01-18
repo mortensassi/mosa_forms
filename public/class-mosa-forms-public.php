@@ -112,7 +112,7 @@ class Mosa_Forms_Public {
 		 * class.
 		 */
 
-		if (defined('WP_ENV') && WP_ENV == 'development') { ?>
+		if (defined('WP_ENV') && WP_ENV == 'production') { ?>
             <script type="module" src="https://<?= $_SERVER['HTTP_HOST'] ?>:3000/@vite/client"></script>
             <script type="module" src="https://<?= $_SERVER['HTTP_HOST'] ?>:3000/src/main.js"></script>
         <?php
