@@ -45,7 +45,7 @@ export default {
 
     onMounted(() => {
       if (storeEntry.value) {
-        inputData.value = storeEntry.value['value']
+        inputData.value = storeEntry.value['value'].userInput
       }
 
       if (props.data.info) {
@@ -77,12 +77,15 @@ export default {
           name: props.data.label,
           type: props.data.acf_fc_layout,
           subgroup: props.data.subgroup,
-          value: n
+          value: {
+            userInput: n,
+            fieldname: props.data.fieldname
+          }
         })
       }
     })
 
-    return { value: inputData, priceRange, updateInputData, showTooltip, hideTooltip }
+    return { value: inputData, priceRange, updateInputData, showTooltip, hideTooltip, storeEntry }
   }
 }
 </script>

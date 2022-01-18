@@ -52,14 +52,17 @@ export default {
           id: props.fieldKey,
           name: props.data.label,
           type: props.data.acf_fc_layout,
-          value: n
+          value: {
+            inputData: n,
+            fieldname: props.data.fieldname
+          }
         })
       }
     })
 
     onMounted(() => {
       if (storeEntry.value) {
-        inputData.value = storeEntry.value['value']
+        inputData.value = storeEntry.value['value'].inputData
       }
     })
 

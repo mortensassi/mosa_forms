@@ -41,6 +41,7 @@ export default {
         id: props.fieldKey,
         name: props.data.label,
         value: {
+          fieldname: props.data.fieldname,
           name: props.data.buttons[choice].text,
           id: choice
         },

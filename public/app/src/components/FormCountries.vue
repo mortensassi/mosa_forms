@@ -94,15 +94,18 @@ export default {
           name: props.data.label,
           type: props.data.acf_fc_layout,
           subgroup: props.data.subgroup,
-          value: n
+          value: {
+            userInput: n,
+            fieldname: props.data.fieldname
+          }
         })
       }
     })
     
     onMounted(() => {
       if (storeEntry.value) {
-        selection.value = storeEntry.value['value']
-        searchInput.value = storeEntry.value['value']
+        selection.value = storeEntry.value['value'].userInput
+        searchInput.value = storeEntry.value['value'].userInput
       }
     })
 

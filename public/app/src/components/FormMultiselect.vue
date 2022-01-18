@@ -55,13 +55,16 @@ export default {
         id: props.fieldKey,
         name: props.data.label,
         type: props.data.acf_fc_layout,
-        value: n
+        value: {
+          fieldname: props.data.fieldname,
+          selection: n
+        }
       })
     })
 
     onMounted(() => {
-      if (storeEntry.value && storeEntry.value['value']) {
-        selection.value = storeEntry.value['value']
+      if (storeEntry.value && storeEntry.value['value'].selection) {
+        selection.value = storeEntry.value['value'].selection
       }
     })
 

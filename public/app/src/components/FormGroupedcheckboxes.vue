@@ -47,7 +47,7 @@ export default {
       if (foundItem) {
         selection.value.splice(selection.value.indexOf(foundItem), 1)
       } else {
-        selection.value.push({ id, value: val.checkbox, group: { id: currentGroup.value, name: props.data.groups[currentGroup.value].name }  })
+        selection.value.push({ id, fieldname: val.fieldname, value: val.checkbox, group: { id: currentGroup.value, name: props.data.groups[currentGroup.value].name }  })
       }
 
       setFormEntry({
@@ -59,7 +59,8 @@ export default {
         type: props.data.acf_fc_layout,
         test: 'test',
         value: {
-          selection: selection.value
+          selection: selection.value,
+          fieldname: props.data.fieldname,
         }
       })
     }

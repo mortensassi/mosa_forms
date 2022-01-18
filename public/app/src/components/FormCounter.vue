@@ -3,7 +3,7 @@ import {computed, inject, onMounted, ref, watch} from 'vue'
 import store from '@/store'
 
 export default {
-  name: 'FormInputCounter',
+  name: 'FormCounter',
   props: {
     data: {
       type: Object,
@@ -51,12 +51,15 @@ export default {
         realIndex: props.realIndex,
         id: props.fieldKey,
         name: 'CounterGroup',
-        value: inputValue.value.map((val, valIndex) => {
-          return {
-            value: val,
-            name: props.data.inputs[valIndex].label,
-          }
-        }),
+        value: {
+          fieldname: props.data.fieldname,
+          userInput: inputValue.value.map((val, valIndex) => {
+            return {
+              value: val,
+              name: props.data.inputs[valIndex].label,
+            }
+          }),
+        },
         type: props.data.acf_fc_layout,
       })
     }
@@ -74,7 +77,7 @@ export default {
 
     onMounted(() => {
       if (storeEntry.value) {
-        inputValue.value = storeEntry.value['value'].map(val => val.value)
+        inputValue.value = storeEntry.value['value'].userInput.map(val => val.value)
       }
     })
 

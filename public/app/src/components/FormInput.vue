@@ -115,8 +115,8 @@ export default {
 
     onMounted(() => {
       if (storeEntry && storeEntry.value) {
-        value.value = storeEntry.value['value']
-        root.value.querySelector('.c-input__control')['value'] = storeEntry.value['value']
+        value.value = storeEntry.value['value'].userInput
+        root.value.querySelector('.c-input__control')['value'] = storeEntry.value['value'].userInput
       }
     })
 
@@ -147,7 +147,10 @@ export default {
             realIndex: this.realIndex,
             id: this.fieldKey,
             name: this.data.label,
-            value: v.target.value,
+            value: {
+              userInput: v.target.value,
+              fieldname: this.data.fieldname,
+            },
             type: this.data.acf_fc_layout,
           })
         }

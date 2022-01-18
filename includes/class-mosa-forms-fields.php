@@ -48,6 +48,7 @@ return [
 											   ->layouts([
 												   Layout::make(__('Grouped Checkboxes', 'mosa'), 'grouped_checkboxes')
 														 ->fields([
+															 Text::make(__('Fieldname', 'mosa'), 'fieldname'),
 															 Repeater::make(__('Groups', 'mosa'), 'groups')
 																	 ->layout('block')
 																	 ->buttonLabel(__('+ Add Checkbox Group', 'mosa'))
@@ -61,6 +62,7 @@ return [
 																					 __('+ Add Checkbox', 'mosa')
 																				 )
 																				 ->fields([
+																					 Text::make(__('Fieldname', 'mosa'), 'fieldname'),
 																					 Text::make(
 																						 __('Checkbox', 'mosa'),
 																						 'checkbox'
@@ -70,6 +72,7 @@ return [
 														 ]),
 												   Layout::make(__('Input', 'mosa'), 'input')
 														 ->fields([
+															 Text::make(__('Fieldname', 'mosa'), 'fieldname'),
 															 Text::make(__('Label', 'mosa'), 'label')
 																 ->wrapper([
 																	 'width' => (100/3 * 2)
@@ -105,6 +108,7 @@ return [
 														 ]),
 												   Layout::make(__('Price Range'), 'price_range')
 														 ->fields([
+															 Text::make(__('Fieldname', 'mosa'), 'fieldname'),
 															 Text::make(__('Label', 'mosa'), 'label')
 																 ->wrapper([
 																	 'width' => '75%'
@@ -134,6 +138,7 @@ return [
 														 ]),
 												   Layout::make(__('Price Range Single'), 'price_range_single')
 														 ->fields([
+															 Text::make(__('Fieldname', 'mosa'), 'fieldname'),
 															 Text::make(__('Label', 'mosa'), 'label')
 																 ->wrapper([
 																	 'width' => '75%'
@@ -158,6 +163,7 @@ return [
 														 ]),
 												   Layout::make(__('Button Group'), 'button_group')
 														 ->fields([
+															 Text::make(__('Fieldname', 'mosa'), 'fieldname'),
 															 Text::make(__('Label', 'mosa'), 'label')
 																 ->wrapper([
 																	 'width' => '75%'
@@ -173,7 +179,11 @@ return [
 																	 ->fields([
 																		 Text::make(__('Label', 'mosa'), 'label')
 																			 ->wrapper([
-																				 'width' => '75%'
+																				 'width' => '50%'
+																			 ]),
+																		 Text::make(__('Fieldname', 'mosa'), 'fieldname')
+																			 ->wrapper([
+																				 'width' => '25%'
 																			 ]),
 																		 TrueFalse::make(
 																			 __('Info Tooltip', 'mosa'),
@@ -193,10 +203,12 @@ return [
 														 ]),
 												   Layout::make(__('Textarea', 'mosa'), 'textarea')
 														 ->fields([
+															 Text::make(__('Fieldname', 'mosa'), 'fieldname'),
 															 Text::make(__('Label', 'mosa'), 'label')
 														 ]),
 												   Layout::make(__('Select', 'mosa'), 'select')
 														 ->fields([
+															 Text::make(__('Fieldname', 'mosa'), 'fieldname'),
 															 Text::make(__('Label', 'mosa'), 'label'),
 															 Repeater::make(__('Choices', 'mosa'), 'choices')
 																	 ->buttonLabel(__('+ Add Choice', 'mosa'))
@@ -206,6 +218,7 @@ return [
 														 ]),
 												   Layout::make(__('Multiselect', 'mosa'), 'multiselect')
 														 ->fields([
+															 Text::make(__('Fieldname', 'mosa'), 'fieldname'),
 															 Text::make(__('Label', 'mosa'), 'label')
 																 ->wrapper([
 																	 'width' => '75%'
@@ -237,6 +250,7 @@ return [
 														 ]),
 												   Layout::make(__('Checkbox', 'mosa'), 'checkbox')
 														 ->fields([
+															 Text::make(__('Fieldname', 'mosa'), 'fieldname'),
 															 Text::make(__('Label', 'mosa'), 'label')
 																 ->wrapper([
 																	 'width' => '50%'
@@ -257,9 +271,11 @@ return [
 														 ]),
 												   Layout::make(__('Counter', 'mosa'), 'counter')
 														 ->fields([
+															 Text::make(__('Fieldname', 'mosa'), 'fieldname'),
 															 Repeater::make(__('Counter', 'mosa'), 'inputs')
 																	 ->buttonLabel(__('+ Add Counter', 'mosa'))
 																	 ->fields([
+																		 Text::make(__('Fieldname', 'mosa'), 'fieldname'),
 																		 Text::make(__('Label', 'mosa'), 'label')
 																			 ->wrapper([
 																				 'width' => '50%'
@@ -280,6 +296,7 @@ return [
 														 ]),
 												   Layout::make(__('Choices', 'mosa'), 'choices')
 														 ->fields([
+															 Text::make(__('Fieldname', 'mosa'), 'fieldname'),
 															 Text::make(__('Label', 'mosa'), 'label')
 																 ->wrapper([
 																	 'width' => '75%'
@@ -297,6 +314,7 @@ return [
 														 ]),
 												   Layout::make(__('Country Select', 'mosa'), 'countries')
 												   	->fields([
+														Text::make(__('Fieldname', 'mosa'), 'fieldname'),
 														Text::make(__('Label', 'mosa'), 'label')
 															->wrapper([
 																'width' => '75%'

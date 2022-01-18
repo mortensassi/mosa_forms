@@ -38,8 +38,8 @@ export default {
     const setFormEntry = inject('setFormEntry')
 
     onMounted(() => {
-      if (storeEntry.value && storeEntry.value['value']) {
-        selection.value = storeEntry.value['value']
+      if (storeEntry.value && storeEntry.value['value'].userInput) {
+        selection.value = storeEntry.value['value'].userInput
       }
     })
 
@@ -54,7 +54,10 @@ export default {
         name: props.data.label,
         type: props.data.acf_fc_layout,
         subgroup: props.data.subgroup,
-        value: selection
+        value: {
+          userInput: selection,
+          fieldname: props.data.fieldname
+        }
       })
     }
 
