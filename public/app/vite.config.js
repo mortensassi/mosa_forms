@@ -8,13 +8,14 @@ import legacy from '@vitejs/plugin-legacy'
 export default defineConfig({
   plugins: [
     vue(),
-    legacy({
-      targets: ['defaults', 'not IE 11']
-    })
   ],
 
   build: {
     manifest: true,
+    lib: {
+      name: 'sassi-forms',
+      entry: './src/main.js'
+    }
   },
 
   resolve: {

@@ -117,7 +117,8 @@ class Mosa_Forms_Public {
             <script type="module" src="https://<?= $_SERVER['HTTP_HOST'] ?>:3000/src/main.js"></script>
         <?php
 		} else {
-			wp_register_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'app/dist/' . $this->manifest['index.html']['file'], $this->version, true );
+			wp_register_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'app/dist/' . $this->manifest['src/main.js']['file'], $this->version, true );
+            wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'app/dist/style.css', $this->version, true );
 		};
 	}
 
