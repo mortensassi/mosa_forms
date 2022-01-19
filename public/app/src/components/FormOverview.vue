@@ -74,8 +74,8 @@ export default {
     })
 
     const goToStep = async (step) => {
-      await emit('closeOverview')
       store.updateStep(step)
+      emit('closeOverview')
     }
 
     const fieldFileName = (value) => {
@@ -100,21 +100,21 @@ export default {
         step.groups.forEach(group => {
           group.fields.forEach(field => {
             if (field && field.type === 'field.name') {
-              inquiry.push({ [field.name] : [field.value.selection.map(option => option.value).join(',')] })
+              inquiry.push({ [field.value.fieldname || field.name] : [field.value.selection.map(option => option.value).join(',')] })
             } else if(field && field.type === 'multiselect') {
-              inquiry.push({ [field.name] : [field.value.selection.map(option => option.choice).join(',')] })
+              inquiry.push({ [field.value.fieldname || field.name] : [field.value.selection.map(option => option.choice).join(',')] })
             } else if(field && field.type === 'grouped_checkboxes') {
-              inquiry.push({ [field.name] : [field.value.selection.map(option => option.value).join(',')] })
+              inquiry.push({ [field.value.fieldname || field.name] : [field.value.selection.map(option => option.value).join(',')] })
             } else if(field && field.type === 'choices') {
-              inquiry.push({ [field.name] : [field.value.name] })
+              inquiry.push({ [field.value.fieldname || field.name] : [field.value.name] })
             } else if(field && field.type === 'price_range') {
-              inquiry.push({ [field.name] : [field.value.inputData.join(',')] })
+              inquiry.push({ [field.value.fieldname || field.name] : [field.value.inputData.join(',')] })
             } else if(field && field.type === 'button_group') {
-              inquiry.push({ [field.name] : [field.value.selection.map(option => option.label).join(',')] })
+              inquiry.push({ [field.value.fieldname || field.name] : [field.value.selection.map(option => option.label).join(',')] })
             } else if(field && field.type === 'counter') {
-              inquiry.push({ [field.name] : [field.value.userInput.map(option => option.value).join(',')] })
+              inquiry.push({ [field.value.fieldname || field.name] : [field.value.userInput.map(option => option.value).join(',')] })
             } else if(field && field.type === 'select') {
-              inquiry.push({ [field.name] : [field.value.userInput.choice] })
+              inquiry.push({ [field.value.fieldname || field.name] : [field.value.userInput.choice] })
             }
           })
         })
@@ -134,7 +134,10 @@ export default {
         throw new Error(`HTTP error! status: ${response.status}`)
       }
 
-      return await response.json()
+      const res = await response.json()
+      store.setResponse(res)
+
+      goToStep('after-submit')
     };
 
 

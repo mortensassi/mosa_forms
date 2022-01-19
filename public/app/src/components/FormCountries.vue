@@ -1,4 +1,6 @@
 <script>
+import {useVuelidate} from '@vuelidate/core'
+import {numeric, required} from '@vuelidate/validators'
 import Fuse from 'fuse.js'
 import {ref, computed, watch, inject, onMounted} from 'vue'
 import countriesList from "@/assets/countries.json"
@@ -48,6 +50,18 @@ export default {
       }, {})
     })
 
+    const validationRules = computed(() => {
+      const rules = {}
+
+      if (props.data.is_required) {
+        rules.required = required
+      }
+
+      return rules
+    })
+
+    const v$ = useVuelidate(validationRules, selection)
+
     const searchEngine = () => {
       const options = {keys: ['name']}
       const index = Fuse.createIndex(options.keys, countriesList)
@@ -82,7 +96,8 @@ export default {
       showDropdown.value = val
     }
 
-    watch(selection, (n) => {
+    watch(selection, async (n) => {
+      await v$.value.$validate()
       if (n) {
         document.getElementById(`Countries-${props.index}-input`).blur()
         toggleDropdown(false)
@@ -118,14 +133,17 @@ export default {
       selection,
       toggleDropdown,
       showDropdown,
-      storeEntry
+      storeEntry,
+      v$
     }
   }
 }
 </script>
 
 <template>
-  <div class="c-input msf-input msf-input--choices">
+  <div class="c-input msf-input msf-input--choices"
+       :class="v$.$errors.length ? 'c-input--error' : 'c-input--success'"
+  >
     <div class="c-input__label msf-input__label msf-input__label--choices">
       {{ data.label }}
       <span
@@ -144,6 +162,7 @@ export default {
               v-model="searchInput"
               type="text"
               class="c-input__control msf-select__search-input"
+              required="required"
               @input="searchRequest(searchInput)"
               @keydown.enter="setSelection"
               @focus="toggleDropdown(true)"
@@ -184,4 +203,4 @@ export default {
   </div>
 </template>
 
-<style lang="scss" src="@styles/components/_select.scss"></style>
+  <style lang="scss" src="@styles/components/_select.scss"></style>

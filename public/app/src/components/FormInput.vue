@@ -64,6 +64,9 @@ export default {
     const setFormEntry = inject('setFormEntry')
     let storedFields = null
     let storeEntry = null
+    const needsValidation = computed(() => {
+      return props.data.is_required || props.data.type === 'email' || props.data.type === 'number'
+    })
     const validationRules = computed(() => {
       const rules = {}
 
@@ -101,17 +104,19 @@ export default {
 
     let v$ = null
 
-    v$ = useVuelidate(validationRules, value)
+    if (needsValidation.value) {
+      v$ = useVuelidate(validationRules, value)
 
-    watch(validation, (n) => {
-      if (n.result) {
-        validation.type = 'success'
-        validation.message = 'Diese Eingabe war ein Erfolg, ja!'
-      } else {
-        validation.type = 'error'
-        validation.message = 'Hier scheint etwas nicht zu passen!'
-      }
-    }, { deep: true })
+      watch(validation, (n) => {
+        if (n.result) {
+          validation.type = 'success'
+          validation.message = 'Diese Eingabe war ein Erfolg, ja!'
+        } else {
+          validation.type = 'error'
+          validation.message = 'Hier scheint etwas nicht zu passen!'
+        }
+      }, { deep: true })
+    }
 
     onMounted(() => {
       if (storeEntry && storeEntry.value) {
@@ -120,7 +125,7 @@ export default {
       }
     })
 
-    return {root, isChecked, currentStep, setFormEntry, value, storeEntry, v$, validation}
+    return {root, isChecked, currentStep, setFormEntry, value, storeEntry, v$, validation, needsValidation}
   },
 
   render() {
@@ -156,7 +161,9 @@ export default {
         }
       },
       onBlur: async () => {
-        this.validation.result = await this.v$.$validate()
+        if (this.needsValidation) {
+          this.validation.result = await this.v$.$validate()
+        }
       }
     }
 
@@ -165,6 +172,12 @@ export default {
         ...inputProps, ...{
           checked: this.isChecked
         }
+      }
+    }
+
+    if (field.is_required) {
+      inputProps = {
+        ...inputProps, ...{ required }
       }
     }
 
@@ -177,7 +190,7 @@ export default {
       h('input', inputProps),
       h('span', {
         innerHTML: this.validation.message,
-        class: ['c-input__validation', `c-input__validation--${this.validation.type}`]
+        class: ['c-input__validation', `c-input__validation--${this.validation.type}`, 'msf-input__validation']
       })
     ]
 
@@ -186,7 +199,9 @@ export default {
       innerHTML: '*'
     })
 
-    if (field.is_required) childElements.splice(1, 0, requiredElement)
+    if (field.is_required) {
+      childElements.splice(1, 0, requiredElement)
+    }
 
     return h('div',
         {

@@ -1,6 +1,7 @@
 <script>
+import {useVuelidate} from '@vuelidate/core'
+import {minLength, required, helpers, numeric} from '@vuelidate/validators'
 import store from '@/store'
-import _throttle from 'lodash.throttle'
 import {computed, inject, onMounted, ref, watch} from 'vue'
 import VueSlider from 'vue-slider-component'
 
@@ -43,7 +44,20 @@ export default {
       priceRange.value.setValue(current)
     }
 
+    const validationRules = {
+      inputData: {
+        $each: {
+          minLength: minLength(3),
+          required,
+          numeric
+        }
+      }
+    }
+
+    const v$ = useVuelidate(validationRules, inputData)
+
     watch(inputData,(n) => {
+      v$.value.$validate()
       if (n) {
         setFormEntry({
           step: currentStep.value,
@@ -58,7 +72,7 @@ export default {
           }
         })
       }
-    })
+    }, { deep: true })
 
     onMounted(() => {
       if (storeEntry.value) {
@@ -66,7 +80,7 @@ export default {
       }
     })
 
-    return { inputData, priceRange, updateInputData, storeEntry }
+    return { inputData, priceRange, updateInputData, storeEntry, v$ }
   }
 }
 </script>
@@ -105,9 +119,10 @@ export default {
     </vue-slider>
     <div class="msf-range-slider__inputs">
       <div
-        v-for="(input, inputIndex) in 2"
+        v-for="(input, inputIndex) in inputData"
         :key="`Pricerange-${index}-input-${inputIndex}`"
         class="c-input msf-range-slider__input"
+        :class="v$.$errors.length ? 'c-input--error' : 'c-input--success'"
       >
         <label
           :for="`Pricerange-${index}-${inputIndex === 0 ? 'min' : 'max'}-input`"
@@ -119,7 +134,6 @@ export default {
             v-model="inputData[inputIndex]"
             type="number"
             class="c-input__control c-input__control--prepend-with-currency"
-            :placeholder="`€ ${inputData[inputIndex]}`"
             @change="updateInputData"
           >
         </div>

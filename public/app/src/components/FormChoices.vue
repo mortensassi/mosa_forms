@@ -82,7 +82,10 @@ export default {
 </script>
 
 <template>
-  <div class="c-input msf-input msf-input--choices" :class="{ 'c-input--error' : v$.$errors.length }">
+  <div
+    class="c-input msf-input msf-input--choices"
+    :class="v$.$errors.length ? 'c-input--error' : 'c-input--success'"
+  >
     <div class="c-input__label msf-input__label msf-input__label--choices">
       {{ data.label }}
       <span

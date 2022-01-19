@@ -1,3 +1,18 @@
+<script>
+import AppImage from '@/components/AppImage.vue'
+
+export default {
+  name: 'AppFormHeader',
+  components: { AppImage },
+  props: {
+    data: {
+      type: Object,
+      default: null
+    }
+  },
+}
+</script>
+
 <template>
   <header
     class="msf-step__header"
@@ -25,18 +40,3 @@
     </div>
   </header>
 </template>
-
-<script>
-import AppImage from '@/components/AppImage.vue'
-
-export default {
-  name: 'AppFormHeader',
-  components: { AppImage },
-  props: {
-    data: {
-      type: Object,
-      default: null
-    }
-  },
-}
-</script>

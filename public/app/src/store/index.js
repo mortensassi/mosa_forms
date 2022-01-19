@@ -1,4 +1,4 @@
-import fetchData from "@/api";
+import fetchData from '@/api'
 import {reactive} from 'vue'
 
 const store = {
@@ -9,7 +9,8 @@ const store = {
       stepImage: false,
       entries: {
         steps: []
-      }
+      },
+      response: null
     }
   }),
 
@@ -37,6 +38,10 @@ const store = {
         storedSteps.push(stepStoreObject)
       })
     }
+  },
+
+  setResponse(res) {
+    this.state.form.response = res
   },
 
   setImage(image) {

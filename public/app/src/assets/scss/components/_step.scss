@@ -14,10 +14,6 @@
 .msf-step__header-content {
   padding-top: 6.0625rem;
 
-  .msf-step__header--has-image & {
-
-  }
-
   @include bp($large-bp) {
     padding-top: 9.733125rem;
 

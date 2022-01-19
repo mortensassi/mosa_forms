@@ -1,4 +1,6 @@
 <script>
+import {useVuelidate} from '@vuelidate/core'
+import {required, numeric} from '@vuelidate/validators'
 import store from '@/store'
 import {computed, inject, onMounted, ref, watch} from 'vue'
 import VueSlider from 'vue-slider-component'
@@ -43,6 +45,20 @@ export default {
       priceRange.value.setValue(current)
     }
 
+    const validationRules = computed(() => {
+      const rules = {}
+
+      if (props.data.is_required) {
+        rules.required = required
+      }
+
+      rules.number = numeric
+
+      return rules
+    })
+
+    const v$ = useVuelidate(validationRules, inputData)
+
     onMounted(() => {
       if (storeEntry.value) {
         inputData.value = storeEntry.value['value'].userInput
@@ -67,8 +83,10 @@ export default {
       }
     })
 
-    watch(inputData, (n) => {
+    watch(inputData, async (n) => {
       if (n) {
+        await v$.value.$validate()
+
         setFormEntry({
           step: currentStep.value,
           group: props.stepGroupIndex,
@@ -85,7 +103,7 @@ export default {
       }
     })
 
-    return { value: inputData, priceRange, updateInputData, showTooltip, hideTooltip, storeEntry }
+    return { value: inputData, priceRange, updateInputData, showTooltip, hideTooltip, storeEntry, v$ }
   }
 }
 </script>
@@ -120,7 +138,10 @@ export default {
     </vue-slider>
   </div>
   <div class="msf-range-slider__inputs">
-    <div class="c-input msf-range-slider__input">
+    <div
+      class="c-input msf-range-slider__input"
+      :class="v$.$errors.length ? 'c-input--error' : 'c-input--success'"
+    >
       <label
         :for="`Pricerange-${index}-single-input`"
         class="c-input__label"
@@ -131,8 +152,6 @@ export default {
           v-model="value"
           type="number"
           class="c-input__control c-input__control--prepend-with-currency"
-
-          :placeholder="`€ ${value}`"
           @change="updateInputData"
         >
       </div>

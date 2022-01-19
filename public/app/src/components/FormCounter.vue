@@ -1,4 +1,6 @@
 <script>
+import {useVuelidate} from '@vuelidate/core'
+import {required} from '@vuelidate/validators'
 import {computed, inject, onMounted, ref, watch} from 'vue'
 import store from '@/store'
 
@@ -53,6 +55,18 @@ export default {
       })
     }
 
+    const validationRules = computed(() => {
+      const rules = {}
+
+      if (props.data.is_required) {
+        rules.required = required
+      }
+
+      return rules
+    })
+
+    const v$ = useVuelidate(validationRules, inputValue)
+
     const updateInputValue = (type, counter, index) => {
       if (inputValue.value[index] >= 0 && inputValue.value[index] < Number(counter.max_val) ) {
         if (type === 'increment') {
@@ -80,16 +94,22 @@ export default {
 
     onMounted(() => {
       if (storeEntry.value) {
-        inputValue.value = storeEntry.value['value'].userInput.map(val => val.value)
+        inputValue.value = storeEntry.value['value'].userInput.map(val => Number(val.value))
       } else {
         setFormEntry()
       }
     })
 
+    const checkValue = () => {
+      v$.value.$validate()
+    }
+
     return {
       value: inputValue,
       updateInputValue,
-      storeEntry
+      storeEntry,
+      v$,
+      checkValue
     }
   }
 }
@@ -102,6 +122,7 @@ export default {
       v-for="(counter, counterIndex) in data.inputs"
       :key="`Counter-${index}-input-${counterIndex}`"
       class="msf-input msf-input--counter"
+      :class="v$.$errors.length ? 'c-input--error' : 'c-input--success'"
     >
       <label
         :for="`Counter-${index}-input-${counterIndex}`"
@@ -121,11 +142,12 @@ export default {
         </button>
         <input
           :id="`Counter-${index}-input-${counterIndex}`"
-          v-model="value[counterIndex]"
+          v-model.number="value[counterIndex]"
           type="number"
           :max="counter.max_val"
           class="c-input__control msf-input__control msf-input__control--count"
           :required="counter.is_required"
+          @change="checkValue"
         >
         <button
           class="c-btn c-btn--is-icon c-btn--has-icon msf-input__btn"
@@ -138,10 +160,3 @@ export default {
     </div>
   </div>
 </template>
-
-
-<style>
-input[type='number'] {
-  -moz-appearance:textfield;
-}
-</style>

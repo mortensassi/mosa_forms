@@ -1,4 +1,6 @@
 <script>
+import {useVuelidate} from '@vuelidate/core'
+import {minLength, required} from '@vuelidate/validators'
 import {computed, inject, onMounted, ref} from 'vue'
 import store from '@/store'
 
@@ -37,13 +39,28 @@ export default {
     const storeEntry = computed(() => storedFields[props.realIndex])
     const setFormEntry = inject('setFormEntry')
 
-    const toggleSelection = (buttonIndex, label, fieldname) => {
+    const validationRules = computed(() => {
+      const rules = {}
+
+      if (props.data.is_required) {
+        rules.required = required
+        rules.minLength = minLength(1)
+      }
+
+      return rules
+    })
+
+    const v$ = useVuelidate(validationRules, selection)
+
+    const toggleSelection = async (buttonIndex, label, fieldname) => {
       if (selection.value.find(button => button.index === buttonIndex)) {
         const pos = selection.value.findIndex(button => button.index === buttonIndex)
         selection.value.splice(pos, 1)
       } else {
         selection.value.push({ index: buttonIndex, label, fieldname  })
       }
+
+      await v$.value.$validate()
 
       setFormEntry({
         step: currentStep.value,

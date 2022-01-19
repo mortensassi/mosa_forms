@@ -11,7 +11,12 @@ $sizes: (
         'two_third': 100% / 3 * 2,
 );
 
+input[type='number'] {
+  -moz-appearance:textfield;
+}
+
 .msf-input {
+  position: relative;
   flex-flow: row wrap;
   width: 100%;
 
@@ -194,4 +199,9 @@ $sizes: (
 
 .msf-input__control--checkbox {
   padding: 0;
+}
+
+.msf-input__validation {
+  position: absolute;
+  top: 100%;
 }

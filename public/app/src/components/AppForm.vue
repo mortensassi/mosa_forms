@@ -5,6 +5,7 @@ import AppFormHeader from '@/components/AppFormHeader.vue'
 import AppFormProgress from '@/components/AppFormProgress.vue'
 import FormStep from '@/components/FormStep.vue'
 import FormOverview from '@/components/FormOverview.vue'
+import FormAfterSubmission from '@/components/FormAfterSubmission.vue'
 import _groupBy from "lodash.groupby";
 
 export default {
@@ -14,21 +15,26 @@ export default {
     AppFormProgress,
     AppFormHeader,
     FormStep,
-    FormOverview
+    FormOverview,
+    FormAfterSubmission
   },
 
   setup() {
     const showOverview = ref(false)
+    const showResponse = ref(false)
     const goToStep = async (step) => {
       if (step) {
         if (step === 'overview') {
           showOverview.value = true
-        } else {
+        } else if(step === 'after-submit') {
+          showResponse.value = true
+        }
+        else {
           if (showOverview.value === true) {
             if (step === -1) {
               showOverview.value = false
             }
-          } else {
+          } else  {
             await store.updateStep(store.state.form.step + step)
           }
         }
@@ -50,9 +56,10 @@ export default {
     const formData = computed(() => store.state.form.data)
     const currentStep = computed(() => store.state.form.step)
     const step = computed(() => formData.value.acf.steps[currentStep.value])
+    const formResponse = computed(() => store.state.form.response)
 
     const collection = computed(() => {
-      const { steps } = store.state.form.entries
+      const {steps} = store.state.form.entries
       const stepsCopy = JSON.parse(JSON.stringify(steps))
 
 
@@ -76,7 +83,9 @@ export default {
       currentStep,
       goToStep,
       collection,
-      showOverview
+      showOverview,
+      showResponse,
+      formResponse
     }
   }
 }
@@ -87,13 +96,13 @@ export default {
     v-if="formData"
     class="msf-form"
   >
-    <AppFormProgress />
+    <AppFormProgress v-if="step" />
     <AppFormHeader
       v-if="showOverview"
       :data="{ title: 'Fast geschafft!<br>Hier können Sie Ihre Angaben nochmals überprüfen', overview: true }"
     />
     <AppFormHeader
-      v-else-if="step.header"
+      v-else-if="step && step.header"
       :data="step.header"
     />
 
@@ -101,8 +110,12 @@ export default {
       <transition
         name="move-up"
       >
+        <FormAfterSubmission
+          v-if="formResponse"
+          :data="formResponse"
+        />
         <FormOverview
-          v-if="showOverview"
+          v-else-if="showOverview"
           :data="formData.acf.steps"
           :acf="formData.acf"
           :collection="collection"
@@ -111,7 +124,7 @@ export default {
           @close-overview="showOverview = false"
         />
         <FormStep
-          v-else
+          v-else-if="step"
           :key="`mosa-forms_step-${currentStep}`"
           :current-step="currentStep"
           :step="step"

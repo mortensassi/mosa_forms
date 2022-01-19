@@ -1,0 +1,79 @@
+/* ==========================================================================
+   RESPONSE
+   ========================================================================== */
+.msf-response {
+  width: 100%;
+}
+
+.msf-response__header {
+  width: 100%;
+  position: absolute;
+  z-index: 1;
+
+  margin-top: 1.5rem;
+
+  @include bp($large-bp) {
+    margin-top: 3rem;
+  }
+}
+
+.msf-response__body {
+  @include text-token('sans', 'copy', 'sm');
+  position: relative;
+
+  margin-top: calc(1.5rem + 3rem);
+
+  @include bp($large-bp) {
+    @include text-token('sans', 'copy', 'lg');
+      margin-top: calc(3rem + 6rem);
+  }
+}
+
+.msf-response__header-inner {
+  padding: 1.25rem 1.5rem 1.5rem 1.5rem;
+  background-color: #fff;
+  color: #000;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.1);
+
+  @include bp($large-bp) {
+    display: flex;
+    padding: 2.5rem 3rem 3rem 3rem;
+  }
+}
+
+.msf-response__header-image {
+  width: 8rem;
+  height: 8rem;
+  flex: 1 0 8rem;
+
+  .c-img__wrap {
+    background: transparent;
+  }
+
+  @include bp($large-bp) {
+    width: 16rem;
+    height: 16rem;
+    flex: 1 0 16rem;
+  }
+}
+
+.msf-response__header-content {
+  @include bp($large-bp) {
+    margin-left: 7.5rem;
+  }
+}
+
+.msf-response__cta {
+  position: relative;
+  margin: 1.5rem auto 0;
+  display: flex;
+  justify-content: center;
+
+  @include bp($large-bp) {
+    margin-top: 3rem;
+  }
+}
+
+.msf-response__btn {
+  margin: 0;
+}

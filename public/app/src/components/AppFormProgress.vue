@@ -62,8 +62,20 @@ export default {
       }
     }
 
-    onMounted(() => {
+    onMounted(async () => {
       moveBar(document.querySelector('.msf-form-header-image'))
+
+      const headerEl = document.querySelector('.c-header')
+
+      const intersectionObserver = new IntersectionObserver(async (entries) => {
+        let [entry] = entries
+        if (entry.isIntersecting) {
+          intersectionObserver.unobserve(headerEl)
+        }
+      })
+
+      await intersectionObserver.observe(headerEl)
+      headerEl.scrollIntoView({behavior: 'smooth'})
     })
 
     watch(stepImage, (n) => {
