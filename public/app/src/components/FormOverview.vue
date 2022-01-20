@@ -104,7 +104,7 @@ export default {
             } else if(field && field.type === 'multiselect') {
               inquiry.push({ [field.value.fieldname || field.name] : [field.value.selection.map(option => option.choice).join(',')] })
             } else if(field && field.type === 'grouped_checkboxes') {
-              inquiry.push({ [field.value.fieldname || field.name] : [field.value.selection.map(option => option.value).join(',')] })
+              inquiry.push({ [field.value.fieldname || field.name] : [field.value.selection.map(option => option.fieldname).join(',')] })
             } else if(field && field.type === 'choices') {
               inquiry.push({ [field.value.fieldname || field.name] : [field.value.name] })
             } else if(field && field.type === 'price_range') {
