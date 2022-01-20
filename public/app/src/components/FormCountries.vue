@@ -1,6 +1,6 @@
 <script>
 import {useVuelidate} from '@vuelidate/core'
-import {numeric, required} from '@vuelidate/validators'
+import {email, helpers, numeric, required} from '@vuelidate/validators'
 import Fuse from 'fuse.js'
 import {ref, computed, watch, inject, onMounted} from 'vue'
 import countriesList from "@/assets/countries.json"
@@ -54,7 +54,7 @@ export default {
       const rules = {}
 
       if (props.data.is_required) {
-        rules.required = required
+        rules.required = helpers.withMessage(props.data.error_message, required)
       }
 
       return rules
@@ -108,7 +108,7 @@ export default {
           id: props.fieldKey,
           name: props.data.label,
           type: props.data.acf_fc_layout,
-          subgroup: props.data.subgroup,
+          subgroup: props.data.duplicate || props.data.subgroup,
           value: {
             userInput: n,
             fieldname: props.data.fieldname
@@ -141,9 +141,7 @@ export default {
 </script>
 
 <template>
-  <div class="c-input msf-input msf-input--choices"
-       :class="v$.$errors.length ? 'c-input--error' : 'c-input--success'"
-  >
+  <div class="c-input msf-input msf-input--choices">
     <div class="c-input__label msf-input__label msf-input__label--choices">
       {{ data.label }}
       <span
@@ -174,6 +172,12 @@ export default {
               class="c-input__control msf-select__autocomplete"
             >{{ autocompleteStr }}</span>
           </div>
+          <span
+              v-if="v$.$errors && v$.$errors[0]"
+              class="'c-input__validation', c-input__validation--error msf-input__validation"
+          >
+            {{ v$.$errors[0].$message }}
+          </span>
           <transition name="moveup">
             <div
               v-if="showDropdown"

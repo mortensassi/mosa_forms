@@ -1,12 +1,14 @@
 <script>
+import {useVuelidate} from '@vuelidate/core'
+import {helpers, minLength, required} from '@vuelidate/validators'
 import store from '@/store'
 import _throttle from 'lodash.throttle'
 import {ref, computed, onMounted, inject, watch} from 'vue'
-import FormInput from '@/components/FormInput.vue'
+import FormCheckbox from '@/components/FormCheckbox.vue'
 
 export default {
   name: 'FormGroupedCheckboxes',
-  components: {FormInput},
+  components: {FormCheckbox},
   props: {
     fieldKey: {
       type: String,
@@ -57,13 +59,25 @@ export default {
         id: props.fieldKey,
         name: props.group.title,
         type: props.data.acf_fc_layout,
-        test: 'test',
         value: {
           selection: selection.value,
           fieldname: props.data.fieldname,
         }
       })
     }
+
+    const validationRules = computed(() => {
+      const rules = {}
+
+      if (props.data.is_required) {
+        rules.required = helpers.withMessage(props.data.error_message, required)
+        rules.minLength = helpers.withMessage(props.data.error_message, minLength(1))
+      }
+
+      return rules
+    })
+
+    const v$ = useVuelidate(validationRules, selection.value)
 
     const currentGroup = ref(0)
     const storedFields = store.state.form.entries.steps[currentStep.value].groups[props.stepGroupIndex].fields
@@ -103,9 +117,26 @@ export default {
       currentGroup.value = index
     }
 
+    const preselectedCheckboxes = computed(() => {
+      const entries = props.data.groups.map(group => {
+        return group.checkboxes.filter(checkbox => checkbox.checked)
+      }).flat()
+      return entries
+    })
+
     onMounted(() => {
       if (storeEntry.value) {
-        selection.value = storeEntry.value.value.selection
+        storeEntry.value.value.selection.forEach(checkbox => {
+          const { value, fieldname, id } = checkbox
+          const val = { value, fieldname, id }
+          updateSelection(checkbox.id, val, currentGroup.value)
+        })
+      } else if (preselectedCheckboxes.value) {
+        preselectedCheckboxes.value.forEach(checkbox => {
+          const checkboxIndex = checkboxes.value.findIndex(el => el.fieldname === checkbox.fieldname)
+
+          updateSelection(checkboxIndex, checkbox, currentGroup.value)
+        })
       }
 
       setMaxHeight(true, true)
@@ -131,6 +162,8 @@ export default {
       setCurrentGroup,
       currentStep,
       storeEntry,
+      preselectedCheckboxes,
+      v$
     }
   }
 }
@@ -157,10 +190,10 @@ export default {
         class="msf-input__checkboxes"
         :class="{ 'msf-input__checkboxes--collapsed' : collapseList }"
       >
-        <FormInput
+        <FormCheckbox
           v-for="(input, inputIndex) in checkboxes"
           :key="`GroupedCheckboxes-g-${currentGroup}-c-${inputIndex}`"
-          :data="{ type: 'checkbox', label: input.checkbox }"
+          :data="{ type: 'checkbox', label: input.checkbox, checked: selection.find(checkbox => checkbox.fieldname === input.fieldname) }"
           :selection="selection"
           :index="`GroupedCheckboxes-g-${currentGroup}-c-${inputIndex}`"
           :input-index="inputIndex"
@@ -175,6 +208,12 @@ export default {
       >
         Alle Gebiete ansehen ({{ checkboxes.length }})
       </button>
+      <span
+        v-if="v$.$errors && v$.$errors[0]"
+        class="'c-input__validation', c-input__validation--error msf-input__validation"
+      >
+        {{ v$.$errors[0].$message }}
+      </span>
     </div>
   </div>
 </template>

@@ -29,7 +29,6 @@ export default {
 
       if (headerEl) {
         const heroEl = document.querySelector('.c-hero')
-        const contentEl = responseBody.value
         heroEl.style.paddingBottom = `${headerEl.getBoundingClientRect().height}px`
         heroEl.appendChild(headerEl)
       }
@@ -53,45 +52,55 @@ export default {
       ref="responseHeader"
       class="msf-response__header"
     >
-      <div class="columns is-marginless">
-        <div class="column is-12 is-10-desktop is-offset-1-desktop is-paddingless">
-          <div class="msf-response__header-inner">
-            <div
-              v-if="data.data && data.data.content.image"
-              class="c-img c-img--bg msf-response__header-image"
-              :style="{
-                '--image-aspect--mobile': `100%`,
-                '--image-aspect': `100%`,
-                '--image-focuspoint': '50% 50%',
-              }"
-            >
-              <div class="c-img__wrap">
-                <div
-                  ref="lazyResponseImage"
-                  class="c-img__full"
-                  :data-background-image="data.data.content.image.sizes.large"
-                />
-                <div
-                  class="c-img__placeholder"
-                  :style="{'background-image': `url(${data.data.content.image.sizes.thumbnail})`}"
-                />
+      <div class="o-wrapper">
+        <div class="columns is-marginless">
+          <div class="column is-12 is-10-desktop is-offset-1-desktop is-paddingless">
+            <div class="msf-response__header-inner">
+              <div
+                v-if="data.data && data.data.content.image"
+                class="c-img c-img--bg msf-response__header-image"
+                :style="{
+                  '--image-aspect--mobile': `100%`,
+                  '--image-aspect': `100%`,
+                  '--image-focuspoint': '50% 50%',
+                }"
+              >
+                <div class="c-img__wrap">
+                  <img
+                    ref="lazyResponseImage"
+                    class="c-img__full u-lazy"
+                    :src="data.data.content.image.sizes.thumbnail"
+                    :data-src="data.data.content.image.sizes.large"
+                    :alt="data.data.content.image.alt"
+                  >
+                  <div
+                    class="c-img__placeholder"
+                    :style="{'background-image': `url(${data.data.content.image.sizes.thumbnail})`}"
+                  />
+                </div>
               </div>
+              <div
+                v-if="data.data && data.data.content.message"
+                ref="responseBody"
+                class="msf-response__header-content"
+                v-html="data.data.content.message"
+              />
             </div>
-            <div
-              v-if="data.data && data.data.content.message"
-              ref="responseBody"
-              class="msf-response__header-content"
-              v-html="data.data.content.message"
-            />
           </div>
         </div>
       </div>
     </div>
     <div class="columns">
       <div class="column is-12 is-10-desktop is-offset-1-desktop">
-        <div class="msf-response__body" v-html="data.data.content.detail"></div>
+        <div
+          class="msf-response__body"
+          v-html="data.data.content.detail"
+        />
         <div class="msf-response__cta">
-          <a href="/" class="c-btn c-btn--primary msf-response__btn">Zur Startseite</a>
+          <a
+            href="/"
+            class="c-btn c-btn--primary msf-response__btn"
+          >Zur Startseite</a>
         </div>
       </div>
     </div>

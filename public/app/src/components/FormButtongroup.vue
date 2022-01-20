@@ -1,6 +1,6 @@
 <script>
 import {useVuelidate} from '@vuelidate/core'
-import {minLength, required} from '@vuelidate/validators'
+import {helpers, minLength, numeric, required} from '@vuelidate/validators'
 import {computed, inject, onMounted, ref} from 'vue'
 import store from '@/store'
 
@@ -43,11 +43,15 @@ export default {
       const rules = {}
 
       if (props.data.is_required) {
-        rules.required = required
-        rules.minLength = minLength(1)
+        rules.required = helpers.withMessage(props.data.error_message || 'Fehler', required)
+        rules.minLength = helpers.withMessage(props.data.error_message || 'Fehler', minLength(1))
       }
 
       return rules
+    })
+
+    const selectedChoices = computed(() => {
+      return props.data.buttons.filter(button => button.selected)
     })
 
     const v$ = useVuelidate(validationRules, selection)
@@ -79,6 +83,12 @@ export default {
     onMounted(() => {
       if (storeEntry.value) {
         selection.value = storeEntry.value['value'].selection
+      } else if (selectedChoices.value) {
+        selectedChoices.value.forEach(selectedButton => {
+          const index = props.data.buttons.findIndex(button => button.fieldname === selectedButton.fieldname)
+
+          toggleSelection(index, selectedButton.label, selectedButton.fieldname)
+        })
       }
 
       if (buttonGroup.value) {
@@ -102,7 +112,7 @@ export default {
       }
     })
 
-    return { buttonGroup, selection, toggleSelection }
+    return { buttonGroup, selection, toggleSelection, v$ }
   }
 }
 </script>
@@ -147,6 +157,12 @@ export default {
         </span>
       </button>
     </div>
+    <span
+      v-if="v$.$errors && v$.$errors[0]"
+      class="'c-input__validation', c-input__validation--error msf-input__validation"
+    >
+      {{ v$.$errors[0].$message }}
+    </span>
   </div>
 </template>
 

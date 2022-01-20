@@ -48,7 +48,19 @@ return [
 											   ->layouts([
 												   Layout::make(__('Grouped Checkboxes', 'mosa'), 'grouped_checkboxes')
 														 ->fields([
-															 Text::make(__('Fieldname', 'mosa'), 'fieldname'),
+															 Text::make(__('Fieldname', 'mosa'), 'fieldname')
+																 ->wrapper([
+																	 'width' => 75
+																 ]),
+															 TrueFalse::make(__('Required', 'mosa'), 'is_required')
+																	  ->stylisedUi()
+																	  ->wrapper([
+																		  'width' => 25
+																	  ]),
+															 Text::make(__('Fehlermeldung', 'mosa'), 'error_message')
+																 ->conditionalLogic([
+																	 ConditionalLogic::if('is_required')->equals(1)
+																 ]),
 															 Repeater::make(__('Groups', 'mosa'), 'groups')
 																	 ->layout('block')
 																	 ->buttonLabel(__('+ Add Checkbox Group', 'mosa'))
@@ -62,11 +74,18 @@ return [
 																					 __('+ Add Checkbox', 'mosa')
 																				 )
 																				 ->fields([
-																					 Text::make(__('Fieldname', 'mosa'), 'fieldname'),
+																					 Text::make(__('Fieldname', 'mosa'), 'fieldname')
+																						 ->wrapper([
+																							 'width' => 25
+																						 ]),
 																					 Text::make(
 																						 __('Checkbox', 'mosa'),
 																						 'checkbox'
-																					 )
+																					 ),
+																					 TrueFalse::make(__('Checked', 'mosa'), 'checked')
+																					 ->wrapper([
+																						 'width' => 15
+																					 ])
 																				 ])
 																	 ])
 														 ]),
@@ -82,6 +101,10 @@ return [
 																	  ->wrapper([
 																		  'width' => (100/3 * 1)
 																	  ]),
+															 Text::make(__('Fehlermeldung', 'mosa'), 'error_message')
+																 ->conditionalLogic([
+																	 ConditionalLogic::if('is_required')->equals(1)
+																 ]),
 															 Select::make(__('Type', 'mosa'), 'type')
 																   ->choices([
 																	   'text'  => __('Text', 'mosa'),
@@ -108,7 +131,6 @@ return [
 														 ]),
 												   Layout::make(__('Price Range'), 'price_range')
 														 ->fields([
-															 Text::make(__('Fieldname', 'mosa'), 'fieldname'),
 															 Text::make(__('Label', 'mosa'), 'label')
 																 ->wrapper([
 																	 'width' => '75%'
@@ -118,15 +140,27 @@ return [
 																	  ->wrapper([
 																		  'width' => '25%'
 																	  ]),
-															 Number::make(__('Max value', 'mosa'), 'max_val')
-																   ->wrapper([
-																	   'width' => '75%'
-																   ]),
-															 TrueFalse::make(__('Minium Toggle', 'mosa'), 'min_toggle')
-																	  ->stylisedUi()
-																	  ->wrapper([
-																		  'width' => '25%'
-																	  ]),
+															 Text::make(__('Fehlermeldung', 'mosa'), 'error_message')
+																 ->conditionalLogic([
+																	 ConditionalLogic::if('is_required')->equals(1)
+																 ]),
+															 TrueFalse::make(__('Toggle Min value', 'mosa'), 'toggle_min')
+																->stylisedUi(),
+															 Group::make(__('Min Value', 'mosa'), 'min')
+																  ->layout('block')
+																  ->fields([
+																	  Text::make(__('Fieldname', 'mosa'), 'fieldname'),
+																	  Number::make(__('Value', 'mosa'), 'val')
+																  ])
+																	->conditionalLogic([
+																		ConditionalLogic::if('toggle_min')->equals(1)
+																	]),
+															 Group::make(__('Max Value', 'mosa'), 'max')
+																  ->layout('block')
+																  ->fields([
+																	  Text::make(__('Fieldname', 'mosa'), 'fieldname'),
+																	  Number::make(__('Value', 'mosa'), 'val')
+																  ]),
 															 Group::make(__('Infotext', 'mosa'), 'info')
 															 ->fields([
 																 Text::make(__('Label', 'mosa'), 'label'),
@@ -152,6 +186,10 @@ return [
 																   ->wrapper([
 																	   'width' => '75%'
 																   ]),
+															 Text::make(__('Fehlermeldung', 'mosa'), 'error_message')
+																 ->conditionalLogic([
+																	 ConditionalLogic::if('is_required')->equals(1)
+																 ]),
 															 Group::make(__('Infotext', 'mosa'), 'info')
 																  ->fields([
 																	  Text::make(__('Label', 'mosa'), 'label'),
@@ -173,6 +211,10 @@ return [
 																	  ->wrapper([
 																		  'width' => '25%'
 																	  ]),
+															 Text::make(__('Fehlermeldung', 'mosa'), 'error_message')
+																 ->conditionalLogic([
+																	 ConditionalLogic::if('is_required')->equals(1)
+																 ]),
 															 Repeater::make(__('Buttons', 'mosa'), 'buttons')
 																	 ->layout('block')
 																	 ->buttonLabel(__('+ Add Button', 'mosa'))
@@ -183,16 +225,19 @@ return [
 																			 ]),
 																		 Text::make(__('Fieldname', 'mosa'), 'fieldname')
 																			 ->wrapper([
-																				 'width' => '25%'
+																				 'width' => '20%'
 																			 ]),
 																		 TrueFalse::make(
-																			 __('Info Tooltip', 'mosa'),
+																			 __('Tooltip', 'mosa'),
 																			 'has_info'
 																		 )
-																				  ->stylisedUi()
 																				  ->wrapper([
-																					  'width' => '25%'
+																					  'width' => '15%'
 																				  ]),
+																		 TrueFalse::make(__('Selected', 'mosa'), 'selected')
+																			 ->wrapper([
+																				 'width' => '10%'
+																			 ]),
 																		 Text::make(__('Info text', 'mosa'), 'info')
 																			 ->conditionalLogic([
 																				 ConditionalLogic::if(
@@ -210,10 +255,26 @@ return [
 														 ->fields([
 															 Text::make(__('Fieldname', 'mosa'), 'fieldname'),
 															 Text::make(__('Label', 'mosa'), 'label'),
+															 TrueFalse::make(__('Required', 'mosa'), 'is_required')
+																	  ->stylisedUi()
+																	  ->wrapper([
+																		  'width' => '25%'
+																	  ]),
+															 Text::make(__('Fehlermeldung', 'mosa'), 'error_message')
+																 ->conditionalLogic([
+																	 ConditionalLogic::if('is_required')->equals(1)
+																 ]),
 															 Repeater::make(__('Choices', 'mosa'), 'choices')
 																	 ->buttonLabel(__('+ Add Choice', 'mosa'))
 																	 ->fields([
-																		 Text::make(__('Choice', 'mosa'), 'choice'),
+																		 Text::make(__('Choice', 'mosa'), 'choice')
+																			 ->wrapper([
+																				 'width' => '75%'
+																			 ]),
+																		 TrueFalse::make(__('Selected', 'mosa'), 'selected')
+																			 ->wrapper([
+																				 'width' => '25%'
+																			 ]),
 																	 ])
 														 ]),
 												   Layout::make(__('Multiselect', 'mosa'), 'multiselect')
@@ -228,9 +289,14 @@ return [
 																	  ->wrapper([
 																		  'width' => '25%'
 																	  ]),
+															 Text::make(__('Fehlermeldung', 'mosa'), 'error_message')
+																 ->conditionalLogic([
+																	 ConditionalLogic::if('is_required')->equals(1)
+																 ]),
 															 Text::make(__('Title', 'mosa'), 'title'),
 															 Repeater::make(__('Choices', 'mosa'), 'choices')
 																	 ->buttonLabel(__('+ Add Choice', 'mosa'))
+																     ->layout('block')
 																	 ->fields([
 																		 Text::make(__('Group', 'mosa'), 'group'),
 																		 Repeater::make(
@@ -245,6 +311,10 @@ return [
 																						 __('Choice', 'mosa'),
 																						 'choice'
 																					 ),
+																					 TrueFalse::make(__('Selected', 'mosa'), 'selected')
+																					 	->wrapper([
+																							 'width' => 15
+																						]),
 																				 ])
 																	 ])
 														 ]),
@@ -260,6 +330,10 @@ return [
 																	  ->wrapper([
 																		  'width' => '50%'
 																	  ]),
+															 Text::make(__('Fehlermeldung', 'mosa'), 'error_message')
+																 ->conditionalLogic([
+																	 ConditionalLogic::if('is_required')->equals(1)
+																 ]),
 															 WysiwygEditor::make(
 																 __('Description', 'mosa'),
 																 'description'
@@ -272,7 +346,23 @@ return [
 												   Layout::make(__('Counter', 'mosa'), 'counter')
 														 ->fields([
 															 Text::make(__('Fieldname', 'mosa'), 'fieldname'),
+															 TrueFalse::make(
+																 __('Required', 'mosa'),
+																 'is_required'
+															 )
+																	  ->stylisedUi()
+																	  ->wrapper([
+																		  'width' => '50%'
+																	  ]),
+															 Text::make(__('Fehlermeldung', 'mosa'), 'error_message')
+																 ->wrapper([
+																	 'width' => '50%'
+																 ])
+																 ->conditionalLogic([
+																	 ConditionalLogic::if('is_required')->equals(1)
+																 ]),
 															 Repeater::make(__('Counter', 'mosa'), 'inputs')
+																 	->layout('block')
 																	 ->buttonLabel(__('+ Add Counter', 'mosa'))
 																	 ->fields([
 																		 Text::make(__('Fieldname', 'mosa'), 'fieldname'),
@@ -280,18 +370,13 @@ return [
 																			 ->wrapper([
 																				 'width' => '50%'
 																			 ]),
-																		 TrueFalse::make(
-																			 __('Required', 'mosa'),
-																			 'is_required'
-																		 )
-																				  ->stylisedUi()
-																				  ->wrapper([
-																					  'width' => '50%'
-																				  ]),
 																		 Number::make(
 																			 __('Maximum Input value', 'mosa'),
 																			 'max_val'
 																		 )
+																			 ->wrapper([
+																				 'width' => '50%'
+																			 ]),
 																	 ])
 														 ]),
 												   Layout::make(__('Choices', 'mosa'), 'choices')
@@ -299,17 +384,25 @@ return [
 															 Text::make(__('Fieldname', 'mosa'), 'fieldname'),
 															 Text::make(__('Label', 'mosa'), 'label')
 																 ->wrapper([
-																	 'width' => '75%'
+																	 'width' => '60%'
 																 ]),
 															 TrueFalse::make(__('Required', 'mosa'), 'is_required')
 																	  ->stylisedUi()
 																	  ->wrapper([
 																		  'width' => '25%'
 																	  ]),
+															 Text::make(__('Fehlermeldung', 'mosa'), 'error_message')
+																 ->conditionalLogic([
+																	 ConditionalLogic::if('is_required')->equals(1)
+																 ]),
 															 Repeater::make(__('Buttons', 'mosa'), 'buttons')
 																	 ->buttonLabel(__('+ Add Button', 'mosa'))
 																	 ->fields([
-																		 Text::make(__('Button ', 'mosa'), 'text')
+																		 Text::make(__('Button ', 'mosa'), 'text'),
+																		 TrueFalse::make(__('Selected', 'mosa'), 'selected')
+																				  ->wrapper([
+																					  'width' => '15%'
+																				  ]),
 																	 ])
 														 ]),
 												   Layout::make(__('Country Select', 'mosa'), 'countries')
@@ -323,7 +416,11 @@ return [
 																 ->stylisedUi()
 																 ->wrapper([
 																	 'width' => '25%'
-																 ])
+																 ]),
+														Text::make(__('Fehlermeldung', 'mosa'), 'error_message')
+															->conditionalLogic([
+																ConditionalLogic::if('is_required')->equals(1)
+															]),
 													]),
 												   Layout::make(__('Duplicate fields', 'mosa'), 'duplicate')
 												   	->fields([
@@ -359,6 +456,10 @@ return [
 								 ->wrapper([
 									 'width' => '75%'
 								 ]),
+					Text::make(__('Fehlermeldung', 'mosa'), 'error_message')
+						->conditionalLogic([
+							ConditionalLogic::if('is_required')->equals(1)
+						]),
 				]),
 		Repeater::make(__('Additional Info', 'mosa'), 'compliance_additional_info')
 			->buttonLabel(__('Add Info', 'mosa'))

@@ -1,6 +1,6 @@
 <script>
 import {useVuelidate} from '@vuelidate/core'
-import {required, numeric} from '@vuelidate/validators'
+import {required, numeric, helpers} from '@vuelidate/validators'
 import store from '@/store'
 import {computed, inject, onMounted, ref, watch} from 'vue'
 import VueSlider from 'vue-slider-component'
@@ -49,10 +49,10 @@ export default {
       const rules = {}
 
       if (props.data.is_required) {
-        rules.required = required
+        rules.required = helpers.withMessage(props.data.error_message || 'Fehler', required)
       }
 
-      rules.number = numeric
+      rules.number = helpers.withMessage(props.data.error_message|| 'Fehler', numeric)
 
       return rules
     })
@@ -94,7 +94,7 @@ export default {
           id: props.fieldKey,
           name: props.data.label,
           type: props.data.acf_fc_layout,
-          subgroup: props.data.subgroup,
+          subgroup: props.data.duplicate || props.data.subgroup,
           value: {
             userInput: n,
             fieldname: props.data.fieldname
@@ -140,7 +140,7 @@ export default {
   <div class="msf-range-slider__inputs">
     <div
       class="c-input msf-range-slider__input"
-      :class="v$.$errors.length ? 'c-input--error' : 'c-input--success'"
+      :class="{'c-input--error' : v$.collection && v$.collection.$each.$response.$errors[inputIndex].val.length}"
     >
       <label
         :for="`Pricerange-${index}-single-input`"
@@ -155,6 +155,12 @@ export default {
           @change="updateInputData"
         >
       </div>
+      <span
+        v-if="v$.$errors && v$.$errors[0]"
+        class="'c-input__validation', c-input__validation--error msf-input__validation"
+      >
+        {{ v$.$errors[0].$message }}
+      </span>
       <div
         v-if="data.info"
         class="msf-form-info"

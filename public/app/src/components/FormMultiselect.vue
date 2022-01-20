@@ -47,6 +47,12 @@ export default {
     const storeEntry = computed(() => storedFields[props.realIndex])
     const setFormEntry = inject('setFormEntry')
 
+    const selectedChoices = computed(() => {
+      return choices.value.map(group => {
+        return group.choices.filter(choice => choice.selected)
+      }).flat()
+    })
+
     watch(selection, (n) => {
       setFormEntry({
         step: currentStep.value,
@@ -65,10 +71,12 @@ export default {
     onMounted(() => {
       if (storeEntry.value && storeEntry.value['value'].selection) {
         selection.value = storeEntry.value['value'].selection
+      } else if (selectedChoices.value) {
+        selection.value = selectedChoices.value
       }
     })
 
-    return { choices, selection, storeEntry }
+    return { choices, selection, storeEntry, selectedChoices }
 
   }
 }

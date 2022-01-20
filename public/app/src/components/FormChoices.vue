@@ -35,6 +35,10 @@ export default {
     const storeEntry = computed(() => storedFields[props.realIndex])
     const setFormEntry = inject('setFormEntry')
 
+    const selectedChoices = computed(() => {
+      return props.data.buttons.filter(button => button.selected)
+    })
+
     const validationRules = computed(() => {
       const rules = {}
 
@@ -62,7 +66,7 @@ export default {
           id: choice
         },
         type: props.data.acf_fc_layout,
-        subgroup: props.data.subgroup,
+        subgroup: props.data.duplicate || props.data.subgroup,
       })
     }
 
@@ -73,6 +77,12 @@ export default {
     onMounted(() => {
       if (storeEntry.value) {
         selection.value = storeEntry.value['value'].id
+      } else if (selectedChoices.value) {
+        selectedChoices.value.forEach(selectedButton => {
+          const index = props.data.buttons.findIndex(button => button.text === selectedButton.text)
+
+          makeChoice(index)
+        })
       }
     })
 

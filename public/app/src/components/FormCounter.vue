@@ -1,7 +1,7 @@
 <script>
 import {useVuelidate} from '@vuelidate/core'
-import {required} from '@vuelidate/validators'
-import {computed, inject, onMounted, ref, watch} from 'vue'
+import {required, numeric, helpers} from '@vuelidate/validators'
+import {computed, inject, onMounted, ref, reactive, watch} from 'vue'
 import store from '@/store'
 
 export default {
@@ -30,7 +30,9 @@ export default {
   },
 
   setup(props) {
-    const inputValue = ref([0, 0])
+    const inputValue = reactive({ collection: [{val: 0}, {val: 0}
+  ]
+  })
     const currentStep = ref(store.state.form.step)
     const storedFields = store.state.form.entries.steps[currentStep.value].groups[props.stepGroupIndex].fields
     const storeEntry = computed(() => storedFields[props.realIndex])
@@ -44,9 +46,9 @@ export default {
         name: 'CounterGroup',
         value: {
           fieldname: props.data.fieldname,
-          userInput: inputValue.value.map((val, valIndex) => {
+          userInput: inputValue.collection.map((val, valIndex) => {
             return {
-              value: val,
+              value: val.val,
               name: props.data.inputs[valIndex].label,
             }
           }),
@@ -59,7 +61,14 @@ export default {
       const rules = {}
 
       if (props.data.is_required) {
-        rules.required = required
+        rules.collection = {
+          $each: helpers.forEach({
+            val: {
+              required: helpers.withMessage(props.data.error_message || 'Fehler', required),
+              numeric: helpers.withMessage(props.data.error_message || 'Fehler', numeric)
+            }
+          })
+        }
       }
 
       return rules
@@ -68,33 +77,34 @@ export default {
     const v$ = useVuelidate(validationRules, inputValue)
 
     const updateInputValue = (type, counter, index) => {
-      if (inputValue.value[index] >= 0 && inputValue.value[index] < Number(counter.max_val) ) {
+      checkValue()
+      if (inputValue.collection[index].val >= 0 && inputValue.collection[index].val < Number(counter.max_val) ) {
         if (type === 'increment') {
-          inputValue.value[index] += 1
+          inputValue.collection[index].val += 1
         } else {
-          inputValue.value[index] -= 1
+          inputValue.collection[index].val -= 1
         }
       } else {
-        inputValue.value[index] = 0
+        inputValue.collection[index].val = 0
       }
 
       setFormEntry()
     }
 
-    watch(inputValue, (arr) => {
+    watch(inputValue.collection, (arr) => {
       // Control max value handling
       arr.forEach((val, valI) => {
-        if (val > props.data.inputs[valI].max_val) {
-          arr[valI] = Number(props.data.inputs[valI].max_val)
-        } else if (val < 0) {
-          arr[valI] = 0
+        if (val.val > props.data.inputs[valI].max_val) {
+          arr[valI].val = Number(props.data.inputs[valI].max_val)
+        } else if (val.val < 0) {
+          arr[valI].val = 0
         }
       })
     }, { deep: true})
 
     onMounted(() => {
       if (storeEntry.value) {
-        inputValue.value = storeEntry.value['value'].userInput.map(val => Number(val.value))
+        inputValue.collection = storeEntry.value['value'].userInput.map(input => ({ val: Number(input.value) }))
       } else {
         setFormEntry()
       }
@@ -122,14 +132,14 @@ export default {
       v-for="(counter, counterIndex) in data.inputs"
       :key="`Counter-${index}-input-${counterIndex}`"
       class="msf-input msf-input--counter"
-      :class="v$.$errors.length ? 'c-input--error' : 'c-input--success'"
+      :class="{'c-input--error' : v$.collection && v$.collection.$each.$response.$errors[counterIndex].val.length}"
     >
       <label
         :for="`Counter-${index}-input-${counterIndex}`"
         class="msf-input__label msf-input__label--counter c-input__label"
       >{{ counter.label }}
         <span
-          v-if="counter.is_required"
+          v-if="data.is_required"
           class="c-txt c-txt--highlight"
         >*</span></label>
       <div class="msf-input-wrap">
@@ -142,7 +152,7 @@ export default {
         </button>
         <input
           :id="`Counter-${index}-input-${counterIndex}`"
-          v-model.number="value[counterIndex]"
+          v-model.number="value.collection[counterIndex].val"
           type="number"
           :max="counter.max_val"
           class="c-input__control msf-input__control msf-input__control--count"
@@ -156,6 +166,15 @@ export default {
           <span class="c-btn__label is-sr-only">Eine Person mehr</span>
           <svg class="c-btn__icon"><use xlink:href="#icon-plus" /></svg>
         </button>
+      </div>
+      <div v-if="v$ && v$.collection">
+        <span
+          v-for="error in v$.collection.$each.$response.$errors[counterIndex].val"
+          :key="error"
+          class="'c-input__validation', c-input__validation--error msf-input__validation"
+        >
+          {{ error.$message }}
+        </span>
       </div>
     </div>
   </div>

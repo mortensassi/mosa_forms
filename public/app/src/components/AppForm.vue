@@ -61,7 +61,7 @@ export default {
     const collection = computed(() => {
       const {steps} = store.state.form.entries
       const stepsCopy = JSON.parse(JSON.stringify(steps))
-
+      console.log(stepsCopy)
 
       stepsCopy.forEach(step => {
         step.groups.forEach(group => {
@@ -85,7 +85,8 @@ export default {
       collection,
       showOverview,
       showResponse,
-      formResponse
+      formResponse,
+      entries: store.state.form.entries
     }
   }
 }

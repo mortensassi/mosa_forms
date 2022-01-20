@@ -108,13 +108,22 @@ export default {
             } else if(field && field.type === 'choices') {
               inquiry.push({ [field.value.fieldname || field.name] : [field.value.name] })
             } else if(field && field.type === 'price_range') {
-              inquiry.push({ [field.value.fieldname || field.name] : [field.value.inputData.join(',')] })
+              const collection = field.value.inputData.collection
+              if (collection.length > 1) {
+                collection.forEach((item, i) => {
+                  inquiry.push({ [field.value.fieldname[i] || field.name] : [item] })
+                })
+              }
             } else if(field && field.type === 'button_group') {
               inquiry.push({ [field.value.fieldname || field.name] : [field.value.selection.map(option => option.label).join(',')] })
             } else if(field && field.type === 'counter') {
               inquiry.push({ [field.value.fieldname || field.name] : [field.value.userInput.map(option => option.value).join(',')] })
             } else if(field && field.type === 'select') {
               inquiry.push({ [field.value.fieldname || field.name] : [field.value.userInput.choice] })
+            } else if (field && field.type === 'input') {
+              inquiry.push({ [field.value.fieldname || field.name] : [field.value.userInput] })
+            } else if (field && field.type === 'countries') {
+              inquiry.push({ [field.value.fieldname || field.name] : [field.value.userInput] })
             }
           })
         })

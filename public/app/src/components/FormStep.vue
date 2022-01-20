@@ -1,9 +1,9 @@
 <script>
 import _capitalize from 'lodash.capitalize'
 import _camelCase from 'lodash.camelcase'
-import {computed, onMounted, ref, defineEmits} from 'vue'
+import {computed, onMounted, ref} from 'vue'
 import store from '@/store'
-import { useVuelidate } from '@vuelidate/core'
+import {useVuelidate} from '@vuelidate/core'
 
 import FormInput from '@/components/FormInput.vue'
 import FormCounter from '@/components/FormCounter.vue'
@@ -81,7 +81,7 @@ export default {
             return {
               ...field,
               duplicate: index,
-              subgroup: index
+              subgroup: field.duplicate || index
             }
           })
 
@@ -91,8 +91,8 @@ export default {
           store.duplicateFields({
             index: props.currentStep,
             groupIndex,
-            fields: groups.value[groupIndex].fields
-          })
+            fields: group.fields
+          }, duplicateCount.value)
         }
       })
     }
@@ -105,9 +105,7 @@ export default {
     })
 
     const duplicatorGroup = computed(() => {
-      const groupWithDuplicate = groups.value.findIndex(group => group.fields.find(field => field.acf_fc_layout === 'duplicate'))
-
-      return groupWithDuplicate
+      return groups.value.findIndex(group => group.fields.find(field => field.acf_fc_layout === 'duplicate'))
     })
 
     const v$ = useVuelidate()
@@ -122,7 +120,7 @@ export default {
       }
     }
 
-    return { formData, prepareCompName, duplicateFields, groups, storedFormEntries, duplicatorGroup, prepareStepChange, v$ }
+    return { formData, prepareCompName, duplicateFields, duplicateCount, groups, storedFormEntries, duplicatorGroup, prepareStepChange, v$ }
   }
 }
 </script>

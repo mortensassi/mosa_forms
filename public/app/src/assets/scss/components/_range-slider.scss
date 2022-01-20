@@ -5,6 +5,7 @@
 .msf-range-slider-wrap {
   width: 100%;
   margin-top: 1rem;
+  margin-bottom: 2rem;
 
   @include bp($large-bp) {
     margin-top: 2rem;
@@ -12,6 +13,7 @@
 
   &:first-child {
     margin-top: 0;
+    margin-bottom: 3.3125rem;
   }
 }
 
@@ -66,17 +68,14 @@
 }
 
 .msf-range-slider__inputs {
-  margin-bottom: 2rem;
+  position: relative;
 
   @include bp($large-bp) {
     display: flex;
-    margin-bottom: 3.3125rem;
   }
 }
 
 .msf-range-slider__input {
-
-
   @include bp($large-bp) {
     + .msf-range-slider__input {
 

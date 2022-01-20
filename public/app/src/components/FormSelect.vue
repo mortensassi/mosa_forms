@@ -1,7 +1,10 @@
 <script>
+
 import {ref, computed, onMounted, watch, inject} from 'vue'
 import store from '@/store'
 import vSelect from 'vue-select'
+import {useVuelidate} from '@vuelidate/core'
+import {required, helpers, minLength} from '@vuelidate/validators'
 
 export default {
   name: 'FormSelect',
@@ -37,14 +40,35 @@ export default {
     const storeEntry = computed(() => storedFields[props.realIndex])
     const setFormEntry = inject('setFormEntry')
 
+    const preSelection = computed(() => {
+      return props.data.choices.filter(choice => choice.selected)
+    })
+
     onMounted(() => {
       if (storeEntry.value && storeEntry.value['value'].userInput) {
         selection.value = storeEntry.value['value'].userInput
+      } else if(preSelection.value) {
+        selection.value = preSelection.value[0]
+        makeSelection(preSelection.value[0])
       }
     })
 
-    const makeSelection = (value) => {
+    const validationRules = computed(() => {
+      const rules = {}
+
+      if (props.data.is_required) {
+        rules.required = helpers.withMessage(props.data.error_message, required)
+        rules.minLength = helpers.withMessage(props.data.error_message, minLength(1))
+      }
+
+      return rules
+    })
+
+    const v$ = useVuelidate(validationRules, selection)
+
+    const makeSelection = async (value) => {
       selection.value = value
+      await v$.value.$validate()
 
       setFormEntry({
         step: currentStep.value,
@@ -53,7 +77,7 @@ export default {
         id: props.fieldKey,
         name: props.data.label,
         type: props.data.acf_fc_layout,
-        subgroup: props.data.subgroup,
+        subgroup: props.data.duplicate || props.data.subgroup,
         value: {
           userInput: selection,
           fieldname: props.data.fieldname
@@ -61,7 +85,7 @@ export default {
       })
     }
 
-    return {storeEntry, selection, rootEl, currentStep, makeSelection }
+    return {storeEntry, selection, rootEl, currentStep, makeSelection, preSelection, v$ }
   }
 }
 </script>
@@ -80,15 +104,21 @@ export default {
     >*</span> </label>
     <v-select
       :id="`msf-select-${index}`"
-      @option:selected="makeSelection"
-      :modelValue="selection"
+      :model-value="selection"
       label="choice"
       :options="data.choices"
+      @option:selected="makeSelection"
     >
       <template #open-indicator="{ attributes }">
-        <svg v-bind="attributes"><use xlink:href="#icon-chevron-down"></use></svg>
+        <svg v-bind="attributes"><use xlink:href="#icon-chevron-down" /></svg>
       </template>
     </v-select>
+    <span
+        v-if="v$.$errors && v$.$errors[0]"
+        class="'c-input__validation', c-input__validation--error msf-input__validation"
+    >
+    {{ v$.$errors[0].$message }}
+  </span>
   </div>
 </template>
 
