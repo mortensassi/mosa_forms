@@ -208,7 +208,7 @@ export default {
           :index="`GroupedCheckboxes-g-${currentGroup}-c-${inputIndex}`"
           :input-index="inputIndex"
           :group-index="currentGroup"
-          @click="updateSelection(inputIndex, input, currentGroup, true)"
+          @change="updateSelection(inputIndex, input, currentGroup, true)"
         />
       </div>
       <button

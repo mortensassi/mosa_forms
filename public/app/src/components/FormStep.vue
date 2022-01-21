@@ -51,7 +51,7 @@ export default {
       default: false
     }
   },
-  
+
   emits: {
     goToStep: {
       type: Number|String,
@@ -103,8 +103,8 @@ export default {
         if (storedGroups[duplicatorGroup.value].duplicateCount) {
           duplicateCount.value = Number(storedGroups[duplicatorGroup.value].duplicateCount)
         }
-        for(let i = 0; i < duplicateCount.value; i++) {
-          groups.value[i].fields = groups.value[i].fields.map(field => ({ ...field, ...{ subgroup: i} }))
+        for(let i = 0; i <= duplicateCount.value; i++) {
+          groups.value[i + duplicatorGroup.value].fields = groups.value[i + duplicatorGroup.value].fields.map(field => ({ ...field, ...{ subgroup: i} }))
         }
       }
     })

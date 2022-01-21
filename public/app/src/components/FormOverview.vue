@@ -77,10 +77,12 @@ export default {
 
       stepsCopy.forEach(step => {
         step.groups.forEach(group => {
-          if (group.fields.find(entry => {
-            if (!entry) return
-            return entry.subgroup !== undefined
-          })) {
+          const groupedFields = field => {
+            if (!field) return
+            return field.subgroup !== undefined && field.subgroup > 0
+          }
+
+          if (group.fields.find(groupedFields)) {
             group.fields = _groupBy(group.fields, 'subgroup')
           }
         })
@@ -118,7 +120,7 @@ export default {
 
             let key = field.value.fieldname || field.name
 
-            if (field.subgroup) {
+            if (field.subgroup && field.subgroup > 0) {
               key = key + (field.subgroup + 1)
             }
 
