@@ -131,7 +131,7 @@ export default {
             } else if(field && field.type === 'grouped_checkboxes') {
               inquiry.push({ [key] : field.value.selection.map(option => option.fieldname) })
             } else if(field && field.type === 'choices') {
-              inquiry.push({ [key] : field.value.name })
+              inquiry.push({ [key] : field.value.fieldname })
             } else if(field && field.type === 'price_range') {
               const collection = field.value.inputData.collection
               if (collection.length > 1) {
