@@ -50,7 +50,7 @@ export default {
       })
 
       await intersectionObserver.observe(headerEl)
-      headerEl.scrollIntoView({behavior: 'smooth'})
+      headerEl.scrollIntoView({behavior: 'smooth', block: 'end'})
     })
 
     return {

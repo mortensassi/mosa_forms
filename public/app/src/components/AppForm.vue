@@ -48,7 +48,7 @@ export default {
         })
 
         await intersectionObserver.observe(headerEl)
-        headerEl.scrollIntoView({behavior: 'smooth'})
+        headerEl.scrollIntoView({behavior: 'smooth', block: 'end'})
       }
     }
 
@@ -92,10 +92,12 @@ export default {
       >
         <FormAfterSubmission
           v-if="formResponse"
+          key="view-after-submission"
           :data="formResponse"
         />
         <FormOverview
           v-else-if="showOverview"
+          key="view-overview"
           :data="formData.acf.steps"
           :acf="formData.acf"
           :show-overview="showOverview"
@@ -121,11 +123,12 @@ export default {
 <style lang="scss">
 .move-up-enter-active,
 .move-up-leave-active {
-  @include anim($dur: 200ms, $prop: opacity);
+  @include anim($dur: 500ms, $mode: ease-in);
 }
 
 .move-up-enter-from,
 .move-up-leave-to {
   opacity: 0;
+  visibility: hidden;
 }
 </style>
