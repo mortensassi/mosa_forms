@@ -464,11 +464,6 @@ return [
 								 ->wrapper([
 									 'width' => '75%'
 								 ]),
-					Text::make(__('Fehlermeldung', 'mosa'), 'error_message')
-						->conditionalLogic([
-							ConditionalLogic::if('is_required')->equals(1)
-						])
-						->required(),
 				]),
 		Repeater::make(__('Additional Info', 'mosa'), 'compliance_additional_info')
 			->buttonLabel(__('Add Info', 'mosa'))
