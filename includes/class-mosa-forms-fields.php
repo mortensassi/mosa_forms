@@ -240,11 +240,15 @@ return [
 																	 ->fields([
 																		 Text::make(__('Choice', 'mosa'), 'choice')
 																			 ->wrapper([
-																				 'width' => '75%'
+																				 'width' => '70%'
+																			 ]),
+																		 Text::make(__('Fieldname', 'mosa'), 'fieldname')
+																			 ->wrapper([
+																				 'width' => '15%'
 																			 ]),
 																		 TrueFalse::make(__('Selected', 'mosa'), 'selected')
 																			 ->wrapper([
-																				 'width' => '25%'
+																				 'width' => '15%'
 																			 ]),
 																	 ])
 														 ]),
@@ -282,6 +286,10 @@ return [
 																						 __('Choice', 'mosa'),
 																						 'choice'
 																					 ),
+																					 Text::make(__('Fieldname', 'mosa'), 'fieldname')
+																						 ->wrapper([
+																							 'width' => 15
+																						 ]),
 																					 TrueFalse::make(__('Selected', 'mosa'), 'selected')
 																					 	->wrapper([
 																							 'width' => 15

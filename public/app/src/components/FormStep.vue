@@ -99,8 +99,13 @@ export default {
 
     onMounted(() => {
       if (duplicatorGroup.value && groups.value[duplicatorGroup.value]) {
-        const subgroupCount = duplicateCount.value
-        groups.value[duplicatorGroup.value].fields = groups.value[duplicatorGroup.value].fields.map(field => ({ ...field, ...{ subgroup: subgroupCount} }))
+        const storedGroups = storedFormEntries.value.steps[props.currentStep].groups
+        if (storedGroups[duplicatorGroup.value].duplicateCount) {
+          duplicateCount.value = Number(storedGroups[duplicatorGroup.value].duplicateCount)
+        }
+        for(let i = 0; i < duplicateCount.value; i++) {
+          groups.value[i].fields = groups.value[i].fields.map(field => ({ ...field, ...{ subgroup: i} }))
+        }
       }
     })
 

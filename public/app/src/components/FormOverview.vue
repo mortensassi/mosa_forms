@@ -115,33 +115,42 @@ export default {
       data.forEach(step => {
         step.groups.forEach(group => {
           group.fields.forEach(field => {
+
+            let key = field.value.fieldname || field.name
+
+            if (field.subgroup) {
+              key = key + (field.subgroup + 1)
+            }
+
             if (field && field.type === 'field.name') {
-              inquiry.push({ [field.value.fieldname || field.name] : field.value.selection.map(option => option.value) })
+              inquiry.push({ [key] : field.value.selection.map(option => option.value) })
             } else if(field && field.type === 'multiselect') {
-              inquiry.push({ [field.value.fieldname || field.name] : field.value.selection.map(option => option.choice) })
+              inquiry.push({ [key] : field.value.selection.map(option => option.fieldname) })
             } else if(field && field.type === 'grouped_checkboxes') {
-              inquiry.push({ [field.value.fieldname || field.name] : field.value.selection.map(option => option.fieldname) })
+              inquiry.push({ [key] : field.value.selection.map(option => option.fieldname) })
             } else if(field && field.type === 'choices') {
-              inquiry.push({ [field.value.fieldname || field.name] : field.value.name })
+              inquiry.push({ [key] : field.value.name })
             } else if(field && field.type === 'price_range') {
               const collection = field.value.inputData.collection
               if (collection.length > 1) {
                 collection.forEach((item, i) => {
-                  inquiry.push({ [field.value.fieldname[i] || field.name] : item })
+                  key = field.value.fieldname[i] || field.name
+                  inquiry.push({ [key] : item })
                 })
               } else {
-                inquiry.push({ [field.value.fieldname[1] || field.name] : collection[0].val })
+                key = field.value.fieldname[1] || field.name
+                inquiry.push({ [key] : collection[0].val })
               }
             } else if(field && field.type === 'button_group') {
-              inquiry.push({ [field.value.fieldname || field.name] : field.value.selection.map(option => option.label).join(',') })
+              inquiry.push({ [key] : field.value.selection.map(option => option.fieldname).join(',') })
             } else if(field && field.type === 'counter') {
-              inquiry.push({ [field.value.fieldname || field.name] : field.value.userInput.map(option => option.value).join(',') })
+              inquiry.push({ [key] : field.value.userInput.map(option => option.value).join(',') })
             } else if(field && field.type === 'select') {
-              inquiry.push({ [field.value.fieldname || field.name] : field.value.userInput.choice })
+              inquiry.push({ [key] : field.value.userInput.fieldname })
             } else if (field && field.type === 'input') {
-              inquiry.push({ [field.value.fieldname || field.name] : field.value.userInput })
+              inquiry.push({ [key] : field.value.userInput })
             } else if (field && field.type === 'countries') {
-              inquiry.push({ [field.value.fieldname || field.name] : field.value.userInput })
+              inquiry.push({ [key] : field.value.userInput })
             }
           })
         })
