@@ -116,30 +116,32 @@ export default {
         step.groups.forEach(group => {
           group.fields.forEach(field => {
             if (field && field.type === 'field.name') {
-              inquiry.push({ [field.value.fieldname || field.name] : [field.value.selection.map(option => option.value).join(',')] })
+              inquiry.push({ [field.value.fieldname || field.name] : field.value.selection.map(option => option.value) })
             } else if(field && field.type === 'multiselect') {
-              inquiry.push({ [field.value.fieldname || field.name] : [field.value.selection.map(option => option.choice).join(',')] })
+              inquiry.push({ [field.value.fieldname || field.name] : field.value.selection.map(option => option.choice) })
             } else if(field && field.type === 'grouped_checkboxes') {
-              inquiry.push({ [field.value.fieldname || field.name] : [field.value.selection.map(option => option.fieldname).join(',')] })
+              inquiry.push({ [field.value.fieldname || field.name] : field.value.selection.map(option => option.fieldname) })
             } else if(field && field.type === 'choices') {
-              inquiry.push({ [field.value.fieldname || field.name] : [field.value.name] })
+              inquiry.push({ [field.value.fieldname || field.name] : field.value.name })
             } else if(field && field.type === 'price_range') {
               const collection = field.value.inputData.collection
               if (collection.length > 1) {
                 collection.forEach((item, i) => {
-                  inquiry.push({ [field.value.fieldname[i] || field.name] : [item] })
+                  inquiry.push({ [field.value.fieldname[i] || field.name] : item })
                 })
+              } else {
+                inquiry.push({ [field.value.fieldname[1] || field.name] : collection[0].val })
               }
             } else if(field && field.type === 'button_group') {
-              inquiry.push({ [field.value.fieldname || field.name] : [field.value.selection.map(option => option.label).join(',')] })
+              inquiry.push({ [field.value.fieldname || field.name] : field.value.selection.map(option => option.label).join(',') })
             } else if(field && field.type === 'counter') {
-              inquiry.push({ [field.value.fieldname || field.name] : [field.value.userInput.map(option => option.value).join(',')] })
+              inquiry.push({ [field.value.fieldname || field.name] : field.value.userInput.map(option => option.value).join(',') })
             } else if(field && field.type === 'select') {
-              inquiry.push({ [field.value.fieldname || field.name] : [field.value.userInput.choice] })
+              inquiry.push({ [field.value.fieldname || field.name] : field.value.userInput.choice })
             } else if (field && field.type === 'input') {
-              inquiry.push({ [field.value.fieldname || field.name] : [field.value.userInput] })
+              inquiry.push({ [field.value.fieldname || field.name] : field.value.userInput })
             } else if (field && field.type === 'countries') {
-              inquiry.push({ [field.value.fieldname || field.name] : [field.value.userInput] })
+              inquiry.push({ [field.value.fieldname || field.name] : field.value.userInput })
             }
           })
         })

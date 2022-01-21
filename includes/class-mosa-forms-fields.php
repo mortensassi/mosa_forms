@@ -170,35 +170,6 @@ return [
 																 ->tabs('visual')
 															 ])
 														 ]),
-												   Layout::make(__('Price Range Single'), 'price_range_single')
-														 ->fields([
-															 Text::make(__('Fieldname', 'mosa'), 'fieldname'),
-															 Text::make(__('Label', 'mosa'), 'label')
-																 ->wrapper([
-																	 'width' => '75%'
-																 ]),
-															 TrueFalse::make(__('Required', 'mosa'), 'is_required')
-																	  ->stylisedUi()
-																	  ->wrapper([
-																		  'width' => '25%'
-																	  ]),
-															 Number::make(__('Max value', 'mosa'), 'max_val')
-																   ->wrapper([
-																	   'width' => '75%'
-																   ]),
-															 Text::make(__('Fehlermeldung', 'mosa'), 'error_message')
-																 ->conditionalLogic([
-																	 ConditionalLogic::if('is_required')->equals(1)
-																 ]),
-															 Group::make(__('Infotext', 'mosa'), 'info')
-																  ->fields([
-																	  Text::make(__('Label', 'mosa'), 'label'),
-																	  WysiwygEditor::make(__('Description', 'mosa'), 'description')
-																				   ->toolbar('basic')
-																				   ->mediaUpload(0)
-																				   ->tabs('visual')
-																  ])
-														 ]),
 												   Layout::make(__('Button Group'), 'button_group')
 														 ->fields([
 															 Text::make(__('Fieldname', 'mosa'), 'fieldname'),
