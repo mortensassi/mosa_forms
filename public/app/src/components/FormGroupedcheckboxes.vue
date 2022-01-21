@@ -3,7 +3,7 @@ import {useVuelidate} from '@vuelidate/core'
 import {helpers, minLength, required} from '@vuelidate/validators'
 import store from '@/store'
 import _throttle from 'lodash.throttle'
-import {ref, computed, onMounted, inject, watch} from 'vue'
+import {ref, computed, onMounted, onBeforeUnmount, inject,} from 'vue'
 import FormCheckbox from '@/components/FormCheckbox.vue'
 
 export default {
@@ -46,10 +46,11 @@ export default {
       const foundItem = selection.value.find(item =>
         item.id === id && item.group.id === group
       )
+
       if (foundItem) {
         selection.value.splice(selection.value.indexOf(foundItem), 1)
       } else {
-        selection.value.push({ id, fieldname: val.fieldname, value: val.checkbox, group: { id: currentGroup.value, name: props.data.groups[currentGroup.value].name }  })
+        selection.value.push({ id, fieldname: val.fieldname, value: val.value, group: { id: currentGroup.value, name: props.data.groups[currentGroup.value].name }  })
       }
 
       setFormEntry({
@@ -82,7 +83,11 @@ export default {
     const currentGroup = ref(0)
     const storedFields = store.state.form.entries.steps[currentStep.value].groups[props.stepGroupIndex].fields
     const storeEntry = computed(() => storedFields[props.realIndex])
-    const checkboxes = computed(() => props.data.groups[currentGroup.value].checkboxes)
+    const checkboxes = computed(() => {
+      return props.data.groups[currentGroup.value].checkboxes.map(checkbox => {
+        return { value: checkbox.checkbox, checked: checkbox.checked, fieldname: checkbox.fieldname }
+      })
+    })
     const collapseList = computed(() => checkboxes.value.length > 9)
     const maxHeight = ref(0)
     const listIsCollapsed = ref(true)
@@ -127,15 +132,20 @@ export default {
     onMounted(() => {
       if (storeEntry.value) {
         storeEntry.value.value.selection.forEach(checkbox => {
-          const { value, fieldname, id } = checkbox
-          const val = { value, fieldname, id }
-          updateSelection(checkbox.id, val, currentGroup.value)
+          const checkboxIndex = checkboxes.value.findIndex(el => el.fieldname === checkbox.fieldname)
+          const { value, fieldname } = checkbox
+          const val = { value, fieldname }
+
+          updateSelection(checkboxIndex, val, currentGroup.value)
         })
       } else if (preselectedCheckboxes.value) {
         preselectedCheckboxes.value.forEach(checkbox => {
           const checkboxIndex = checkboxes.value.findIndex(el => el.fieldname === checkbox.fieldname)
 
-          updateSelection(checkboxIndex, checkbox, currentGroup.value)
+          const { checkbox: value, fieldname } = checkbox
+          const val = { value, fieldname }
+
+          updateSelection(checkboxIndex, val, currentGroup.value)
         })
       }
 
@@ -193,12 +203,12 @@ export default {
         <FormCheckbox
           v-for="(input, inputIndex) in checkboxes"
           :key="`GroupedCheckboxes-g-${currentGroup}-c-${inputIndex}`"
-          :data="{ type: 'checkbox', label: input.checkbox, checked: selection.find(checkbox => checkbox.fieldname === input.fieldname) }"
+          :data="{ type: 'checkbox', label: input.value, checked: selection.find(checkbox => checkbox.fieldname === input.fieldname) }"
           :selection="selection"
           :index="`GroupedCheckboxes-g-${currentGroup}-c-${inputIndex}`"
           :input-index="inputIndex"
           :group-index="currentGroup"
-          @change="updateSelection(inputIndex, input, currentGroup)"
+          @click="updateSelection(inputIndex, input, currentGroup, true)"
         />
       </div>
       <button

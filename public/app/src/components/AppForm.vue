@@ -6,7 +6,6 @@ import AppFormProgress from '@/components/AppFormProgress.vue'
 import FormStep from '@/components/FormStep.vue'
 import FormOverview from '@/components/FormOverview.vue'
 import FormAfterSubmission from '@/components/FormAfterSubmission.vue'
-import _groupBy from "lodash.groupby";
 
 export default {
   name: 'AppForm',
@@ -58,30 +57,11 @@ export default {
     const step = computed(() => formData.value.acf.steps[currentStep.value])
     const formResponse = computed(() => store.state.form.response)
 
-    const collection = computed(() => {
-      const {steps} = store.state.form.entries
-      const stepsCopy = JSON.parse(JSON.stringify(steps))
-
-      stepsCopy.forEach(step => {
-        step.groups.forEach(group => {
-          if (group.fields.find(entry => {
-            if (!entry) return
-            return entry.subgroup !== undefined
-          })) {
-            group.fields = _groupBy(group.fields, 'subgroup')
-          }
-        })
-      })
-
-      return stepsCopy
-    })
-
     return {
       step,
       formData,
       currentStep,
       goToStep,
-      collection,
       showOverview,
       showResponse,
       formResponse,
@@ -118,13 +98,12 @@ export default {
           v-else-if="showOverview"
           :data="formData.acf.steps"
           :acf="formData.acf"
-          :collection="collection"
           :show-overview="showOverview"
           @go-to-step="goToStep"
           @close-overview="showOverview = false"
         />
         <FormStep
-          v-else-if="step"
+          v-else
           :key="`mosa-forms_step-${currentStep}`"
           :current-step="currentStep"
           :step="step"

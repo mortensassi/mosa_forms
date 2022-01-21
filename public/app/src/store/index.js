@@ -1,5 +1,5 @@
 import fetchData from '@/api'
-import {reactive, watch} from 'vue'
+import {reactive, inject} from 'vue'
 
 const store = {
   state: reactive({
@@ -20,7 +20,7 @@ const store = {
     const data = this.state.form.data
 
     if (data.acf) {
-      data.acf.steps.forEach((step, index) => {
+      data.acf.steps.forEach((step) => {
         const groups = step.groups
         const stepStoreObject = {
           title: step.header.title
@@ -37,6 +37,14 @@ const store = {
 
         storedSteps.push(stepStoreObject)
       })
+    }
+  },
+
+  setStoreFromStorage() {
+    const formId = inject('formId')
+    const storedState = localStorage.getItem(`mosa-forms-${formId}`)
+    if (storedState) {
+      this.state.form = JSON.parse(storedState).form
     }
   },
 
@@ -61,7 +69,7 @@ const store = {
   duplicateFields(step, count) {
     this.state.form.entries.steps[step.index].groups[step.groupIndex].duplicates = step.fields
     this.state.form.entries.steps[step.index].groups[step.groupIndex].duplicateCount = count
-  }
+  },
 }
 
 export default store;

@@ -1,5 +1,5 @@
 <script>
-import {onMounted, ref, watch} from 'vue'
+import {inject, onMounted, ref, watch} from 'vue'
 import lozad from 'lozad'
 
 export default {
@@ -34,8 +34,23 @@ export default {
       }
     }
 
-    onMounted(() => {
+    onMounted(async () => {
+      const formId = inject('formId')
+      localStorage.removeItem(`mosa-forms-${formId}`)
+
       moveHeader()
+
+      const headerEl = document.querySelector('.c-header')
+
+      const intersectionObserver = new IntersectionObserver(async (entries) => {
+        let [entry] = entries
+        if (entry.isIntersecting) {
+          intersectionObserver.unobserve(headerEl)
+        }
+      })
+
+      await intersectionObserver.observe(headerEl)
+      headerEl.scrollIntoView({behavior: 'smooth'})
     })
 
     return {

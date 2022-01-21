@@ -43,13 +43,6 @@ export default {
     const storeEntry = computed(() => storedFields[props.realIndex])
     const setFormEntry = inject('setFormEntry')
 
-    onBeforeMount(() => {
-      if (props.data.toggle_min) {
-        inputData.collection.splice(0,0, {val: Number(props.data.min.val)},)
-        sliderVal.value.splice(0,0, Number(props.data.min.val))
-      }
-    })
-
     const updateInputData = () => {
       const current = inputData.collection.map(e => e.val)
       priceRange.value.setValue(current)
@@ -97,11 +90,17 @@ export default {
       }
     }, { deep: true })
 
-    onMounted(() => {
+    onBeforeMount(() => {
       if (storeEntry.value) {
         inputData.collection = storeEntry.value['value'].inputData.collection
+        sliderVal.value = storeEntry.value['value'].inputData.collection.map(item => item.val)
+      } else if (props.data.toggle_min) {
+        inputData.collection.splice(0,0, {val: Number(props.data.min.val)},)
+        sliderVal.value.splice(0,0, Number(props.data.min.val))
       }
+    })
 
+    onMounted(() => {
       if (props.data.info) {
         const tooltip = document.getElementById(`Pricerange-${props.index}-tooltip`)
         if (tooltip) {

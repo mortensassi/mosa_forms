@@ -64,6 +64,7 @@ export default {
 
     onMounted(async () => {
       moveBar(document.querySelector('.msf-form-header-image'))
+      heroEl.style.paddingBottom = '169px'
 
       const headerEl = document.querySelector('.c-header')
 

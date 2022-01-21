@@ -1,5 +1,5 @@
 <script>
-import { ref, computed } from 'vue'
+import {ref, computed} from 'vue'
 import _capitalize from 'lodash.capitalize'
 import _camelCase from 'lodash.camelcase'
 import store from '@/store'
@@ -13,6 +13,7 @@ import Countries from '@/components/Overview/OverviewCountries.vue'
 import Pricerangesingle from '@/components/Overview/OverviewPricerangesingle.vue'
 import Select from '@/components/Overview/OverviewSelect.vue'
 import Buttongroup from '@/components/Overview/OverviewButtongroup.vue'
+import _groupBy from 'lodash.groupby'
 
 
 export default {
@@ -40,10 +41,6 @@ export default {
       type: Object,
       default: null
     },
-    collection: {
-      type: Object,
-      default: null
-    },
     currentStep: {
       type: Number,
       default: 0
@@ -68,9 +65,28 @@ export default {
   setup(props, { emit }) {
     const { entries } = store.state.form
     const complianceUserOptIn = ref(0)
+    const submissionError = ref(false)
     const userCompliance = computed(() => {
       const complianceCount = props.acf.compliance_opt_check.length
       return complianceCount === complianceUserOptIn.value
+    })
+
+    const collection = computed(() => {
+      const {steps} = store.state.form.entries
+      const stepsCopy = JSON.parse(JSON.stringify(steps))
+
+      stepsCopy.forEach(step => {
+        step.groups.forEach(group => {
+          if (group.fields.find(entry => {
+            if (!entry) return
+            return entry.subgroup !== undefined
+          })) {
+            group.fields = _groupBy(group.fields, 'subgroup')
+          }
+        })
+      })
+
+      return stepsCopy
     })
 
     const goToStep = async (step) => {
@@ -144,13 +160,26 @@ export default {
       }
 
       const res = await response.json()
-      store.setResponse(res)
 
-      goToStep('after-submit')
+      if (res.success) {
+        store.setResponse(res)
+        goToStep('after-submit')
+      } else {
+        submissionError.value = true
+      }
     };
 
 
-    return { entries, goToStep, fieldFileName, userCompliance, updateComplianceState, submitRequest }
+    return {
+      entries,
+      goToStep,
+      fieldFileName,
+      userCompliance,
+      updateComplianceState,
+      submitRequest,
+      collection,
+      submissionError
+    }
   }
 }
 </script>
@@ -270,6 +299,10 @@ export default {
     </div>
     <div class="columns">
       <div class="column is-12 is-8-desktop is-offset-4-desktop">
+        <div v-if="submissionError" class="msf-info msf-info--error">
+          <div class="msf-info__text">Leider ist etwas schief gelaufen!</div>
+          <button class="msf-info__close" @click="submissionError = !submissionError">&times;</button>
+        </div>
         <div class="msf-form__controls">
           <button
               class="msf-form__btn c-btn c-btn--secondary"
@@ -294,3 +327,4 @@ export default {
 </template>
 
 <style src="@styles/components/_overview.scss"></style>
+<style src="@styles/components/_info.scss"></style>

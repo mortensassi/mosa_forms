@@ -1,0 +1,48 @@
+/* ==========================================================================
+   INFO
+   ========================================================================== */
+
+.msf-info {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.625rem 0.625rem 0.625rem 0.75rem;
+  border-radius: 4px;
+  border: 1.5px solid;
+
+  @include text-token('sans', 'copy', 'xs');
+
+  @include bp($large-bp) {
+    @include text-token('sans', 'copy', 'md');
+
+    padding: 1rem 1.125rem 1.5rem;
+    border-width: 2px;
+  }
+}
+
+.msf-info--error {
+  background-color: map-get($brand-colors, 'red', '300');
+  border-color: map-get($brand-colors, 'red', '400');
+  color: map-get($brand-colors, 'red', '900');
+}
+
+.msf-info__close {
+  appearance: none;
+  background: transparent;
+  border: none;
+  width: 0.875rem;
+  height: 0.875rem;
+  font-weight: bold;
+  padding: 0;
+  margin: 0;
+  display: block;
+  cursor: pointer;
+
+  &:hover,
+  &:focus {
+    outline: none;
+    border: none;
+    background-color: transparent;
+  }
+}
