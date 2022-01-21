@@ -76,15 +76,15 @@ return [
 																					 __('+ Add Checkbox', 'mosa')
 																				 )
 																				 ->fields([
+																					 Text::make(
+																						 __('Checkbox', 'mosa'),
+																						 'checkbox'
+																					 ),
 																					 Text::make(__('Fieldname', 'mosa'), 'fieldname')
 																						 ->wrapper([
 																							 'width' => 25
 																						 ])
 																						 ->required(),
-																					 Text::make(
-																						 __('Checkbox', 'mosa'),
-																						 'checkbox'
-																					 ),
 																					 TrueFalse::make(__('Checked', 'mosa'), 'checked')
 																					 ->wrapper([
 																						 'width' => 15
@@ -383,12 +383,12 @@ return [
 														 ]),
 												   Layout::make(__('Choices', 'mosa'), 'choices')
 														 ->fields([
-															 Text::make(__('Fieldname', 'mosa'), 'fieldname')
-															 	->required(),
 															 Text::make(__('Label', 'mosa'), 'label')
 																 ->wrapper([
 																	 'width' => '60%'
 																 ]),
+															 Text::make(__('Fieldname', 'mosa'), 'fieldname')
+															 	->required(),
 															 TrueFalse::make(__('Required', 'mosa'), 'is_required')
 																	  ->stylisedUi()
 																	  ->wrapper([
@@ -403,6 +403,8 @@ return [
 																	 ->buttonLabel(__('+ Add Button', 'mosa'))
 																	 ->fields([
 																		 Text::make(__('Button ', 'mosa'), 'text'),
+																		 Text::make(__('Fieldname', 'mosa'), 'fieldname')
+																			 ->required(),
 																		 TrueFalse::make(__('Selected', 'mosa'), 'selected')
 																				  ->wrapper([
 																					  'width' => '15%'
