@@ -79,7 +79,7 @@ export default {
         step.groups.forEach(group => {
           const groupedFields = field => {
             if (!field) return
-            return field.subgroup !== undefined && field.subgroup > 0
+            return field.subgroup !== undefined && field.subgroup >= 0
           }
 
           if (group.fields.find(groupedFields)) {
@@ -131,28 +131,28 @@ export default {
             } else if(field && field.type === 'grouped_checkboxes') {
               inquiry.push({ [key] : field.value.selection.map(option => option.fieldname) })
             } else if(field && field.type === 'choices') {
-              inquiry.push({ [key] : field.value.fieldname })
+              inquiry.push({ [key] : field.value.value.fieldname })
             } else if(field && field.type === 'price_range') {
               const collection = field.value.inputData.collection
               if (collection.length > 1) {
                 collection.forEach((item, i) => {
                   key = field.value.fieldname[i] || field.name
-                  inquiry.push({ [key] : item })
+                  inquiry.push({ [key] : item.val })
                 })
               } else {
                 key = field.value.fieldname[1] || field.name
                 inquiry.push({ [key] : collection[0].val })
               }
             } else if(field && field.type === 'button_group') {
-              inquiry.push({ [key] : field.value.selection.map(option => option.fieldname).join(',') })
+              inquiry.push({ [key] : field.value.selection.map(option => option.fieldname) })
             } else if(field && field.type === 'counter') {
-              inquiry.push({ [key] : field.value.userInput.map(option => option.value).join(',') })
+              inquiry.push({ [key] : field.value.userInput.map(option => option.value) })
             } else if(field && field.type === 'select') {
               inquiry.push({ [key] : field.value.userInput.fieldname })
             } else if (field && field.type === 'input') {
               inquiry.push({ [key] : field.value.userInput })
             } else if (field && field.type === 'countries') {
-              inquiry.push({ [key] : field.value.userInput })
+              inquiry.push({ [key] : field.value.userInput.alpha2 })
             }
           })
         })

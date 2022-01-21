@@ -115,7 +115,7 @@ export default {
           type: props.data.acf_fc_layout,
           subgroup: props.data.duplicate || props.data.subgroup,
           value: {
-            userInput: n,
+            userInput: countriesList.find(country => country.name === n),
             fieldname: props.data.fieldname
           }
         })
@@ -124,8 +124,8 @@ export default {
     
     onMounted(() => {
       if (storeEntry.value) {
-        selection.value = storeEntry.value['value'].userInput
-        searchInput.value = storeEntry.value['value'].userInput
+        selection.value = storeEntry.value['value'].userInput.name
+        searchInput.value = storeEntry.value['value'].userInput.name
       }
     })
 

@@ -62,7 +62,10 @@ export default {
         name: props.data.label,
         value: {
           fieldname: props.data.fieldname,
-          name: props.data.buttons[choice].text,
+          value: {
+            name: props.data.buttons[choice].text,
+            fieldname: props.data.buttons[choice].fieldname
+          },
           id: choice
         },
         type: props.data.acf_fc_layout,
