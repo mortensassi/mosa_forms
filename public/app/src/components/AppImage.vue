@@ -43,7 +43,7 @@ export default {
     const imageObject = ref(null)
     const lazyImage = ref(null)
     const getImage = async () => {
-      const res = await fetch(`${import.meta.env.VITE_API_ENDPOINT}wp/v2/media/${props.image}`)
+      const res = await fetch(`${window.location.origin}/wp-json/wp/v2/media/${props.image}`)
       imageObject.value = await res.json()
     }
 
@@ -59,13 +59,13 @@ export default {
       getImage()
     })
 
-    watch(lazyImage, (n, o) => {
-      if (n) {
-        const observer = lozad(n);
+    watch(lazyImage, (newImage) => {
+      if (newImage) {
+        const observer = lozad(newImage);
 
         observer.observe();
 
-        store.setImage(n)
+        store.setImage(newImage)
       }
     })
 

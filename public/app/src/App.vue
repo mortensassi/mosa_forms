@@ -19,7 +19,7 @@
         if (storedState) {
           store.setStoreFromStorage()
         } else {
-          store.getFormData(`${import.meta.env.VITE_API_ENDPOINT}wp/v2/mosa_form/${formId}`)
+          store.getFormData(`${window.location.origin}/wp-json/wp/v2/mosa_form/${formId}`)
         }
       })
 

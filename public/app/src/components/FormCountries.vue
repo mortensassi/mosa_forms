@@ -1,4 +1,5 @@
 <script>
+import _capitalize from 'lodash.capitalize'
 import {useVuelidate} from '@vuelidate/core'
 import {email, helpers, numeric, required} from '@vuelidate/validators'
 import Fuse from 'fuse.js'
@@ -53,9 +54,13 @@ export default {
     const validationRules = computed(() => {
       const rules = {}
 
+      const foundInListRule = (value) => countriesList.find(country => country.name === value)
+
       if (props.data.is_required) {
         rules.required = helpers.withMessage(props.data.error_message, required)
       }
+
+      rules.foundInList = helpers.withMessage(props.data.error_message, foundInListRule)
 
       return rules
     })
@@ -76,7 +81,7 @@ export default {
       const result = searchEngine().search(val)
       if (result[0]) {
         const resultStr = result[0].item.name
-        autocompleteStr.value = val + resultStr.slice(val.length)
+        autocompleteStr.value = _capitalize(val) + resultStr.slice(val.length)
       }
     }
 
