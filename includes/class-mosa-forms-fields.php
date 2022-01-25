@@ -433,14 +433,22 @@ return [
 												   Layout::make(__('Duplicate fields', 'mosa'), 'duplicate')
 												   	->fields([
 														   TrueFalse::make(__('Duplicate fields from this group', 'mosa'), 'duplicate_fields')
-														->stylisedUi()
 															   ->wrapper([
-																   'width' => '25%'
+																   'width' => '10%'
 															   ]),
 														Text::make(__('Text label', 'mosa'), 'label')
 															->wrapper([
-																'width' => '75%'
+																'width' => '40%'
+															]),
+														Text::make(__('Text label remove', 'mosa'), 'label_remove')
+															->wrapper([
+																'width' => '40%'
+															]),
+                                                        Number::make(__('Max count', 'mosa'), 'max_count')
+															->wrapper([
+																'width' => '10%'
 															])
+                                                            ->required()
 													])
 											   ])
 							]),

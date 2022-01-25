@@ -47,7 +47,7 @@ export default {
     onMounted(() => {
       if (storeEntry.value && storeEntry.value['value'].userInput) {
         selection.value = storeEntry.value['value'].userInput
-      } else if(preSelection.value) {
+      } else if(preSelection.value.length > 0) {
         selection.value = preSelection.value[0]
         makeSelection(preSelection.value[0])
       }

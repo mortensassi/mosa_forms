@@ -74,13 +74,18 @@ export default {
     }
 
     watch(storeEntry, (v) => {
-      selection.value = v.value.id
+      if (v) {
+        selection.value = v.value.id
+      }
     })
 
     onMounted(() => {
       if (storeEntry.value) {
-        selection.value = storeEntry.value['value'].id
-      } else if (selectedChoices.value) {
+        if (storeEntry.value['value']) {
+
+          selection.value = storeEntry.value['value'].id
+        }
+      } else if (selectedChoices.value.length > 0) {
         selectedChoices.value.forEach(selectedButton => {
           const index = props.data.buttons.findIndex(button => button.text === selectedButton.text)
 
@@ -89,7 +94,7 @@ export default {
       }
     })
 
-    return { selection, storeEntry, makeChoice, v$ }
+    return { selection, storeEntry, makeChoice, selectedChoices, v$ }
   }
 }
 </script>

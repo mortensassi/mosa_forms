@@ -68,6 +68,13 @@ const store = {
     this.state.form.entries.steps[step.index].groups[step.groupIndex].duplicates = step.fields
     this.state.form.entries.steps[step.index].groups[step.groupIndex].duplicateCount = count
   },
+
+  removeDuplicates(stepIndex, groupIndex, count) {
+    const groupWithDuplicator = this.state.form.entries.steps[stepIndex].groups[groupIndex]
+    groupWithDuplicator.fields = groupWithDuplicator.fields.filter(field => field.subgroup === count)
+    groupWithDuplicator.duplicates = groupWithDuplicator.fields.filter(field => field.subgroup === count)
+    groupWithDuplicator.duplicateCount = count
+  }
 }
 
 export default store;

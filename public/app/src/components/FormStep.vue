@@ -68,6 +68,8 @@ export default {
     const duplicateCount = ref(0)
     const duplicates = ref([])
     const duplicateFields = () => {
+      const duplicateField = groups.value[duplicatorGroup.value].fields.filter(field => field.acf_fc_layout === 'duplicate')
+      if (duplicateCount.value < duplicateField[0].max_count)
       duplicateCount.value += 1
       groups.value.forEach((group, groupIndex) => {
         const { fields } = groups.value[groupIndex]
@@ -97,14 +99,38 @@ export default {
       })
     }
 
+    const removeDuplicate = async () => {
+      duplicateCount.value -= 1
+      groups.value.forEach((group, groupIndex) => {
+        const { fields } = groups.value[groupIndex]
+        const hasDuplicatorField = fields.find(field => field['acf_fc_layout'] === 'duplicate')
+
+        if (hasDuplicatorField) {
+          groups.value[groupIndex].fields = groups.value[groupIndex].fields.filter(field => field.subgroup < 1)
+
+          store.removeDuplicates(props.currentStep, groupIndex, duplicateCount.value)
+        }
+      })
+
+
+    }
+
     onMounted(() => {
       if (duplicatorGroup.value && groups.value[duplicatorGroup.value]) {
         const storedGroups = storedFormEntries.value.steps[props.currentStep].groups
         if (storedGroups[duplicatorGroup.value].duplicateCount) {
           duplicateCount.value = Number(storedGroups[duplicatorGroup.value].duplicateCount)
-        }
-        for(let i = 0; i <= duplicateCount.value; i++) {
-          groups.value[i + duplicatorGroup.value].fields = groups.value[i + duplicatorGroup.value].fields.map(field => ({ ...field, ...{ subgroup: i} }))
+          groups.value[duplicatorGroup.value].fields = groups.value[duplicatorGroup.value].fields.map(field => {
+            if (!field.subgroup) {
+              return { ...field, ...{ subgroup: 0} }
+            } else {
+              return field
+            }
+          })
+        } else {
+          for(let i = 0; i <= duplicateCount.value; i++) {
+            groups.value[duplicatorGroup.value].fields = groups.value[duplicatorGroup.value].fields.map(field => ({ ...field, ...{ subgroup: i} }))
+          }
         }
       }
     })
@@ -125,7 +151,7 @@ export default {
       }
     }
 
-    return { formData, prepareCompName, duplicateFields, duplicateCount, groups, storedFormEntries, duplicatorGroup, prepareStepChange, v$ }
+    return { formData, prepareCompName, duplicateFields, removeDuplicate, duplicateCount, groups, storedFormEntries, duplicatorGroup, prepareStepChange, v$ }
   }
 }
 </script>
@@ -158,7 +184,9 @@ export default {
               :step-group-index="groupIndex"
               :index="`${currentStep}-${groupIndex}-${inputIndex}`"
               :group="group"
+              :duplicate-count="duplicateCount"
               @duplicate="duplicateFields"
+              @remove-duplicate="removeDuplicate"
             />
           </div>
         </div>
