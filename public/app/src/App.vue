@@ -1,7 +1,8 @@
 <script>
   import AppForm from '@/components/AppForm.vue'
   import store from '@/store'
-  import { onMounted, onBeforeMount, inject, watch } from 'vue'
+  import { onBeforeMount, inject, watch } from 'vue'
+  import fetchData from '@/api'
 
   export default {
     name: 'MosaFormsApp',
@@ -14,12 +15,24 @@
       const formId = inject('formId')
       const storedStateName = `mosa-forms-${formId}`
       const storedState = localStorage.getItem(storedStateName)
+      const formUrl = `${window.location.origin}/wp-json/wp/v2/mosa_form/${formId}`
 
-      onBeforeMount(() => {
+      onBeforeMount(async () => {
+        const modifiedNew = await fetchData(formUrl + '?_fields[]=modified')
+
         if (storedState) {
-          store.setStoreFromStorage()
+          if (modifiedNew) {
+            const currentModified = new Date(modifiedNew.modified).getTime()
+            const storedModified = new Date(JSON.parse(storedState).form.data.modified).getTime()
+
+            if (currentModified > storedModified) {
+              await store.getFormData(formUrl)
+            } else {
+              store.setStoreFromStorage(storedState)
+            }
+          }
         } else {
-          store.getFormData(`${window.location.origin}/wp-json/wp/v2/mosa_form/${formId}`)
+          await store.getFormData(formUrl)
         }
       })
 

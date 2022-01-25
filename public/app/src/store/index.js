@@ -40,9 +40,7 @@ const store = {
     }
   },
 
-  setStoreFromStorage() {
-    const formId = inject('formId')
-    const storedState = localStorage.getItem(`mosa-forms-${formId}`)
+  setStoreFromStorage(storedState) {
     if (storedState) {
       this.state.form = JSON.parse(storedState).form
     }
