@@ -119,6 +119,7 @@ return [
 																	   'number' => __('Number', 'mosa'),
 																	   'email' => __('Email', 'mosa'),
 																	   'tel'   => __('Phone', 'mosa'),
+                                                                       'date'   => __('Date', 'mosa')
 																   ])
 																   ->defaultValue('text')
 																   ->stylisedUi()

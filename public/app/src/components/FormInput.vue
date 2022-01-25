@@ -79,6 +79,13 @@ export default {
         rules.numeric = helpers.withMessage(props.data.error_message, numeric)
       }
 
+      if (props.data.type === 'date') {
+        rules.dateFormat = helpers.withMessage(props.data.error_message,  (val) => {
+          const pattern = new RegExp(/\d{2}\.\d{2}\.\d{4}/)
+          return pattern.test(val) && val.length === 10
+        })
+      }
+
       return rules
     })
 
@@ -100,7 +107,7 @@ export default {
     let inputProps = {
       id: `msf-input-${this.index}`,
       class: ['c-input__control', 'msf-input__control', `msf-input__control--${field.type}`],
-      type: field.type,
+      type: field.type === 'date' ? 'text' : field.type,
       required: field.is_required,
 
       onInput: (v) => {
