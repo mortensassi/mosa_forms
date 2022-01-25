@@ -54,7 +54,10 @@ export default {
     const validationRules = computed(() => {
       const rules = {}
 
-      const foundInListRule = (value) => countriesList.find(country => country.name === value)
+      const foundInListRule = (value) => {
+        if (!value) return true
+        return countriesList.find(country => country.name === value)
+      }
 
       if (props.data.is_required) {
         rules.required = helpers.withMessage(props.data.error_message, required)
