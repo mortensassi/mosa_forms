@@ -98,12 +98,15 @@ return [
 																 ->required(),
 															 Text::make(__('Label', 'mosa'), 'label')
 																 ->wrapper([
-																	 'width' => (100/3 * 2)
+																	 'width' => 60
 																 ]),
 															 TrueFalse::make(__('Required', 'mosa'), 'is_required')
-																	  ->stylisedUi()
 																	  ->wrapper([
-																		  'width' => (100/3 * 1)
+																		  'width' => 20
+																	  ]),
+															 TrueFalse::make(__('In Duplicate', 'mosa'), 'in_duplicate')
+																	  ->wrapper([
+																		  'width' => 20
 																	  ]),
 															 Text::make(__('Fehlermeldung', 'mosa'), 'error_message')
 																 ->conditionalLogic([
@@ -138,12 +141,15 @@ return [
 														 ->fields([
 															 Text::make(__('Label', 'mosa'), 'label')
 																 ->wrapper([
-																	 'width' => '75%'
+																	 'width' => 60
 																 ]),
 															 TrueFalse::make(__('Required', 'mosa'), 'is_required')
-																	  ->stylisedUi()
 																	  ->wrapper([
-																		  'width' => '25%'
+																		  'width' => 20
+																	  ]),
+															 TrueFalse::make(__('In Duplicate', 'mosa'), 'in_duplicate')
+																	  ->wrapper([
+																		  'width' => 20
 																	  ]),
 															 Text::make(__('Fehlermeldung', 'mosa'), 'error_message')
 																 ->conditionalLogic([
@@ -243,6 +249,10 @@ return [
 																	  ->stylisedUi()
 																	  ->wrapper([
 																		  'width' => '25%'
+																	  ]),
+															 TrueFalse::make(__('In Duplicate', 'mosa'), 'in_duplicate')
+																	  ->wrapper([
+																		  'width' => 20
 																	  ]),
 															 Text::make(__('Fehlermeldung', 'mosa'), 'error_message')
 																 ->conditionalLogic([

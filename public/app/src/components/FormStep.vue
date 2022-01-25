@@ -78,7 +78,7 @@ export default {
         if (duplicator) {
           const index = duplicateCount.value
           const duplicatorPosition = fields.indexOf(duplicator)
-          const coreFields = fields.filter(field => !field.duplicate && field['acf_fc_layout'] !== 'duplicate')
+          const coreFields = fields.filter(field => !field.duplicate && field['acf_fc_layout'] !== 'duplicate' && field.in_duplicate)
           duplicates.value = coreFields.map(field => {
             return {
               ...field,
