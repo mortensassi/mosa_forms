@@ -1,14 +1,15 @@
 <script>
-import _capitalize from 'lodash.capitalize'
-import {useVuelidate} from '@vuelidate/core'
-import {email, helpers, numeric, required} from '@vuelidate/validators'
-import Fuse from 'fuse.js'
-import {ref, computed, watch, inject, onMounted} from 'vue'
-import countriesList from "@/assets/countries.json"
+
+import {ref, computed, onMounted, watch, inject} from 'vue'
 import store from '@/store'
+import vSelect from 'vue-select'
+import {useVuelidate} from '@vuelidate/core'
+import {required, helpers, minLength} from '@vuelidate/validators'
+import nationalities from '@/assets/nationalities.json'
 
 export default {
-  name: 'FormCountryselect',
+  name: 'FormCountries',
+  components: {vSelect},
   props: {
     data: {
       type: Object,
@@ -16,7 +17,7 @@ export default {
     },
     index: {
       type: String,
-      default: null
+      default: ''
     },
     fieldKey: {
       type: String,
@@ -33,186 +34,103 @@ export default {
   },
 
   setup(props) {
-    const searchInput = ref('')
-    const autocompleteStr = ref('')
-    const selection = ref(null)
-    const showDropdown = ref(false)
+    const rootEl = ref(null)
+    const selection = ref([])
     const currentStep = ref(store.state.form.step)
     const storedFields = store.state.form.entries.steps[currentStep.value].groups[props.stepGroupIndex].fields
     const storeEntry = computed(() => storedFields[props.realIndex])
     const setFormEntry = inject('setFormEntry')
 
-    const countries = computed(() => {
-      return countriesList.reduce((r, e) => {
-        let group = e.name[0];
-        if (!r[group]) r[group] = {group, children: [e]}
-        else r[group].children.push(e);
-        return r;
-      }, {})
+    const preSelection = computed(() => {
+      if(!props.data.choices) return
+      return props.data.choices.filter(choice => choice.selected)
+    })
+
+    onMounted(() => {
+      if (storeEntry.value && storeEntry.value['value'].userInput) {
+        selection.value = storeEntry.value['value'].userInput
+      } else if(preSelection.value && preSelection.value.length > 0) {
+        selection.value = preSelection.value[0]
+        makeSelection(preSelection.value[0])
+      }
     })
 
     const validationRules = computed(() => {
       const rules = {}
 
-      const foundInListRule = (value) => {
-        if (!value) return true
-        return countriesList.find(country => country.name === value)
-      }
-
       if (props.data.is_required) {
         rules.required = helpers.withMessage(props.data.error_message, required)
+        rules.minLength = helpers.withMessage(props.data.error_message, minLength(1))
       }
-
-      rules.foundInList = helpers.withMessage(props.data.error_message, foundInListRule)
 
       return rules
     })
 
     const v$ = useVuelidate(validationRules, selection)
 
-    const searchEngine = () => {
-      const options = {keys: ['name']}
-      const index = Fuse.createIndex(options.keys, countriesList)
-
-      return new Fuse(countriesList, options, index)
-    }
-
-    const searchRequest = (val) => {
-      selection.value = ''
-      autocompleteStr.value = ''
-
-      const result = searchEngine().search(val)
-      if (result[0]) {
-        const resultStr = result[0].item.name
-        autocompleteStr.value = _capitalize(val) + resultStr.slice(val.length)
-      }
-    }
-
-    const setSelection = (val) => {
-      if (typeof val === 'string') {
-        selection.value = val
-        searchInput.value = val
-        autocompleteStr.value = ''
-      }
-      else if (autocompleteStr.value) {
-        selection.value = autocompleteStr.value
-        searchInput.value = autocompleteStr.value
-      }
-    }
-
-    const toggleDropdown = (val) => {
-      showDropdown.value = val
-    }
-
-    watch(selection, async (n) => {
+    const makeSelection = async (value) => {
+      selection.value = value
       await v$.value.$validate()
-      if (n) {
-        document.getElementById(`Countries-${props.index}-input`).blur()
-        toggleDropdown(false)
-        setFormEntry({
-          step: currentStep.value,
-          group: props.stepGroupIndex,
-          realIndex: props.realIndex,
-          id: props.fieldKey,
-          name: props.data.label,
-          type: props.data.acf_fc_layout,
-          subgroup: props.data.duplicate || props.data.subgroup,
-          value: {
-            userInput: countriesList.find(country => country.name === n),
-            fieldname: props.data.fieldname
-          }
-        })
-      }
-    })
-    
-    onMounted(() => {
-      if (storeEntry.value) {
-        selection.value = storeEntry.value['value'].userInput.name
-        searchInput.value = storeEntry.value['value'].userInput.name
-      }
-    })
 
-    return {
-      countries,
-      searchInput,
-      searchRequest,
-      autocompleteStr,
-      setSelection,
-      selection,
-      toggleDropdown,
-      showDropdown,
-      storeEntry,
-      v$
+      setFormEntry({
+        step: currentStep.value,
+        group: props.stepGroupIndex,
+        realIndex: props.realIndex,
+        id: props.fieldKey,
+        name: props.data.label,
+        type: props.data.acf_fc_layout,
+        subgroup: props.data.duplicate || props.data.subgroup,
+        value: {
+          userInput: selection,
+          fieldname: props.data.fieldname
+        }
+      })
     }
+
+    return {storeEntry, selection, rootEl, currentStep, makeSelection, preSelection, v$, nationalities }
   }
 }
 </script>
 
 <template>
-  <div class="c-input msf-input msf-input--choices">
-    <div class="c-input__label msf-input__label msf-input__label--choices">
-      {{ data.label }}
-      <span
-        v-if="data.is_required"
-        class="c-txt c-txt--highlight"
-      >*</span>
-      <div class="msf-select">
-        <div class="msf-select__inner">
-          <div class="c-input">
-            <label
-              :for="`Countries-${index}-input`"
-              class="c-input__label is-sr-only"
-            />
-            <input
-              :id="`Countries-${index}-input`"
-              v-model="searchInput"
-              type="text"
-              class="c-input__control msf-select__search-input"
-              required="required"
-              @input="searchRequest(searchInput)"
-              @keydown.enter="setSelection"
-              @focus="toggleDropdown(true)"
-              @click="setSelection(true)"
-              @blur="toggleDropdown()"
-            >
-            <span
-              v-if="autocompleteStr"
-              class="c-input__control msf-select__autocomplete"
-            >{{ autocompleteStr }}</span>
-          </div>
-          <span
-              v-if="v$.$errors && v$.$errors[0]"
-              class="'c-input__validation', c-input__validation--error msf-input__validation"
-          >
-            {{ v$.$errors[0].$message }}
-          </span>
-          <transition name="moveup">
-            <div
-              v-if="showDropdown"
-              class="msf-select__group-wrapper"
-            >
-              <div
-                v-for="(country, countryIndex) in countries"
-                :key="`Countries-${index}-group-${countryIndex}`"
-                class="msf-select__group"
-              >
-                <span class="msf-select__group-label">{{ country.group }}</span>
-                <button
-                  v-for="(child, childIndex) in country.children"
-                  :key="`Countries-${index}-group-${countryIndex}-child-${childIndex}`"
-                  :class="{'is-selected' : child.name === selection}"
-                  class="msf-select__choice"
-                  @mousedown="setSelection(child.name)"
-                >
-                  {{ child.name }}
-                </button>
-              </div>
-            </div>
-          </transition>
-        </div>
-      </div>
-    </div>
+  <div
+    ref="rootEl"
+    class="msf-input msf-input--select"
+  >
+    <label
+      :for="`msf-select-${index}`"
+      class="msf-input__label ms-input__label--select"
+    >{{ data.label }} <span
+      v-if="data.is_required"
+      class="c-txt c-txt--highlight"
+    >*</span> </label>
+    <v-select
+      :id="`msf-select-${index}`"
+      :model-value="selection"
+      label="name"
+      :options="nationalities"
+      @option:selected="makeSelection"
+    >
+      <template #open-indicator="{ attributes }">
+        <svg v-bind="attributes"><use xlink:href="#icon-chevron-down" /></svg>
+      </template>
+    </v-select>
+    <span
+      v-if="v$.$errors && v$.$errors[0]"
+      class="'c-input__validation', c-input__validation--error msf-input__validation"
+    >
+      {{ v$.$errors[0].$message }}
+    </span>
   </div>
 </template>
 
-  <style lang="scss" src="@styles/components/_select.scss"></style>
+<style src="vue-multiselect/dist/vue-multiselect.css"></style>
+
+<style scoped>
+.is-child {
+  margin-left: 1rem;
+}
+.is-selected {
+  background-color: hsl(100deg, 20%, 40%);
+}
+</style>
