@@ -175,6 +175,13 @@ return [
 																	  Text::make(__('Fieldname', 'mosa'), 'fieldname')
 																		  ->required(),
 																	  Number::make(__('Value', 'mosa'), 'val')
+																		  ->wrapper([
+																			  'width' => 50
+																		  ]),
+																	  Number::make(__('Max Value', 'mosa'), 'max_val')
+																		  ->wrapper([
+																			  'width' => 50
+																		  ])
 																  ]),
 															 Group::make(__('Infotext', 'mosa'), 'info')
 															 ->fields([
@@ -392,14 +399,21 @@ return [
 															 				->required(),
 																		 Text::make(__('Label', 'mosa'), 'label')
 																			 ->wrapper([
-																				 'width' => '50%'
+																				 'width' => 33
 																			 ]),
+																		 Number::make(
+																			 __('Minimum Input value', 'mosa'),
+																			 'min_val'
+																		 )
+																			   ->wrapper([
+																				   'width' => 33
+																			   ]),
 																		 Number::make(
 																			 __('Maximum Input value', 'mosa'),
 																			 'max_val'
 																		 )
 																			 ->wrapper([
-																				 'width' => '50%'
+																				 'width' => 33
 																			 ]),
 																	 ])
 														 ]),

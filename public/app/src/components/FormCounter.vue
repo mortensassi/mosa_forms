@@ -1,11 +1,13 @@
 <script>
 import {useVuelidate} from '@vuelidate/core'
-import {required, numeric, helpers} from '@vuelidate/validators'
+import { ValidateEach } from '@vuelidate/components'
+import {required, numeric, helpers, minValue} from '@vuelidate/validators'
 import {computed, inject, onMounted, ref, reactive, watch} from 'vue'
 import store from '@/store'
 
 export default {
   name: 'FormCounter',
+  components: { ValidateEach },
   props: {
     data: {
       type: Object,
@@ -58,27 +60,28 @@ export default {
     }
 
     const validationRules = computed(() => {
-      const rules = {}
+      const rules = []
 
       if (props.data.is_required) {
-        rules.collection = {
-          $each: helpers.forEach({
+        props.data.inputs.forEach((input, i) => {
+          rules[i] = {
             val: {
               required: helpers.withMessage(props.data.error_message || 'Fehler', required),
-              numeric: helpers.withMessage(props.data.error_message || 'Fehler', numeric)
+              numeric: helpers.withMessage(props.data.error_message || 'Fehler', numeric),
+              minValue: helpers.withMessage(props.data.error_message || 'Fehler', minValue(props.data.inputs[i].min_val)),
             }
-          })
-        }
+          }
+        })  
       }
 
       return rules
     })
 
-    const v$ = useVuelidate(validationRules, inputValue)
+    const v = useVuelidate()
 
-    const updateInputValue = (type, counter, index) => {
+    const updateInputValue = (type, index) => {
       checkValue()
-      if (inputValue.collection[index].val >= 0 && inputValue.collection[index].val < Number(counter.max_val) ) {
+      if (inputValue.collection[index].val >= 0 && inputValue.collection[index].val < Number(props.data.inputs[index].max_val) ) {
         if (type === 'increment') {
           inputValue.collection[index].val += 1
         } else {
@@ -111,14 +114,15 @@ export default {
     })
 
     const checkValue = () => {
-      v$.value.$validate()
+      v.value.$validate()
     }
 
     return {
       value: inputValue,
       updateInputValue,
       storeEntry,
-      v$,
+      validationRules,
+      v,
       checkValue
     }
   }
@@ -128,54 +132,62 @@ export default {
 
 <template>
   <div class="msf-input-wrap">
-    <div
-      v-for="(counter, counterIndex) in data.inputs"
+    <ValidateEach
+      v-for="(counter, counterIndex) in value.collection"
       :key="`Counter-${index}-input-${counterIndex}`"
-      class="msf-input msf-input--counter"
-      :class="{'c-input--error' : v$.collection && v$.collection.$each.$response.$errors[counterIndex].val.length}"
+      :state="counter"
+      :rules="validationRules[counterIndex]"
     >
-      <label
-        :for="`Counter-${index}-input-${counterIndex}`"
-        class="msf-input__label msf-input__label--counter c-input__label"
-      >{{ counter.label }}
-        <span
-          v-if="data.is_required"
-          class="c-txt c-txt--highlight"
-        >*</span></label>
-      <div class="msf-input-wrap">
-        <button
-          class="c-btn c-btn--is-icon c-btn--has-icon msf-input__btn"
-          @click="updateInputValue('decrement', counter, counterIndex)"
+      <template #default="{ v }">
+        <div
+          class="msf-input msf-input--counter"
+          :class="{'c-input--error' : v.val.$errors.length}"
         >
-          <span class="c-btn__label is-sr-only">Eine Person weniger</span>
-          <svg class="c-btn__icon"><use xlink:href="#icon-minus" /></svg>
-        </button>
-        <input
-          :id="`Counter-${index}-input-${counterIndex}`"
-          v-model.number="value.collection[counterIndex].val"
-          type="number"
-          :max="counter.max_val"
-          class="c-input__control msf-input__control msf-input__control--count"
-          :required="counter.is_required"
-          @change="checkValue"
-        >
-        <button
-          class="c-btn c-btn--is-icon c-btn--has-icon msf-input__btn"
-          @click="updateInputValue('increment', counter, counterIndex)"
-        >
-          <span class="c-btn__label is-sr-only">Eine Person mehr</span>
-          <svg class="c-btn__icon"><use xlink:href="#icon-plus" /></svg>
-        </button>
-      </div>
-      <div v-if="v$ && v$.collection">
-        <span
-          v-for="error in v$.collection.$each.$response.$errors[counterIndex].val"
-          :key="error"
-          class="'c-input__validation', c-input__validation--error msf-input__validation"
-        >
-          {{ error.$message }}
-        </span>
-      </div>
-    </div>
+          <label
+            :for="`Counter-${index}-input-${counterIndex}`"
+            class="msf-input__label msf-input__label--counter c-input__label"
+          >{{ data.inputs[counterIndex].label }}
+            <span
+              v-if="data.is_required"
+              class="c-txt c-txt--highlight"
+            >*</span></label>
+          <div class="msf-input-wrap">
+            <button
+              class="c-btn c-btn--is-icon c-btn--has-icon msf-input__btn"
+              @click="updateInputValue('decrement', counterIndex)"
+            >
+              <span class="c-btn__label is-sr-only">Eine Person weniger</span>
+              <svg class="c-btn__icon"><use xlink:href="#icon-minus" /></svg>
+            </button>
+            <input
+              :id="`Counter-${index}-input-${counterIndex}`"
+              v-model.number="v.val.$model"
+              type="number"
+              :min="data.inputs[counterIndex].min_val"
+              :max="data.inputs[counterIndex].max_val"
+              class="c-input__control msf-input__control msf-input__control--count"
+              :required="data.inputs[counterIndex].is_required"
+              @change="checkValue"
+            >
+            <button
+              class="c-btn c-btn--is-icon c-btn--has-icon msf-input__btn"
+              @click="updateInputValue('increment', counterIndex)"
+            >
+              <span class="c-btn__label is-sr-only">Eine Person mehr</span>
+              <svg class="c-btn__icon"><use xlink:href="#icon-plus" /></svg>
+            </button>
+          </div>
+          <div v-if="v.val.$errors">
+            <span
+              v-for="(error, errorIndex) in v.val.$errors"
+              :key="errorIndex"
+              class="'c-input__validation', c-input__validation--error msf-input__validation"
+            >
+              {{ error.$message }}
+            </span>
+          </div>
+        </div>
+      </template>
+    </ValidateEach>
   </div>
 </template>

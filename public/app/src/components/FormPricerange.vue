@@ -1,6 +1,6 @@
 <script>
 import {useVuelidate} from '@vuelidate/core'
-import {required, helpers, numeric} from '@vuelidate/validators'
+import {required, helpers, numeric, minValue} from '@vuelidate/validators'
 import store from '@/store'
 import {computed, inject, onMounted, onBeforeMount, ref, reactive, watch} from 'vue'
 import VueSlider from 'vue-slider-component'
@@ -56,6 +56,7 @@ export default {
           $each: helpers.forEach({
             val: {
               required: helpers.withMessage(props.data.error_message || 'Fehler', required),
+              minValue: helpers.withMessage(props.data.error_message || 'Fehler', minValue(1)),
               numeric: helpers.withMessage(props.data.error_message || 'Fehler', numeric)
             }
           })
@@ -143,7 +144,7 @@ export default {
       :data="'inputData'"
       :data-id="'val'"
       :enable-cross="false"
-      :max="data.max.val"
+      :max="data.max.max_val"
       :tooltip="'none'"
       class="msf-range-slider"
     >
