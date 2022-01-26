@@ -210,14 +210,16 @@ export default {
           const checkboxIndex = checkboxes.value.findIndex(el => el.fieldname === checkbox.region)
           const val = checkboxes.value.find(el => el.fieldname === checkbox.region)
 
-          if (val && !selection.value.some(el => el.fieldname === checkbox.region)) {
+          if (val) {
             updateSelection(checkboxIndex, val, currentGroup.value)
+            checkbox.selected = true
           }
         })
 
         const oldEntriesNotinNew = o.filter(oldEntry => {
           return !n.includes(oldEntry)
               && checkboxes.value.some(checkbox => checkbox.fieldname === oldEntry.region)
+              && oldEntry.selected
         } )
 
         if (oldEntriesNotinNew.length > 0) {
@@ -227,6 +229,7 @@ export default {
 
             if (val) {
               updateSelection(checkboxIndex, val, currentGroup.value)
+              checkbox.selected = false
             }
           })
         }
