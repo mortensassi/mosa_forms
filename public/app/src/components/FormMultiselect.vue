@@ -59,6 +59,7 @@ export default {
         group: props.stepGroupIndex,
         realIndex: props.realIndex,
         id: props.fieldKey,
+        link: props.data.link,
         name: props.data.label,
         type: props.data.acf_fc_layout,
         value: {

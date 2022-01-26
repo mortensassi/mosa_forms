@@ -3,7 +3,7 @@ import {useVuelidate} from '@vuelidate/core'
 import {helpers, minLength, required} from '@vuelidate/validators'
 import store from '@/store'
 import _throttle from 'lodash.throttle'
-import {ref, computed, onMounted, onBeforeUnmount, inject,} from 'vue'
+import {ref, computed, onMounted, watch, inject, reactive,} from 'vue'
 import FormCheckbox from '@/components/FormCheckbox.vue'
 
 export default {
@@ -13,6 +13,10 @@ export default {
     fieldKey: {
       type: String,
       default: null,
+    },
+    step: {
+      type: Object,
+      default: null
     },
     group: {
       type: Object,
@@ -42,7 +46,28 @@ export default {
     const checkboxesEl = ref(null)
     const currentStep = ref(store.state.form.step)
     const selection = ref([])
+    const storedStepFields = computed(() => store.state.form.entries.steps[currentStep.value].groups.flatMap(group => group.fields))
+    const linkedMultiSelect = computed(() => {
+      let stepFields = null
+      if (storedStepFields.value.length > 0) {
+        stepFields = storedStepFields.value
+      } else {
+        stepFields = props.step.groups.flatMap(group => group.fields)
+      }
+      return stepFields.find(field => field.link === props.data.fieldname)
+    })
+    const multiselectEntries = computed(() => {
+      if (!linkedMultiSelect.value) return
+      let entries = null
+      if (storedStepFields.value.length > 0) {
+        entries = linkedMultiSelect.value['value'].selection
+      } else {
+        entries = linkedMultiSelect.value.choices.flatMap(group => group.choices)
+      }
+      return entries
+    })
     const updateSelection = (id, val, group) => {
+      console.log('update')
       const foundItem = selection.value.find(item =>
         item.id === id && item.group.id === group
       )
@@ -67,6 +92,10 @@ export default {
       })
     }
 
+    const checkboxStateUpdate = (input, inputIndex) => {
+      updateSelection(inputIndex, input, currentGroup.value)
+    }
+
     const validationRules = computed(() => {
       const rules = {}
 
@@ -88,6 +117,23 @@ export default {
         return { value: checkbox.checkbox, checked: checkbox.checked, fieldname: checkbox.fieldname }
       })
     })
+
+    const getCheckboxData = (input) => {
+      if (!input) return null
+      let isDisabled = false
+      if (multiselectEntries.value) {
+        const match = multiselectEntries.value.find(selection => selection.region === input.fieldname)
+        if (match) {
+          isDisabled = true
+        }
+      }
+      return {
+        type: 'checkbox',
+        label: input.value,
+        checked: selection.value.some(checkbox => checkbox.fieldname === input.fieldname),
+        disabled: isDisabled
+      }
+    }
     const collapseList = computed(() => checkboxes.value.length > 9)
     const maxHeight = ref(0)
     const listIsCollapsed = ref(true)
@@ -123,10 +169,23 @@ export default {
     }
 
     const preselectedCheckboxes = computed(() => {
-      const entries = props.data.groups.map(group => {
+      let entries = props.data.groups.map(group => {
         return group.checkboxes.filter(checkbox => checkbox.checked)
       }).flat()
       return entries
+    })
+
+    watch(multiselectEntries, (n, o) => {
+      if (n) {
+        n.forEach(checkbox => {
+          const checkboxIndex = checkboxes.value.findIndex(el => el.fieldname === checkbox.region)
+          const val = checkboxes.value.find(el => el.fieldname === checkbox.region)
+
+          if (val) {
+            updateSelection(checkboxIndex, val, currentGroup.value)
+          }
+        })
+      }
     })
 
     onMounted(() => {
@@ -138,7 +197,7 @@ export default {
 
           updateSelection(checkboxIndex, val, currentGroup.value)
         })
-      } else if (preselectedCheckboxes.value) {
+      } else if (preselectedCheckboxes.value.length > 0) {
         preselectedCheckboxes.value.forEach(checkbox => {
           const checkboxIndex = checkboxes.value.findIndex(el => el.fieldname === checkbox.fieldname)
 
@@ -173,6 +232,11 @@ export default {
       currentStep,
       storeEntry,
       preselectedCheckboxes,
+      linkedMultiSelect,
+      multiselectEntries,
+      getCheckboxData,
+      storedStepFields,
+      checkboxStateUpdate,
       v$
     }
   }
@@ -203,12 +267,12 @@ export default {
         <FormCheckbox
           v-for="(input, inputIndex) in checkboxes"
           :key="`GroupedCheckboxes-g-${currentGroup}-c-${inputIndex}`"
-          :data="{ type: 'checkbox', label: input.value, checked: selection.find(checkbox => checkbox.fieldname === input.fieldname) }"
+          :data="getCheckboxData(input)"
           :selection="selection"
           :index="`GroupedCheckboxes-g-${currentGroup}-c-${inputIndex}`"
           :input-index="inputIndex"
           :group-index="currentGroup"
-          @change="updateSelection(inputIndex, input, currentGroup, true)"
+          @change="checkboxStateUpdate(input, inputIndex)"
         />
       </div>
       <button

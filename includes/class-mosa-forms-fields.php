@@ -281,7 +281,14 @@ return [
 												   Layout::make(__('Multiselect', 'mosa'), 'multiselect')
 														 ->fields([
 															 Text::make(__('Fieldname', 'mosa'), 'fieldname')
+                                                                 ->wrapper([
+                                                                     'width' => 70
+                                                                 ])
 															 	->required(),
+															 Text::make(__('Linked field', 'mosa'), 'link')
+																 ->wrapper([
+																	 'width' => 30
+																 ]),
 															 Text::make(__('Label', 'mosa'), 'label')
 																 ->wrapper([
 																	 'width' => '75%'
@@ -319,6 +326,10 @@ return [
 																							 'width' => 15
 																						 ])
 																						 ->required(),
+																					 Text::make(__('Region ID', 'mosa'), 'region')
+																						 ->wrapper([
+																							 'width' => 15
+																						 ]),
 																					 TrueFalse::make(__('Selected', 'mosa'), 'selected')
 																					 	->wrapper([
 																							 'width' => 15

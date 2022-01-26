@@ -183,6 +183,7 @@ export default {
               :real-index="inputIndex"
               :step-group-index="groupIndex"
               :index="`${currentStep}-${groupIndex}-${inputIndex}`"
+              :step="step"
               :group="group"
               :duplicate-count="duplicateCount"
               @duplicate="duplicateFields"

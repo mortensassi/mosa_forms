@@ -59,7 +59,7 @@ export default {
 </script>
 
 <template>
-  <div class="c-input c-input--checkbox msf-input msf-input--checkbox">
+  <div class="c-input c-input--checkbox msf-input msf-input--checkbox" :class="{ 'is-disabled' : data.disabled }">
     <label
       :for="`msf-input-${index}`"
       class="c-input__label msf-input__label msf-input__label--checkbox"
@@ -69,6 +69,7 @@ export default {
       type="checkbox"
       class="c-input__control msf-input__control msf-input__control--checkbox"
       :checked="data.checked"
+      :disabled="data.disabled"
       @change="$emit('change', data.label)"
     >
   </div>

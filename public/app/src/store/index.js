@@ -59,9 +59,9 @@ const store = {
   },
 
   setFormEntry(entry) {
-    const {step, group, subgroup, id, name, value, type, realIndex} = entry
+    const {step, group, subgroup, id, name, value, type, realIndex, link} = entry
 
-    this.state.form.entries.steps[step].groups[group].fields[realIndex] = {step, group, subgroup, id, name, value, type, realIndex}
+    this.state.form.entries.steps[step].groups[group].fields[realIndex] = {step, group, subgroup, id, name, value, type, realIndex, link}
   },
 
   duplicateFields(step, count) {
