@@ -20,30 +20,88 @@
   border-radius: 4px;
   padding: 1.25rem 1.25rem 1.5rem;
   display: flex;
+  overflow: hidden;
 
   @include bp($large-bp) {
     padding: 3rem 3.53125rem;
   }
 }
 
-.msf-progress-item {
+.msf-progress__steps {
+  position: relative;
+  width: 100%;
+  display: flex;
+  overflow: hidden;
+
+  @include bp($large-bp) {
+
+    &::before,
+    &::after {
+      content: '';
+      position: absolute;
+      left: 3.53125rem;
+      top: 1.5rem;
+      width: calc(100% - 3.53125rem * 2);
+      height: 0;
+    }
+
+    &::before {
+      @include anim();
+
+      width: calc((100% - 3rem) / 2 * var(--progress-step));
+      height: 4px;
+      background: map-get($brand-colors, 'green', '800');
+      z-index: 1;
+      border-radius: 50%;
+    }
+
+    &::after {
+      border-top: 3px dotted map-get($brand-colors, 'black', '900-25');
+    }
+  }
+}
+
+
+.msf-progress__item {
   position: relative;
   z-index: 1;
   display: flex;
+  flex: 1 0 33%;
   flex-flow: column wrap;
   align-items: center;
   text-align: center;
 
   @include bp($large-bp) {
-    margin-right: 9.875rem;
+    &:first-child,
+    &:last-child {
+      &::before {
+        content: '';
+        display: block;
+        position: absolute;
+        width: 50%;
+        height: 100%;
+        background-color: #fff;
+        z-index: -1;
+        top: 0;
+    }
 
+    &:first-child {
+      &::before {
+        left: 0;
+      }
+    }
     &:last-child {
       padding-right: 0;
+
+      &::before {
+        right: 0;
+      }
+    }
     }
   }
 }
 
-.msf-progress-item__value {
+.msf-progress__item-value {
   @include anim();
   @include text-token('sans', 'copy', 'md');
 
@@ -77,6 +135,12 @@
     color: #fff;
   }
 
+  .msf-progress__item--checked & {
+    background-color: map-get($brand-colors, 'green', '800');
+    border-color: map-get($brand-colors, 'green', '800');
+    color: #fff;
+  }
+
   @include bp($large-bp) {
     @include text-token('sans', 'copy', 'lg');
 
@@ -85,33 +149,25 @@
   }
 }
 
-.msf-progress-item__label {
+.msf-progress__item-label {
   @include text-token('sans', 'copy', 'sm');
 
   color: map-get($brand-colors, 'black', '200');
-  white-space: nowrap;
 
 
-  .msf-progress__item--active & {
+  .msf-progress__item--active &,
+  .msf-progress__item--checked & {
     color: map-get($brand-colors, 'black', '900-50');
   }
 
   @include bp($large-bp) {
     @include text-token('sans', 'copy', 'md');
+
+    white-space: nowrap;
   }
 }
 
-.msf-progress-item__separator {
-  position: absolute;
-  display: block;
-  stroke: map-get($brand-colors, 'black', '200');
-  height: 4px;
-  top: 50%;
-  left: 100%;
-  transform: translate(-20%, -50%);
-  width: 16.53125rem;
-
-  @include bp($large-bp) {
-    top: 1.5rem;
-  }
+.msf-progress__item-icon {
+  width: 1.060625rem;
+  height: 0.685rem;
 }

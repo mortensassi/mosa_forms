@@ -102,12 +102,12 @@ input[type='number'] {
 
 .msf-input--counter {
   + .msf-input--counter {
-    margin-top: 2rem;
+    margin-top: 0;
+    margin-left: 2rem;
   }
 
   @include bp($large-bp) {
     + .msf-input--counter {
-      margin-top: 0;
       margin-left: 4rem;
     }
   }

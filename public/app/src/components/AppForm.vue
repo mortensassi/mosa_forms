@@ -76,7 +76,10 @@ export default {
     v-if="formData"
     class="msf-form"
   >
-    <AppFormProgress v-if="step" />
+    <AppFormProgress
+      v-if="step"
+      :show-overview="showOverview"
+    />
     <AppFormHeader
       v-if="showOverview"
       :data="{ title: 'Fast geschafft!<br>Hier können Sie Ihre Angaben nochmals überprüfen', overview: true }"

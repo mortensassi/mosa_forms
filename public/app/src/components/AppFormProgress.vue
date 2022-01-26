@@ -6,22 +6,36 @@
   >
     <div class="columns">
       <div class="column is-12 is-10-desktop is-offset-1-desktop">
-        <div class="msf-progress__inner">
-          <div
-            v-for="(item, itemIndex) in formData.acf.steps"
-            :key="`progress-item-${itemIndex}`"
-            class="msf-progress-item"
-            :class="{ 'msf-progress__item--active' : itemIndex === currentStep }"
-          >
-            <div class="msf-progress-item__value">
-              {{ itemIndex + 1 }}
-            </div>
-            <svg
-              v-if="itemIndex < formData.acf.steps.length - 1"
-              class="msf-progress-item__separator"
-            ><use xlink:href="#slider-scrollbar-bg"></use></svg>
-            <div class="msf-progress-item__label">
-              {{ item.header.title }}
+        <div
+          class="msf-progress__inner"
+          :style="`--progress-step: ${currentStep }`"
+        >
+          <div class="msf-progress__steps">
+            <div
+              v-for="(item, itemIndex) in formData.acf.steps"
+              :key="`progress-item-${itemIndex}`"
+              class="msf-progress__item"
+              :class="progressItemClasses(itemIndex)"
+            >
+              <div
+                class="msf-progress__item-value"
+              >
+                <svg
+                  v-if="showOverview || currentStep > itemIndex"
+                  class="msf-progress__item-icon"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 15"
+                ><path
+                  d="m18.111 1.746-10.96 10.96-6.01-6.01"
+                  stroke="#fff"
+                  stroke-width="3"
+                /></svg>
+                <span v-else>{{ itemIndex + 1 }}</span>
+              </div>
+              <div class="msf-progress__item-label">
+                {{ item.header.title }}
+              </div>
             </div>
           </div>
         </div>
@@ -37,7 +51,14 @@ import {computed, onMounted, ref, watch} from 'vue'
 export default {
   name: 'AppFormProgress',
 
-  setup() {
+  props: {
+    showOverview: {
+      type: Boolean,
+      default: false
+    }
+  },
+
+  setup(props) {
     const formProgress = ref(null)
     const formData = computed(() => store.state.form.data)
     const currentStep = computed(() => store.state.form.step)
@@ -60,6 +81,11 @@ export default {
 
         progressEl.style.transform = `translateY(calc(-66% + ${heroElBox.bottom - parentBox.top}px))`
       }
+    }
+
+    const progressItemClasses = (index) => {
+      if (props.showOverview || currentStep.value > index) return 'msf-progress__item--checked'
+      if (currentStep.value === index) return 'msf-progress__item--active'
     }
 
     onMounted(async () => {
@@ -89,7 +115,7 @@ export default {
       }
     }, { deep: true })
 
-    return { formData, formProgress, step, stepImage, currentStep }
+    return { formData, formProgress, step, stepImage, currentStep, progressItemClasses }
   }
 }
 </script>
