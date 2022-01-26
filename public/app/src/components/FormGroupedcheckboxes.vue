@@ -67,7 +67,6 @@ export default {
       return entries
     })
     const updateSelection = (id, val, group) => {
-      console.log('update')
       const foundItem = selection.value.find(item =>
         item.id === id && item.group.id === group
       )
@@ -90,6 +89,36 @@ export default {
           fieldname: props.data.fieldname,
         }
       })
+    }
+
+    const makeSelection = () => {
+      let collection = null
+      if (storeEntry.value) {
+        collection = storeEntry.value.value.selection
+      } else if (preselectedCheckboxes.value.length > 0) {
+        collection = preselectedCheckboxes.value
+      } /*else if (multiselectEntries.value && multiselectEntries.value.length > 0) {
+        multiselectEntries.value.forEach(entry => {
+          const checkbox = checkboxes.value.find(checkbox => checkbox.fieldname === entry.region && entry.selected)
+          if (checkbox) {
+            if (collection) {
+              collection = [...collection, ...[checkbox]]
+            } else {
+              collection = [...[checkbox]]
+            }
+          }
+        })
+      }*/
+
+      if (collection) {
+        collection.forEach(checkbox => {
+          const checkboxIndex = checkboxes.value.findIndex(el => el.fieldname === checkbox.fieldname)
+          const { value, fieldname } = checkbox
+          const val = { value, fieldname }
+
+          updateSelection(checkboxIndex, val, currentGroup.value)
+        })
+      }
     }
 
     const checkboxStateUpdate = (input, inputIndex) => {
@@ -181,32 +210,31 @@ export default {
           const checkboxIndex = checkboxes.value.findIndex(el => el.fieldname === checkbox.region)
           const val = checkboxes.value.find(el => el.fieldname === checkbox.region)
 
-          if (val) {
+          if (val && !selection.value.some(el => el.fieldname === checkbox.region)) {
             updateSelection(checkboxIndex, val, currentGroup.value)
           }
         })
+
+        const oldEntriesNotinNew = o.filter(oldEntry => {
+          return !n.includes(oldEntry)
+              && checkboxes.value.some(checkbox => checkbox.fieldname === oldEntry.region)
+        } )
+
+        if (oldEntriesNotinNew.length > 0) {
+          oldEntriesNotinNew.forEach(checkbox => {
+            const checkboxIndex = checkboxes.value.findIndex(el => el.fieldname === checkbox.region)
+            const val = checkboxes.value.find(el => el.fieldname === checkbox.region)
+
+            if (val) {
+              updateSelection(checkboxIndex, val, currentGroup.value)
+            }
+          })
+        }
       }
     })
 
     onMounted(() => {
-      if (storeEntry.value) {
-        storeEntry.value.value.selection.forEach(checkbox => {
-          const checkboxIndex = checkboxes.value.findIndex(el => el.fieldname === checkbox.fieldname)
-          const { value, fieldname } = checkbox
-          const val = { value, fieldname }
-
-          updateSelection(checkboxIndex, val, currentGroup.value)
-        })
-      } else if (preselectedCheckboxes.value.length > 0) {
-        preselectedCheckboxes.value.forEach(checkbox => {
-          const checkboxIndex = checkboxes.value.findIndex(el => el.fieldname === checkbox.fieldname)
-
-          const { checkbox: value, fieldname } = checkbox
-          const val = { value, fieldname }
-
-          updateSelection(checkboxIndex, val, currentGroup.value)
-        })
-      }
+      makeSelection()
 
       setMaxHeight(true, true)
       if (collapseList.value && listIsCollapsed.value) {
@@ -237,6 +265,7 @@ export default {
       getCheckboxData,
       storedStepFields,
       checkboxStateUpdate,
+      makeSelection,
       v$
     }
   }
