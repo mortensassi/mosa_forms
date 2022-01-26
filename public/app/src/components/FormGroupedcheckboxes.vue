@@ -204,20 +204,20 @@ export default {
       return entries
     })
 
-    watch(multiselectEntries, (n, o) => {
-      if (n) {
-        n.forEach(checkbox => {
+    watch(multiselectEntries, (newArr, oldArr) => {
+      if (newArr) {
+        newArr.forEach(checkbox => {
+          checkbox.selected = true
           const checkboxIndex = checkboxes.value.findIndex(el => el.fieldname === checkbox.region)
           const val = checkboxes.value.find(el => el.fieldname === checkbox.region)
 
-          if (val) {
+          if (val && !selection.value.some(el => el.fieldname === checkbox.region)) {
             updateSelection(checkboxIndex, val, currentGroup.value)
-            checkbox.selected = true
           }
         })
 
-        const oldEntriesNotinNew = o.filter(oldEntry => {
-          return !n.includes(oldEntry)
+        const oldEntriesNotinNew = oldArr.filter(oldEntry => {
+          return !newArr.includes(oldEntry)
               && checkboxes.value.some(checkbox => checkbox.fieldname === oldEntry.region)
               && oldEntry.selected
         } )
