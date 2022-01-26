@@ -105,8 +105,10 @@ export default {
       </svg>
     </template>
     <template #option="props">
+      <pre hidden>{{ props }}</pre>
       <div class="option__checkmark">
         <svg
+          v-if="props.option.$isLabel"
           class="option__icon"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
