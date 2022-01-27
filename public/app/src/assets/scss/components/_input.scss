@@ -69,7 +69,7 @@ input[type='number'] {
   margin-top: 1.5rem;
   max-height: 100%;
   padding: 0 1rem;
-  margin: 0 -1rem;
+  margin: 1rem -1rem 0;
 
   @include bp($large-bp) {
     margin-top: 3rem;
@@ -78,7 +78,7 @@ input[type='number'] {
 
 .msf-input__checkboxes--collapsed {
   position: relative;
-  max-height: calc(var(--list-max-height) + 1.5rem);
+  max-height: calc(var(--list-max-height) + 2.5rem);
   overflow-y: hidden;
 
   &::before {
@@ -118,10 +118,10 @@ input[type='number'] {
   flex: 0 0 50%;
   flex-flow: row-reverse nowrap;
   justify-content: flex-end;
-  align-items: center;
+  align-items: flex-start;
 
   .msf-input__checkboxes & {
-    flex-wrap: wrap;
+    //flex-wrap: wrap;
   }
 
   &:nth-child(even) {
@@ -129,6 +129,10 @@ input[type='number'] {
   }
 
   margin-bottom: 1rem;
+
+  + .msf-input--checkbox {
+    margin-top: 0;
+  }
 
   @include bp($large-bp) {
     flex-basis: 33%;
