@@ -66,14 +66,13 @@ export default {
       return rules
     })
 
-    const v$ = useVuelidate(validationRules, inputData)
+    const v$ = useVuelidate(validationRules, inputData, { $lazy: true })
 
     watch(sliderVal, newVal => {
       inputData.collection.map((e, eIndex) => e.val = Array.isArray(newVal) ? newVal[eIndex] : newVal)
     })
 
     watch(inputData,(n) => {
-      v$.value.$validate()
       if (n) {
         setFormEntry({
           step: currentStep.value,
@@ -168,7 +167,7 @@ export default {
         v-for="(input, inputIndex) in inputData.collection"
         :key="`Pricerange-${index}-input-${inputIndex}`"
         class="c-input msf-range-slider__input"
-        :class="{'c-input--error' : v$.collection && v$.collection.$each.$response.$errors[inputIndex].val.length}"
+        :class="{'c-input--error' : v$.collection && v$.collection.$each.$response && v$.collection.$each.$response.$errors[inputIndex].val.length}"
       >
         <label
           v-if="inputData.collection.length < 2"
@@ -191,11 +190,11 @@ export default {
             @blur="updateInputData"
           >
         </div>
-        <div v-if="v$ && v$.collection">
+        <div v-if="v$ && v$.collection && v$.collection.$each.$response">
           <span
             v-for="error in v$.collection.$each.$response.$errors[inputIndex].val"
             :key="error"
-            class="'c-input__validation', c-input__validation--error msf-input__validation"
+            class="c-input__validation c-input__validation--error msf-input__validation"
           >
             {{ error.$message }}
           </span>

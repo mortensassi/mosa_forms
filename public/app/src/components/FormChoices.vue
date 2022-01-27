@@ -1,6 +1,6 @@
 <script>
 import {useVuelidate} from '@vuelidate/core'
-import {required} from '@vuelidate/validators'
+import {helpers, required} from '@vuelidate/validators'
 import store from '@/store'
 import {computed, inject, onMounted, ref, watch} from 'vue'
 
@@ -43,7 +43,7 @@ export default {
       const rules = {}
 
       if (props.data.is_required) {
-        rules.required = required
+        rules.required = helpers.withMessage(props.data.error_message || 'Fehler', required)
       }
 
       return rules

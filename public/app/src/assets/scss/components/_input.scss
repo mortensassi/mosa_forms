@@ -215,7 +215,17 @@ input[type='number'] {
 
 .msf-input__validation {
   position: absolute;
-  top: 100%;
+  top: calc(100% + 1.5rem);
+  left: 0;
+
+  .msf-input__control + &,
+  .msf-input--select & {
+    top: 100%;
+  }
+
+  .msf-input--counter & {
+    top: calc(100% + 0.5rem);
+  }
 }
 
 .msf-input__icon {
