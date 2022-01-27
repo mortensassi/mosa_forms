@@ -41,18 +41,28 @@ export default {
     const storedFields = store.state.form.entries.steps[currentStep.value].groups[props.stepGroupIndex].fields
     const storeEntry = computed(() => storedFields[props.realIndex])
     const setFormEntry = inject('setFormEntry')
-
-    const preSelection = computed(() => {
-      if(!props.data.choices) return
-      return props.data.choices.filter(choice => choice.selected)
+    const nationalitiesArr = computed(() => {
+      const sorted = nationalities.sort((a, b) => {
+        if (a.name > b.name) {
+          return 1
+        }
+        if (b.name > a.name) {
+          return -1
+        }
+        return 0
+      })
+      return sorted.map(item => {
+        item.name = _capitalize(item.name)
+        return item
+      })
     })
+    const selectedItem = nationalitiesArr.value.find(item => item.selected)
 
     onMounted(() => {
       if (storeEntry.value && storeEntry.value['value'].userInput) {
         selection.value = storeEntry.value['value'].userInput
-      } else if(preSelection.value && preSelection.value.length > 0) {
-        selection.value = preSelection.value[0]
-        makeSelection(preSelection.value[0])
+      } else if (selectedItem) {
+        makeSelection(selectedItem)
       }
     })
 
@@ -88,24 +98,7 @@ export default {
       })
     }
 
-    const nationalitiesArr = computed(() => {
-      const sorted = nationalities.sort((a, b) => {
-        if (a.name > b.name) {
-          return 1
-        }
-        if (b.name > a.name) {
-          return -1
-        }
-        return 0
-      })
-      return sorted.map(item => {
-        item.name = _capitalize(item.name)
-        return item
-      })
-    })
-    // TODO: Countries alphabetically and Germany
-
-    return {storeEntry, selection, rootEl, currentStep, makeSelection, preSelection, v$, nationalities: nationalitiesArr }
+    return {storeEntry, selection, rootEl, currentStep, makeSelection, v$, nationalities: nationalitiesArr }
   }
 }
 </script>
