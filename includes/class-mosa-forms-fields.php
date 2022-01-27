@@ -136,6 +136,7 @@ return [
 																   ->wrapper([
 																	   'width' => 50
 																   ]),
+															 Text::make(__('Platzhalter', 'mosa'), 'placeholder')
 														 ]),
 												   Layout::make(__('Price Range'), 'price_range')
 														 ->fields([
