@@ -32,9 +32,7 @@ export default {
   },
 
   setup(props) {
-    const inputValue = reactive({ collection: [{val: 0}, {val: 0}
-  ]
-  })
+    const inputValue = reactive([{val: ref(0)}, {val: ref(0)}])
     const currentStep = ref(store.state.form.step)
     const storedFields = store.state.form.entries.steps[currentStep.value].groups[props.stepGroupIndex].fields
     const storeEntry = computed(() => storedFields[props.realIndex])
@@ -48,7 +46,7 @@ export default {
         name: 'CounterGroup',
         value: {
           fieldname: props.data.fieldname,
-          userInput: inputValue.collection.map((val, valIndex) => {
+          userInput: inputValue.map((val, valIndex) => {
             return {
               value: val.val,
               name: props.data.inputs[valIndex].label,
@@ -81,20 +79,20 @@ export default {
 
     const updateInputValue = (type, index) => {
       checkValue()
-      if (inputValue.collection[index].val >= 0 && inputValue.collection[index].val < Number(props.data.inputs[index].max_val) ) {
+      if (inputValue[index].val >= 0 && inputValue[index].val < Number(props.data.inputs[index].max_val) ) {
         if (type === 'increment') {
-          inputValue.collection[index].val += 1
+          inputValue[index].val += 1
         } else {
-          inputValue.collection[index].val -= 1
+          inputValue[index].val -= 1
         }
       } else {
-        inputValue.collection[index].val = 0
+        inputValue[index].val = 0
       }
 
       setFormEntry()
     }
 
-    watch(inputValue.collection, (arr) => {
+    watch(inputValue, (arr) => {
       // Control max value handling
       arr.forEach((val, valI) => {
         if (val.val > props.data.inputs[valI].max_val) {
@@ -107,7 +105,9 @@ export default {
 
     onMounted(() => {
       if (storeEntry.value) {
-        inputValue.collection = storeEntry.value['value'].userInput.map(input => ({ val: Number(input.value) }))
+        storeEntry.value['value'].userInput.forEach((item, itemIndex) => {
+          inputValue[itemIndex].val = item.value
+        })
       } else {
         setFormEntry()
       }
@@ -118,7 +118,7 @@ export default {
     }
 
     return {
-      value: inputValue,
+      inputValue,
       updateInputValue,
       storeEntry,
       validationRules,
@@ -133,7 +133,7 @@ export default {
 <template>
   <div class="msf-input-wrap">
     <ValidateEach
-      v-for="(counter, counterIndex) in value.collection"
+      v-for="(counter, counterIndex) in inputValue"
       :key="`Counter-${index}-input-${counterIndex}`"
       :state="counter"
       :rules="validationRules[counterIndex]"
