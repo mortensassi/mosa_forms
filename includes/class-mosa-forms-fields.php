@@ -33,9 +33,8 @@ return [
 						 ->fields([
 							 Text::make(__('Title', 'mosa'), 'title'),
 							 WysiwygEditor::make(__('Content', 'mosa'), 'editor_content')
-										  ->mediaUpload(0)
-										  ->tabs('visual')
-										  ->delay(true),
+										  ->mediaUpload(false)
+										  ->delay(),
 							 Image::make(__('Image', 'mosa'), 'image')
 						 ]),
 					Repeater::make(__('Groups', 'mosa'), 'groups')
@@ -188,8 +187,7 @@ return [
 																 Text::make(__('Label', 'mosa'), 'label'),
 																 WysiwygEditor::make(__('Description', 'mosa'), 'description')
 																 ->toolbar('basic')
-																 ->mediaUpload(0)
-																 ->tabs('visual')
+																 ->mediaUpload(false)
 															 ])
 														 ]),
 												   Layout::make(__('Button Group'), 'button_group')
@@ -367,8 +365,7 @@ return [
 																 'description'
 															 )
 																		  ->delay()
-																		  ->mediaUpload(0)
-																		  ->tabs('visual')
+																		  ->mediaUpload(false)
 																		  ->toolbar('mosa_forms_toolbar'),
 														 ]),
 												   Layout::make(__('Counter', 'mosa'), 'counter')
@@ -502,8 +499,7 @@ return [
 							 ]),
 					WysiwygEditor::make(__('Opt-In Text', 'mosa'), 'text')
 								 ->delay()
-								 ->mediaUpload(0)
-								 ->tabs('visual')
+								 ->mediaUpload(false)
 								 ->toolbar('mosa_forms_toolbar')
 								 ->wrapper([
 									 'width' => '75%'
@@ -524,8 +520,7 @@ return [
 				 Text::make(__('Receiver', 'mosa'), 'recipient'),
 				 WysiwygEditor::make(__('Success Mail', 'mosa'), 'body')
 							  ->delay()
-							  ->mediaUpload(0)
-							  ->tabs('visual')
+							  ->mediaUpload(false)
 							  ->toolbar('mosa_forms_toolbar')
 			 ]),
 		Tab::make(__('Messages', 'mosa')),
