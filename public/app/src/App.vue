@@ -15,7 +15,6 @@
       const formId = inject('formId')
       const storedStateName = `mosa-forms-${formId}`
       const storedState = localStorage.getItem(storedStateName)
-      const clearStorage = () => localStorage.removeItem(storedStateName)
       const formUrl = `${window.location.origin}/wp-json/wp/v2/mosa_form/${formId}`
 
       onBeforeMount(async () => {
@@ -41,17 +40,12 @@
         localStorage.setItem(storedStateName, JSON.stringify(newState))
 
       }, { deep: true })
-
-      return {
-        clearStorage
-      }
     },
   }
 </script>
 
 <template>
   <div class="o-wrapper">
-    <button class="c-btn c-btn--primary" @click="clearStorage" style="position: fixed; z-index: 200; bottom: 2rem; right: 2rem;">CLEAR STORAGE</button>
     <AppForm />
   </div>
 </template>
