@@ -109,6 +109,7 @@ export default {
       class: ['c-input__control', 'msf-input__control', `msf-input__control--${field.type}`],
       type: field.type === 'date' ? 'text' : field.type,
       required: field.is_required,
+      placeholder: field.placeholder,
 
       onInput: (v) => {
         this.value = v.target.value
