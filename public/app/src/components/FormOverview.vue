@@ -286,7 +286,8 @@ export default {
               <label
                 :for="`Compliance-c-${inputIndex}`"
                 class="c-input__label msf-input__label msf-input__label--checkbox"
-              >{{ input.text }}</label>
+                v-html="input.text"
+              ></label>
               <input
                 :id="`Compliance-c-${inputIndex}`"
                 class="c-input__control msf-input__control msf-input__control--checkbox"
