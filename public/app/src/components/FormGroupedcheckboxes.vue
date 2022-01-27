@@ -329,25 +329,28 @@ export default {
           :for="`GroupedCheckboxes-g-${currentGroup}-select-all`"
           class="c-input__label msf-input__label msf-input__label--checkbox"
         >Alle Auswählen</label>
-        <svg
-          v-if="selection.length > 0"
-          class="msf-input__icon"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 12 4"
-        ><rect
-          x=".167"
-          y=".75"
-          width="11.667"
-          height="2.5"
-          rx="1"
-        /></svg>
-        <input
-          :id="`GroupedCheckboxes-g-${currentGroup}-select-all`"
-          @change="toggleAll"
-          type="checkbox"
-          class="c-input__control msf-input__control msf-input__control--checkbox msf-input__control--select-all"
-        >
+        <div class="msf-input__wrapper">
+          <svg
+              v-if="selection.length > 0"
+              class="msf-input__icon"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 12 4"
+          ><rect
+              x=".167"
+              y=".75"
+              width="11.667"
+              height="2.5"
+              rx="1"
+          /></svg>
+          <input
+              :id="`GroupedCheckboxes-g-${currentGroup}-select-all`"
+              @change="toggleAll"
+              :checked="selection.length === data.groups.flatMap(group => group.checkboxes).length"
+              type="checkbox"
+              class="c-input__control msf-input__control msf-input__control--checkbox msf-input__control--select-all"
+          >
+        </div>
       </div>
       <div
         ref="checkboxesEl"

@@ -67,8 +67,12 @@ input[type='number'] {
   display: flex;
   flex-flow: row wrap;
   max-height: 100%;
-  padding: 0 1rem 0;
-  margin: 0 -1rem 0;
+  padding: 1.5rem 1rem 0;
+  margin: 0 -1rem;
+
+  @include bp($large-bp) {
+    padding-top: 3rem;
+  }
 }
 
 .msf-input__checkboxes--collapsed {
@@ -146,11 +150,10 @@ input[type='number'] {
 .msf-input--select-all {
   position: relative;
   margin-top: 1.5rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 0;
 
   @include bp($large-bp) {
     margin-top: 3rem;
-    margin-bottom: 2rem;
   }
 }
 
@@ -228,12 +231,16 @@ input[type='number'] {
   }
 }
 
+.msf-input__wrapper {
+  position: relative;
+}
+
 .msf-input__icon {
   position: absolute;
   display: block;
-  top: 0;
-  left: 0;
-  transform: translate(0.25rem, 0.5rem);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   width: 1rem;
   height: 1rem;
   color: darkseagreen;
