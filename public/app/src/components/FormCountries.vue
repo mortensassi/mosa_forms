@@ -6,6 +6,7 @@ import vSelect from 'vue-select'
 import {useVuelidate} from '@vuelidate/core'
 import {required, helpers, minLength} from '@vuelidate/validators'
 import nationalities from '@/assets/nationalities.json'
+import _capitalize from "lodash.capitalize";
 
 export default {
   name: 'FormCountries',
@@ -86,9 +87,25 @@ export default {
         }
       })
     }
+
+    const nationalitiesArr = computed(() => {
+      const sorted = nationalities.sort((a, b) => {
+        if (a.name > b.name) {
+          return 1
+        }
+        if (b.name > a.name) {
+          return -1
+        }
+        return 0
+      })
+      return sorted.map(item => {
+        item.name = _capitalize(item.name)
+        return item
+      })
+    })
     // TODO: Countries alphabetically and Germany
 
-    return {storeEntry, selection, rootEl, currentStep, makeSelection, preSelection, v$, nationalities }
+    return {storeEntry, selection, rootEl, currentStep, makeSelection, preSelection, v$, nationalities: nationalitiesArr }
   }
 }
 </script>
