@@ -151,6 +151,8 @@ export default {
       }
     }
 
+    // TODO: Validate on button
+
     return { formData, prepareCompName, duplicateFields, removeDuplicate, duplicateCount, groups, storedFormEntries, duplicatorGroup, prepareStepChange, v$ }
   }
 }

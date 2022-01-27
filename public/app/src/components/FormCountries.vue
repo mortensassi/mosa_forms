@@ -86,6 +86,7 @@ export default {
         }
       })
     }
+    // TODO: Countries alphabetically and Germany
 
     return {storeEntry, selection, rootEl, currentStep, makeSelection, preSelection, v$, nationalities }
   }

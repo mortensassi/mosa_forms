@@ -236,6 +236,8 @@ export default {
       }
     })
 
+    // TODO: SELECT ALL
+
     onMounted(() => {
       makeSelection()
 

@@ -105,7 +105,6 @@ export default {
       </svg>
     </template>
     <template #option="props">
-      <pre hidden>{{ props }}</pre>
       <div class="option__checkmark">
         <svg
           v-if="props.option.$isLabel"
