@@ -107,7 +107,7 @@ export default {
     <template #option="props">
       <div class="option__checkmark">
         <svg
-          v-if="props.option.$isLabel"
+          v-if="props.option.$isLabel && selection.length > 0 "
           class="option__icon"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
