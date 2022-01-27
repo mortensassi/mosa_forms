@@ -1,11 +1,20 @@
 <script>
 import AppImage from '@/components/AppImage.vue'
+import AppFormProgress from '@/components/AppFormProgress.vue'
 
 export default {
   name: 'AppFormHeader',
-  components: { AppImage },
+  components: { AppImage, AppFormProgress },
   props: {
     data: {
+      type: Object,
+      default: null
+    },
+    showOverview: {
+      type: Boolean,
+      default: false
+    },
+    step: {
       type: Object,
       default: null
     }
@@ -22,6 +31,12 @@ export default {
       v-if="data.image"
       :image="data.image"
     />
+
+    <AppFormProgress
+      v-if="step"
+      :show-overview="showOverview"
+    />
+    
     <div class="msf-step__header-content">
       <div class="columns is-multiline">
         <div

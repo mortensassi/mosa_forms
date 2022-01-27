@@ -1,3 +1,85 @@
+<script>
+import store from '@/store';
+import {computed, onMounted, ref, watch} from 'vue'
+
+export default {
+  name: 'AppFormProgress',
+
+  props: {
+    showOverview: {
+      type: Boolean,
+      default: false
+    }
+  },
+
+  setup(props) {
+    const formProgress = ref(null)
+    const boundingBox = ref(null)
+    const formData = computed(() => store.state.form.data)
+    const currentStep = computed(() => store.state.form.step)
+    const step = computed(() => formData.value.acf.steps[currentStep.value])
+    const heroElPaddingBottom = computed(() => store.state.progress.heroElPaddingBottom)
+    const stepImage = computed(() => store.state.form.stepImage)
+    const heroEl = document.querySelector('.c-hero')
+
+    const progressItemClasses = (index) => {
+      if (props.showOverview || currentStep.value > index) return 'msf-progress__item--checked'
+      if (currentStep.value === index) return 'msf-progress__item--active'
+    }
+
+    const positionBar = () => {
+      const pos = ref(null)
+      if (stepImage.value) {
+        pos.value = boundingBox.value.height / 2
+
+        if (heroElPaddingBottom.value) {
+          heroEl.style.paddingBottom = ''
+        }
+      } else {
+        pos.value = boundingBox.value.height / 3 * 2
+
+        if (heroEl) {
+          const heroStyles = window.getComputedStyle(heroEl)
+          if (!heroElPaddingBottom.value) {
+            store.setHeroElPaddingBottom(heroStyles.getPropertyValue('padding-bottom'))
+          }
+
+          heroEl.style.paddingBottom = `calc(${heroElPaddingBottom.value} + ${pos.value}px)`
+        }
+      }
+
+      formProgress.value.style.setProperty('--offset', `${pos.value}px`)
+    }
+
+    onMounted(async () => {
+      if (formProgress.value) {
+        boundingBox.value = await formProgress.value.getBoundingClientRect()
+
+        positionBar()
+      }
+
+      const headerEl = document.querySelector('.c-header')
+
+      const intersectionObserver = new IntersectionObserver(async (entries) => {
+        let [entry] = entries
+        if (entry.isIntersecting) {
+          intersectionObserver.unobserve(headerEl)
+        }
+      })
+
+      await intersectionObserver.observe(headerEl)
+      headerEl.scrollIntoView({behavior: 'smooth', block: 'end'})
+    })
+
+    watch(stepImage, (n) => {
+      positionBar()
+    }, { deep: true })
+
+    return { formData, formProgress, step, stepImage, currentStep, progressItemClasses }
+  }
+}
+</script>
+
 <template>
   <div
     ref="formProgress"
@@ -43,81 +125,5 @@
     </div>
   </div>
 </template>
-
-<script>
-import store from '@/store';
-import {computed, onMounted, ref, watch} from 'vue'
-
-export default {
-  name: 'AppFormProgress',
-
-  props: {
-    showOverview: {
-      type: Boolean,
-      default: false
-    }
-  },
-
-  setup(props) {
-    const formProgress = ref(null)
-    const formData = computed(() => store.state.form.data)
-    const currentStep = computed(() => store.state.form.step)
-    const step = computed(() => formData.value.acf.steps[currentStep.value])
-    const stepImage = computed(() => store.state.form.stepImage)
-    const heroEl = document.querySelector('.c-hero--has-bg')
-    const heroElPaddingBottom = heroEl.style.paddingBottom
-
-    const moveBar = (image) => {
-      const progressEl = formProgress.value
-      const parentBox = progressEl.parentNode.getBoundingClientRect()
-
-      if (image) {
-        const headerImageBox = image.getBoundingClientRect()
-
-        progressEl.style.transform = `translateY(calc(-50% + ${headerImageBox.bottom - parentBox.top}px))`
-      } else {
-        const heroEl = document.querySelector('.c-hero')
-        const heroElBox = heroEl.getBoundingClientRect()
-
-        progressEl.style.transform = `translateY(calc(-66% + ${heroElBox.bottom - parentBox.top}px))`
-      }
-    }
-
-    const progressItemClasses = (index) => {
-      if (props.showOverview || currentStep.value > index) return 'msf-progress__item--checked'
-      if (currentStep.value === index) return 'msf-progress__item--active'
-    }
-
-    onMounted(async () => {
-      moveBar(document.querySelector('.msf-form-header-image'))
-      heroEl.style.paddingBottom = '169px'
-
-      const headerEl = document.querySelector('.c-header')
-
-      const intersectionObserver = new IntersectionObserver(async (entries) => {
-        let [entry] = entries
-        if (entry.isIntersecting) {
-          intersectionObserver.unobserve(headerEl)
-        }
-      })
-
-      await intersectionObserver.observe(headerEl)
-      headerEl.scrollIntoView({behavior: 'smooth', block: 'end'})
-    })
-
-    watch(stepImage, (n) => {
-      if (n) {
-        moveBar(n)
-        heroEl.style.paddingBottom = heroElPaddingBottom
-      } else {
-        moveBar()
-        heroEl.style.paddingBottom = '169px'
-      }
-    }, { deep: true })
-
-    return { formData, formProgress, step, stepImage, currentStep, progressItemClasses }
-  }
-}
-</script>
 
 <style lang="scss" src="@styles/components/_progress.scss"></style>

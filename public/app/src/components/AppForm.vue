@@ -2,7 +2,6 @@
 import {ref, computed} from 'vue'
 import store from '@/store'
 import AppFormHeader from '@/components/AppFormHeader.vue'
-import AppFormProgress from '@/components/AppFormProgress.vue'
 import FormStep from '@/components/FormStep.vue'
 import FormOverview from '@/components/FormOverview.vue'
 import FormAfterSubmission from '@/components/FormAfterSubmission.vue'
@@ -11,7 +10,6 @@ export default {
   name: 'AppForm',
 
   components: {
-    AppFormProgress,
     AppFormHeader,
     FormStep,
     FormOverview,
@@ -76,17 +74,17 @@ export default {
     v-if="formData"
     class="msf-form"
   >
-    <AppFormProgress
-      v-if="step"
-      :show-overview="showOverview"
-    />
     <AppFormHeader
       v-if="showOverview"
       :data="{ title: 'Fast geschafft!<br>Hier können Sie Ihre Angaben nochmals überprüfen', overview: true }"
+      :show-overview="showOverview"
+      :step="step"
     />
     <AppFormHeader
       v-else-if="step && step.header"
       :data="step.header"
+      :show-overview="showOverview"
+      :step="step"
     />
 
     <div class="msf-form__steps">

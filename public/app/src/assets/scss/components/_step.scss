@@ -12,13 +12,17 @@
 }
 
 .msf-step__header-content {
-  padding-top: 0;
+  padding-top: 3rem;
+
+  .msf-step__header--has-image & {
+    padding-top: 3.25rem;
+  }
 
   @include bp($large-bp) {
-    padding-top: 9.733125rem;
+    padding-top: 6rem;
 
     .msf-step__header--has-image & {
-      padding-top: 12.125rem;
+      padding-top: 6.5rem;
     }
   }
 }

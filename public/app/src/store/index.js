@@ -3,6 +3,9 @@ import {reactive, inject} from 'vue'
 
 const store = {
   state: reactive({
+    progress: {
+      heroElPaddingBottom: null
+    },
     form: {
       data: null,
       step: 0,
@@ -38,6 +41,10 @@ const store = {
         storedSteps.push(stepStoreObject)
       })
     }
+  },
+
+  setHeroElPaddingBottom(val) {
+    this.state.progress.heroElPaddingBottom = val
   },
 
   setStoreFromStorage(storedState) {

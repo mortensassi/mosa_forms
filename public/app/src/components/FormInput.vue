@@ -79,7 +79,7 @@ export default {
         rules.numeric = helpers.withMessage(props.data.error_message, numeric)
       }
 
-      if (props.data.type === 'date') {
+      if (props.data.type === 'date' && props.data.is_required) {
         rules.dateFormat = helpers.withMessage(props.data.error_message,  (val) => {
           const pattern = new RegExp(/\d{2}\.\d{2}\.\d{4}/)
           return pattern.test(val) && val.length === 10
