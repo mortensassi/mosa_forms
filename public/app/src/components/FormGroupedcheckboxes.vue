@@ -66,21 +66,15 @@ export default {
       }
       return entries
     })
-    const updateSelection = (id, val, group, skipCheck) => {
-      let foundItem = null
-
-      if (!skipCheck) {
-        foundItem = selection.value.find(item =>
-            item.id === id && item.group.id === group
-        )
-      }
+    const updateSelection = (id, val, group) => {
+      const foundItem = selection.value.find(item =>
+          item.id === id && item.group.id === group
+      )
 
       if (foundItem) {
         selection.value.splice(selection.value.indexOf(foundItem), 1)
-      } else if (skipCheck) {
-        console.log(val)
-      }else {
-        selection.value.push({ id, fieldname: val.fieldname, value: val.value, group: { id: group, name: props.data.groups[group].name }  })
+      } else {
+        selection.value.push({ id, fieldname: val.fieldname, value: val.value, disabled: val.disabled, group: { id: group, name: props.data.groups[group].name }  })
       }
 
       setFormEntry({
@@ -217,6 +211,8 @@ export default {
           const checkboxIndex = checkboxes.value.findIndex(el => el.fieldname === checkbox.region)
           const val = checkboxes.value.find(el => el.fieldname === checkbox.region)
 
+          val.disabled = true
+
           if (val && !selection.value.some(el => el.fieldname === checkbox.region)) {
             updateSelection(checkboxIndex, val, currentGroup.value)
           }
@@ -233,6 +229,8 @@ export default {
             const checkboxIndex = checkboxes.value.findIndex(el => el.fieldname === checkbox.region)
             const val = checkboxes.value.find(el => el.fieldname === checkbox.region)
 
+            val.disabled = false
+
             if (val) {
               updateSelection(checkboxIndex, val, currentGroup.value)
               checkbox.selected = false
@@ -244,7 +242,6 @@ export default {
 
     const toggleAll = () => {
       const checkboxes = props.data.groups.flatMap(group => group.checkboxes)
-      console.log(checkboxes)
 
       if (selection.value.length < checkboxes.length ) {
         props.data.groups.forEach((group, groupIndex) => {
@@ -252,15 +249,21 @@ export default {
             const { checkbox, fieldname } = item
             const val = { fieldname, value: checkbox }
 
-            if (!selection.value.some(item => item.fieldname === fieldname)) {
-              console.log(checkbox, groupIndex)
+            if (!selection.value.some((selectedItem) => selectedItem.fieldname === fieldname)) {
               updateSelection(index, val, groupIndex)
             }
           })
         })
       } else {
-        selection.value.forEach((item, index) => {
-          updateSelection(index.id, item, item.group.id, true)
+        props.data.groups.forEach((group, groupIndex) => {
+          group.checkboxes.forEach((item, index) => {
+            const { checkbox, fieldname } = item
+            const val = { fieldname, value: checkbox }
+
+            if (selection.value.some((selectedItem) => fieldname === selectedItem.fieldname && selectedItem.disabled !== true)) {
+              updateSelection(index, val, groupIndex)
+            }
+          })
         })
       }
     }
