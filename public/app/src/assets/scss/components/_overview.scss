@@ -33,6 +33,7 @@
   .msf-overview-element__field & {
     @include text-token('sans', 'copy', 'xs');
 
+    flex: 1;
     color: map-get($brand-colors, 'black', '900-50');
   }
 
@@ -51,6 +52,10 @@
   @include text-token('sans', 'copy', 'xs');
 
   color: map-get($brand-colors, 'black', '900-50');
+
+  .msf-overview-element__field & {
+    flex: 1;
+  }
 
   @include bp($large-bp) {
     @include text-token('sans', 'copy', 'md');
@@ -71,10 +76,8 @@
 }
 
 .msf-overview-element__field {
-  @include bp($large-bp) {
-    display: flex;
-    align-items: center;
-  }
+  display: flex;
+  align-items: center;
 }
 
 .msf-overview-button {
