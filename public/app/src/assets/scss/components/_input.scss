@@ -66,14 +66,9 @@ input[type='number'] {
 
   display: flex;
   flex-flow: row wrap;
-  margin-top: 1.5rem;
   max-height: 100%;
-  padding: 0 1rem;
-  margin: 1rem -1rem 0;
-
-  @include bp($large-bp) {
-    margin-top: 3rem;
-  }
+  padding: 0 1rem 0;
+  margin: 0 -1rem 0;
 }
 
 .msf-input__checkboxes--collapsed {
@@ -114,6 +109,7 @@ input[type='number'] {
 }
 
 .msf-input--checkbox {
+  position: relative;
   display: flex;
   flex: 0 0 50%;
   flex-flow: row-reverse nowrap;
@@ -144,6 +140,17 @@ input[type='number'] {
     &:nth-child(even) {
       padding-left: 0;
     }
+  }
+}
+
+.msf-input--select-all {
+  position: relative;
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+
+  @include bp($large-bp) {
+    margin-top: 3rem;
+    margin-bottom: 2rem;
   }
 }
 
@@ -209,4 +216,16 @@ input[type='number'] {
 .msf-input__validation {
   position: absolute;
   top: 100%;
+}
+
+.msf-input__icon {
+  position: absolute;
+  display: block;
+  top: 0;
+  left: 0;
+  transform: translate(0.25rem, 0.25rem);
+  width: 1rem;
+  height: 1rem;
+  color: darkseagreen;
+  fill: map-get($brand-colors, 'green', '800');
 }

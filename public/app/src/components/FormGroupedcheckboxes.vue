@@ -66,15 +66,21 @@ export default {
       }
       return entries
     })
-    const updateSelection = (id, val, group) => {
-      const foundItem = selection.value.find(item =>
-        item.id === id && item.group.id === group
-      )
+    const updateSelection = (id, val, group, skipCheck) => {
+      let foundItem = null
+
+      if (!skipCheck) {
+        foundItem = selection.value.find(item =>
+            item.id === id && item.group.id === group
+        )
+      }
 
       if (foundItem) {
         selection.value.splice(selection.value.indexOf(foundItem), 1)
-      } else {
-        selection.value.push({ id, fieldname: val.fieldname, value: val.value, group: { id: currentGroup.value, name: props.data.groups[currentGroup.value].name }  })
+      } else if (skipCheck) {
+        console.log(val)
+      }else {
+        selection.value.push({ id, fieldname: val.fieldname, value: val.value, group: { id: group, name: props.data.groups[group].name }  })
       }
 
       setFormEntry({
@@ -236,7 +242,28 @@ export default {
       }
     })
 
-    // TODO: SELECT ALL
+    const toggleAll = () => {
+      const checkboxes = props.data.groups.flatMap(group => group.checkboxes)
+      console.log(checkboxes)
+
+      if (selection.value.length < checkboxes.length ) {
+        props.data.groups.forEach((group, groupIndex) => {
+          group.checkboxes.forEach((item, index) => {
+            const { checkbox, fieldname } = item
+            const val = { fieldname, value: checkbox }
+
+            if (!selection.value.some(item => item.fieldname === fieldname)) {
+              console.log(checkbox, groupIndex)
+              updateSelection(index, val, groupIndex)
+            }
+          })
+        })
+      } else {
+        selection.value.forEach((item, index) => {
+          updateSelection(index.id, item, item.group.id, true)
+        })
+      }
+    }
 
     onMounted(() => {
       makeSelection()
@@ -271,6 +298,7 @@ export default {
       storedStepFields,
       checkboxStateUpdate,
       makeSelection,
+      toggleAll,
       v$
     }
   }
@@ -293,6 +321,31 @@ export default {
         <span class="c-btn__label">{{ `${button.name}` }} <span>({{ selection.filter(item => item.group.id === groupIndex).length }})</span> </span>
       </button>
 
+      <div class="msf-input msf-input--select-all msf-input--checkbox c-input c-input--checkbox">
+        <label
+          :for="`GroupedCheckboxes-g-${currentGroup}-select-all`"
+          class="c-input__label msf-input__label msf-input__label--checkbox"
+        >Alle Auswählen</label>
+        <svg
+          v-if="selection.length > 0"
+          class="msf-input__icon"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 12 4"
+        ><rect
+          x=".167"
+          y=".75"
+          width="11.667"
+          height="2.5"
+          rx="1"
+        /></svg>
+        <input
+          :id="`GroupedCheckboxes-g-${currentGroup}-select-all`"
+          @change="toggleAll"
+          type="checkbox"
+          class="c-input__control msf-input__control msf-input__control--checkbox msf-input__control--select-all"
+        >
+      </div>
       <div
         ref="checkboxesEl"
         class="msf-input__checkboxes"
