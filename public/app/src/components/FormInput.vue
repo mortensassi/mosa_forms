@@ -167,11 +167,19 @@ export default {
       childElements.splice(1, 0, requiredElement)
     }
 
-    return h('div',
+    if (this.v$ && this.v$.$errors.length) {
+      return h('div',
+          {
+            class: ['c-input', 'c-input--error', `c-input--${field.type}`, 'msf-input', `msf-input--${field.type}`, `msf-input--size-${field.size}`],
+            ref: 'root'
+          }, childElements)
+    } else {
+      return h('div',
         {
           class: ['c-input', `c-input--${field.type}`, 'msf-input', `msf-input--${field.type}`, `msf-input--size-${field.size}`],
           ref: 'root'
         }, childElements)
+    }
   }
 }
 </script>
