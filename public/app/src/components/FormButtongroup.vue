@@ -140,7 +140,7 @@ export default {
         <span class="c-btn__label">{{ button.label }}</span>
         <span
           v-if="button.has_info"
-          class="c-btn--tooltip u-tooltip"
+          class="c-btn--tooltip"
           :aria-labelledby="`Buttongroup-${index}-button-${buttonIndex}-tooltip`"
         >
           <span class="u-tooltip__icon-wrap">

@@ -207,7 +207,7 @@ export default {
     >
       <div
         :id="`Pricerange-${index}-tooltip`"
-        class="u-tooltip msf-form-info-tooltip"
+        class="msf-form-info-tooltip"
       >
         <div class="u-tooltip__label msf-form-info-tooltip__label">
           {{ data.info.label }}
@@ -224,7 +224,7 @@ export default {
           role="tooltip"
           class="u-tooltip__content"
         >
-          {{ data.info.description }}
+          <span v-html="data.info.description"></span>
           <span class="u-tooltip__arrow" />
         </span>
       </div>
