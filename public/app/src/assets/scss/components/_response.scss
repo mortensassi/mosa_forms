@@ -48,6 +48,10 @@
 
   .c-img__wrap {
     background: transparent;
+
+    &:before {
+      display: none;
+    }
   }
 
   @include bp($large-bp) {
@@ -60,6 +64,8 @@
 .msf-response__header-content {
   @include bp($large-bp) {
     margin-left: 7.5rem;
+
+    @include text-token('sans','copy','lg')
   }
 }
 
