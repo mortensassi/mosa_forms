@@ -149,14 +149,16 @@ export default {
         emit('goToStep', step)
       } else {
         await v$.value.$touch()
-        let domRect = document.querySelector('.msf-form .c-input--error').getBoundingClientRect();
+        let domRect = document.querySelector('.msf-form .c-input--error');
 
-        /* polyfill smoothscroll */
-        smoothscroll.polyfill();
-        window.scrollTo({
-          top: domRect.top + document.documentElement.scrollTop - 100,
-          behavior: 'smooth'
-        });
+        if(domRect) {
+          /* polyfill smoothscroll */
+          smoothscroll.polyfill();
+          window.scrollTo({
+            top: domRect.getBoundingClientRect().top + document.documentElement.scrollTop - 100,
+            behavior: 'smooth'
+          });
+        }
       }
     }
 
