@@ -94,6 +94,7 @@ export default {
   <div
     ref="rootEl"
     class="msf-input msf-input--select"
+    :class="{'c-input--error' : v$.$errors && v$.$errors[0]}"
   >
     <label
       :for="`msf-select-${index}`"

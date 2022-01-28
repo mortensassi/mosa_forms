@@ -12,6 +12,11 @@ $vs-state-active-color: #000;
 .vs__dropdown-toggle {
   border: 2px solid map-get($brand-colors, 'black', '200');
 
+  .c-input--error & {
+    background-color: map-get($brand-colors, 'red', '100');
+    border-color: map-get($brand-colors, 'red', '500');
+  }
+
   &:hover,
   .vs--open & {
     border-color: map-get($brand-colors, 'green', '900')
