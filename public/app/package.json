@@ -12,6 +12,7 @@
     "@vuelidate/components": "^1.1.14",
     "@vuelidate/core": "^2.0.0-alpha.34",
     "@vuelidate/validators": "^2.0.0-alpha.26",
+    "dayjs": "^1.10.7",
     "fuse.js": "^6.4.6",
     "lodash.camelcase": "^4.3.0",
     "lodash.capitalize": "^4.2.1",

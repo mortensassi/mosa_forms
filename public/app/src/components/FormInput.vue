@@ -1,4 +1,7 @@
 <script>
+import dayjs from 'dayjs';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+
 import {useVuelidate} from '@vuelidate/core'
 import {required, email, helpers, numeric, minLength} from '@vuelidate/validators'
 import store from '@/store'
@@ -86,8 +89,32 @@ export default {
         })
       }
 
+      if (props.data.type === 'date' ) {
+        rules.ageVerification = helpers.withMessage('Ihr angegebenes Alter entspricht nicht dem Mindestalter. Sie müssen mindestens 15 Jahre alt sein.',  (val) => {
+          return ageValidation(val,'DD.MM.YYYY');
+        })
+      }
+
       return rules
     })
+
+
+    const ageValidation = (date,dateFormat = 'YYYY-MM-DD') => {
+
+      dayjs.extend(customParseFormat)
+      const dateToProof = new Date(dayjs(date,dateFormat).toDate());
+      const currentDate = new Date().toJSON().slice(0,10)+' 01:00:00';
+
+      // calculate age comparing current date and birthday
+      const age = ~~((Date.now(currentDate) - dateToProof) / (31557600000));
+
+      if(age < 15) {
+        return false;
+      } else{
+        return true;
+      }
+
+    }
 
     const v$ = useVuelidate(validationRules, value)
 
