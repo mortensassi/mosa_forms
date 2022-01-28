@@ -443,6 +443,19 @@ return [
 																				  ->wrapper([
 																					  'width' => '15%'
 																				  ]),
+																		 TrueFalse::make(
+																			 __('Tooltip', 'mosa'),
+																			 'has_info'
+																		 )
+																			 ->wrapper([
+																				 'width' => '15%'
+																			 ]),
+																		 Text::make(__('Info text', 'mosa'), 'info')
+																			 ->conditionalLogic([
+																				 ConditionalLogic::if(
+																					 'has_info'
+																				 )->equals(1)
+																			 ])
 																	 ])
 														 ]),
 												   Layout::make(__('Country Select', 'mosa'), 'countries')
