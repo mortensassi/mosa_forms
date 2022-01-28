@@ -82,16 +82,9 @@ export default {
         rules.numeric = helpers.withMessage(props.data.error_message, numeric)
       }
 
-      if (props.data.type === 'date' && props.data.is_required) {
-        rules.dateFormat = helpers.withMessage(props.data.error_message,  (val) => {
-          const pattern = new RegExp(/\d{2}\.\d{2}\.\d{4}/)
-          return pattern.test(val) && val.length === 10
-        })
-      }
-
       if (props.data.type === 'date' ) {
         rules.ageVerification = helpers.withMessage('Ihr angegebenes Alter entspricht nicht dem Mindestalter. Sie müssen mindestens 15 Jahre alt sein.',  (val) => {
-          return ageValidation(val,'DD.MM.YYYY');
+          return ageValidation(val,);
         })
       }
 
@@ -108,11 +101,7 @@ export default {
       // calculate age comparing current date and birthday
       const age = ~~((Date.now(currentDate) - dateToProof) / (31557600000));
 
-      if(age < 15) {
-        return false;
-      } else{
-        return true;
-      }
+      return age >= 15;
 
     }
 
@@ -134,9 +123,10 @@ export default {
     let inputProps = {
       id: `msf-input-${this.index}`,
       class: ['c-input__control', 'msf-input__control', `msf-input__control--${field.type}`],
-      type: field.type === 'date' ? 'text' : field.type,
+      type: field.type,
       required: field.is_required,
       placeholder: field.placeholder,
+      max: field.type === 'date' ? '2999-12-31' : '', // datepicker year fix to prevent 6 char year number
 
       onInput: (v) => {
         this.value = v.target.value
