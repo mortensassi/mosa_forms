@@ -8,17 +8,13 @@
     }"
   >
     <div
-      v-if="imageProps"
+      v-if="image"
       class="c-img__wrap"
     >
       <div
         ref="lazyImage"
         class="c-img__full"
-        :data-background-image="imageProps.type.full.src"
-      />
-      <div
-        class="c-img__placeholder"
-        :style="{'background-image': `url(${imageProps.type.thumb.src})`}"
+        :data-background-image="image.url"
       />
     </div>
   </div>
@@ -27,7 +23,7 @@
 <script>
 import store from '@/store'
 import lozad from 'lozad'
-import {computed, onMounted, ref, watch, onBeforeUnmount} from 'vue'
+import {ref, watch, onBeforeUnmount} from 'vue'
 
 export default {
   name: 'AppImage',
@@ -39,25 +35,9 @@ export default {
     }
   },
 
-  setup(props) {
+  setup() {
     const imageObject = ref(null)
     const lazyImage = ref(null)
-    const getImage = async () => {
-      const res = await fetch(`${window.location.origin}/wp-json/wp/v2/media/${props.image}`)
-      imageObject.value = await res.json()
-    }
-
-    const imageProps = computed(() => {
-      if (!imageObject.value) return
-      const {height, width, sizes} = imageObject.value.media_details
-      const {full, thumbnail} = sizes
-
-      return {height, width, type: {full: {src: full.source_url}, thumb: {src: thumbnail.source_url}}}
-    })
-
-    onMounted(() => {
-      getImage()
-    })
 
     watch(lazyImage, (newImage) => {
       if (newImage) {
@@ -74,7 +54,7 @@ export default {
     })
 
 
-    return {imageObject, imageProps, lazyImage}
+    return {imageObject, lazyImage}
   },
 }
 </script>

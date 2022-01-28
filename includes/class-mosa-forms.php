@@ -234,6 +234,25 @@ class Mosa_Forms
         $app_id = $this->get_plugin_name() . '-app-' . $parameters['id'];
 
         wp_enqueue_script($this->plugin_name);
+		
+		$postObject = get_post($parameters['id']);
+		
+		if ($postObject) {
+			$date = new DateTime(get_the_modified_date('Y-m-d H:i:s', $parameters['id']));
+			$fields = get_fields($parameters['id']);
+			
+			foreach ($fields['steps'] as $step) {
+				if ($step['header']['image']) {
+					echo '<div style="background-image: url('. $step['header']['image']['url'] .')"></div>';
+				}
+			}
+			
+			$data = [
+				'modified' => $date->format(DateTime::ATOM),
+				'acf' => $fields
+			];
+			echo '<script>var mosaFormsData'. $parameters['id'] .'='. json_encode($data) .';</script>';
+		}
 
         return '<div id="' . $app_id . '" data-form-id="' . $parameters['id'] . '"></div>';
     }

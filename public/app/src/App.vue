@@ -15,24 +15,25 @@
       const formId = inject('formId')
       const storedStateName = `mosa-forms-${formId}`
       const storedState = localStorage.getItem(storedStateName)
-      const formUrl = `${window.location.origin}/wp-json/wp/v2/mosa_form/${formId}`
 
       onBeforeMount(async () => {
-        const modifiedNew = await fetchData(formUrl + '?_fields[]=modified')
+        const data = window[`mosaFormsData${formId}`]
+        const modifiedNew = data.modified
 
         if (storedState) {
           if (modifiedNew) {
-            const currentModified = new Date(modifiedNew.modified).getTime()
+            const currentModified = new Date(modifiedNew).getTime()
             const storedModified = new Date(JSON.parse(storedState).form.data.modified).getTime()
 
             if (currentModified > storedModified) {
-              await store.getFormData(formUrl)
+              console.log('is newer!')
+              await store.getFormData(data)
             } else {
               store.setStoreFromStorage(storedState)
             }
           }
         } else {
-          await store.getFormData(formUrl)
+          await store.getFormData(data)
         }
       })
 

@@ -17,9 +17,9 @@ const store = {
     }
   }),
 
-  async getFormData(url) {
+  async getFormData(formData) {
     const storedSteps = this.state.form.entries.steps
-    this.state.form.data = await fetchData(url);
+    this.state.form.data = formData;
     const data = this.state.form.data
 
     if (data.acf) {

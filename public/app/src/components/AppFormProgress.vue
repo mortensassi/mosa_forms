@@ -71,7 +71,10 @@ export default {
       headerEl.scrollIntoView({behavior: 'smooth', block: 'end'})
     })
 
-    watch(stepImage, (n) => {
+    watch(stepImage, async (n) => {
+      if (formProgress.value) {
+        boundingBox.value = await formProgress.value.getBoundingClientRect()
+      }
       positionBar()
     }, { deep: true })
 
