@@ -5,7 +5,7 @@
  *
  * This file is used to markup the admin-facing aspects of the plugin.
  *
- * @link       https://mortensassi.com
+ * @link       mortensassi.com
  * @since      1.0.0
  *
  * @package    Mosa_Forms

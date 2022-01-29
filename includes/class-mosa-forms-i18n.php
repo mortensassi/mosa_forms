@@ -6,7 +6,7 @@
  * Loads and defines the internationalization files for this plugin
  * so that it is ready for translation.
  *
- * @link       https://mortensassi.com
+ * @link       mortensassi.com
  * @since      1.0.0
  *
  * @package    Mosa_Forms
@@ -22,7 +22,7 @@
  * @since      1.0.0
  * @package    Mosa_Forms
  * @subpackage Mosa_Forms/includes
- * @author     Morten Sassi <dev@mortensassi.com>
+ * @author     Morten Sassi <mail@mortensassi.com>
  */
 class Mosa_Forms_i18n {
 

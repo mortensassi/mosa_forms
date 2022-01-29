@@ -3,7 +3,7 @@
 /**
  * The public-facing functionality of the plugin.
  *
- * @link       https://mortensassi.com
+ * @link       mortensassi.com
  * @since      1.0.0
  *
  * @package    Mosa_Forms
@@ -18,7 +18,7 @@
  *
  * @package    Mosa_Forms
  * @subpackage Mosa_Forms/public
- * @author     Morten Sassi <dev@mortensassi.com>
+ * @author     Morten Sassi <mail@mortensassi.com>
  */
 class Mosa_Forms_Public {
 
@@ -41,14 +41,6 @@ class Mosa_Forms_Public {
 	private $version;
 
 	/**
-	 * Locate frontend manifest file
-	 *
-	 * @var
-	 */
-	private $manifest_path;
-	private $manifest;
-
-	/**
 	 * Initialize the class and set its properties.
 	 *
 	 * @since    1.0.0
@@ -59,15 +51,7 @@ class Mosa_Forms_Public {
 
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
-		$this->manifest_path = plugin_dir_path( __FILE__ ) . 'app/dist/manifest.json';
 
-		if (file_exists($this->manifest_path)) {
-			$manifest = json_decode(file_get_contents($this->manifest_path), TRUE);
-		} else {
-			$manifest = [];
-		}
-
-		$this->manifest = $manifest;
 	}
 
 	/**
@@ -89,7 +73,7 @@ class Mosa_Forms_Public {
 		 * class.
 		 */
 
-		// wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/mosa-forms-public.css', array(), $this->version, 'all' );
+		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/mosa-forms-public.css', array(), $this->version, 'all' );
 
 	}
 
@@ -112,14 +96,8 @@ class Mosa_Forms_Public {
 		 * class.
 		 */
 
-		if (defined('WP_ENV') && WP_ENV == 'development') { ?>
-            <script type="module" src="https://<?= $_SERVER['HTTP_HOST'] ?>:3000/@vite/client"></script>
-            <script type="module" src="https://<?= $_SERVER['HTTP_HOST'] ?>:3000/src/main.js"></script>
-        <?php
-		} else {
-			wp_register_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'app/dist/' . $this->manifest['src/main.js']['file'], $this->version, true );
-            wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'app/dist/style.css', $this->version, true );
-		};
+		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/mosa-forms-public.js', array( 'jquery' ), $this->version, false );
+
 	}
 
 }

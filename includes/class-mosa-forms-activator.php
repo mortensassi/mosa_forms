@@ -3,7 +3,7 @@
 /**
  * Fired during plugin activation
  *
- * @link       https://mortensassi.com
+ * @link       mortensassi.com
  * @since      1.0.0
  *
  * @package    Mosa_Forms
@@ -18,7 +18,7 @@
  * @since      1.0.0
  * @package    Mosa_Forms
  * @subpackage Mosa_Forms/includes
- * @author     Morten Sassi <dev@mortensassi.com>
+ * @author     Morten Sassi <mail@mortensassi.com>
  */
 class Mosa_Forms_Activator {
 

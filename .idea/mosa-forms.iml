@@ -5,6 +5,11 @@
       <sourceFolder url="file://$MODULE_DIR$/spec" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" packagePrefix="Moe\MosaForms\" />
       <sourceFolder url="file://$MODULE_DIR$/tests" isTestSource="true" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/log1x/poet" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/johnbillion/extended-cpts" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/schrittweiter/acf" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/wordplate/acf" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/composer" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

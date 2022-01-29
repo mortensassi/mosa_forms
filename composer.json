@@ -1,9 +1,10 @@
 {
     "name": "moe/mosa-forms",
     "type": "wp-plugin",
+    "minimum-stability": "dev",
     "require": {
         "log1x/poet": "^2.0",
-        "wordplate/acf": "^11.2",
+        "schrittweiter/acf": "*",
         "johnbillion/extended-cpts": "^4.5"
     },
     "autoload": {
