@@ -119,6 +119,13 @@ class Mosa_Forms_Fields {
             );
             $filename = basename($file);
 
+            // set default additional validation empty
+            // additonal validation can be set inside of a field type
+
+            $additonalValidation = [];
+
+            // # create layout types based on defined options
+
             $fields[$fieldData['title']] = Layout::make($fieldData['title'], $key)
                 ->layout('block')
                 ->modalSize('full')
@@ -128,7 +135,8 @@ class Mosa_Forms_Fields {
                     array_merge(
                         require $this->fields . 'fields/default/field.php',
                         require $this->fields . 'fields/' . $filename,
-                        require $this->fields . 'fields/default/validation.php'
+                        require $this->fields . 'fields/default/appearance.php',
+                        require $this->fields . 'fields/default/validation.php',
                     )
                 );
 
