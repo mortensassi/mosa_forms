@@ -4,7 +4,7 @@
 
 .msf-form {
   position: relative;
-  margin: 0 auto 6rem;
+  margin: 0 auto;
   border-radius: 1.333333em;
   box-sizing: border-box;
 
@@ -12,10 +12,6 @@
   *::before,
   *::after {
     box-sizing: inherit;
-  }
-
-  @include bp($large-bp) {
-    margin-bottom: 12rem;
   }
 }
 
@@ -71,12 +67,12 @@
 }
 
 .msf-form__controls {
-  margin-top: 4rem;
+  margin-top: 3rem;
   display: flex;
   justify-content: space-between;
 
   @include bp($large-bp) {
-    margin-top: 8rem;
+    margin-top: 6rem;
   }
 }
 
