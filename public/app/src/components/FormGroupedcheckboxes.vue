@@ -329,7 +329,7 @@ export default {
         <label
           :for="`GroupedCheckboxes-g-${currentGroup}-select-all`"
           class="c-input__label msf-input__label msf-input__label--checkbox"
-        >Alle Auswählen</label>
+        >Alle auswählen</label>
         <div class="msf-input__wrapper">
           <svg
               v-if="selection.length > 0"
