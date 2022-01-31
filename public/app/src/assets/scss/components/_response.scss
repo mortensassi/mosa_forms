@@ -37,6 +37,7 @@
 
   @include bp($large-bp) {
     display: flex;
+    align-items: center;
     padding: 2.5rem 3rem 3rem 3rem;
   }
 }
@@ -45,6 +46,7 @@
   width: 8rem;
   height: 8rem;
   flex: 1 0 8rem;
+  transform: scale(1.2);
 
   .c-img__wrap {
     background: transparent;
@@ -55,6 +57,7 @@
   }
 
   @include bp($large-bp) {
+    transform: scale(1.5);
     width: 16rem;
     height: 16rem;
     flex: 1 0 16rem;
