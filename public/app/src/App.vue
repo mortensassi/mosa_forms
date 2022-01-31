@@ -14,7 +14,7 @@
     setup() {
       const formId = inject('formId')
       const storedStateName = `mosa-forms-${formId}`
-      const storedState = localStorage.getItem(storedStateName)
+      const storedState = sessionStorage.getItem(storedStateName)
 
       onBeforeMount(async () => {
         const data = window[`mosaFormsData${formId}`]
@@ -37,7 +37,7 @@
       })
 
       watch(store.state, (newState) => {
-        localStorage.setItem(storedStateName, JSON.stringify(newState))
+        sessionStorage.setItem(storedStateName, JSON.stringify(newState))
 
       }, { deep: true })
     },

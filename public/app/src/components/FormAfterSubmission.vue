@@ -36,7 +36,7 @@ export default {
 
     onMounted(async () => {
       const formId = inject('formId')
-      localStorage.removeItem(`mosa-forms-${formId}`)
+      sessionStorage.removeItem(`mosa-forms-${formId}`)
 
       moveHeader()
 

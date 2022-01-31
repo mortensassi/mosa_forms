@@ -83,7 +83,9 @@ export default {
           }
 
           if (group.fields.find(groupedFields)) {
-            group.fields = _groupBy(group.fields, 'subgroup')
+            console.log(group.fields)
+            const filteredFields = group.fields.filter(groupedFields)
+            group.fields = _groupBy(filteredFields, 'subgroup')
           }
         })
       })
