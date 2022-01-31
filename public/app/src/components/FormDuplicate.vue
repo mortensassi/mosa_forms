@@ -17,7 +17,7 @@ export default {
   emits: ['duplicate', 'removeDuplicate'],
 
   setup(props) {
-    const maxLimit = computed(() => props.duplicateCount === props.data.max_count)
+    const maxLimit = computed(() => props.duplicateCount == props.data.max_count)
 
     return { maxLimit }
   }
