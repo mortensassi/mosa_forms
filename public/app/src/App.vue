@@ -26,7 +26,6 @@
             const storedModified = new Date(JSON.parse(storedState).form.data.modified).getTime()
 
             if (currentModified > storedModified) {
-              console.log('is newer!')
               await store.getFormData(data)
             } else {
               store.setStoreFromStorage(storedState)

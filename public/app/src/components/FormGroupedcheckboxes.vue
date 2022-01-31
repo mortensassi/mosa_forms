@@ -185,6 +185,7 @@ export default {
       if (reset) {
         checkboxesEl.value.classList.add('msf-input__checkboxes--is-expanded')
         listIsCollapsed.value = false
+        maxHeight.value = ''
       }
     }
 
