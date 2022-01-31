@@ -42,6 +42,16 @@ input[type="date"] {
       margin-top: 2rem;
     }
   }
+
+
+
+  &.msf-input--select:last-child {
+    margin-bottom: 1rem;
+
+    @include bp($large-bp) {
+      margin-bottom: 2rem;
+    }
+  }
 }
 
 @each $name, $size in $sizes {

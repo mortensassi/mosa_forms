@@ -2,6 +2,8 @@
 import Multiselect from 'vue-multiselect'
 import {computed, inject, onMounted, ref, watch} from 'vue'
 import store from '@/store'
+import {useVuelidate} from "@vuelidate/core";
+import {helpers, minLength, required} from "@vuelidate/validators";
 
 export default {
   name: 'FormMultiselect',
@@ -77,69 +79,101 @@ export default {
       }
     })
 
-    return { choices, selection, storeEntry, selectedChoices }
+    const validationRules = computed(() => {
+      const rules = {}
+
+      if (props.data.is_required) {
+        rules.required = helpers.withMessage(props.data.error_message, required)
+        rules.minLength = helpers.withMessage(props.data.error_message, minLength(1))
+      }
+
+      return rules
+    })
+
+    const v$ = useVuelidate(validationRules, selection);
+
+    return { choices, selection, storeEntry, selectedChoices, v$ }
 
   }
 }
 </script>
 
 <template>
-  <multiselect
-    :id="`msf-select-${index}`"
-    v-model="selection"
-    :options="choices"
-    :multiple="true"
-    group-values="choices"
-    group-label="group"
-    label="choice"
-    track-by="index"
-    placeholder="Wählen Sie Ihr Wohnprojekt aus"
-    :show-labels="false"
-    :group-select="true"
-    :close-on-select="false"
-    :clear-on-select="false"
+  <div
+    ref="rootEl"
+    class="msf-input msf-input--select"
+    :class="{'c-input--error' : v$.$errors && v$.$errors[0]}"
   >
-    <template #caret>
-      <svg class="multiselect__select">
-        <use xlink:href="#icon-chevron-down" />
-      </svg>
-    </template>
-    <template #option="props">
-      <div class="option__checkmark">
-        <svg
-          v-if="props.option.$isLabel && selection.length > 0 "
-          class="option__icon"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 12 4"
-        ><rect
-          x=".167"
-          y=".75"
-          width="11.667"
-          height="2.5"
-          rx="1"
-        /></svg>
-      </div>
-      <div
-        v-if="props.option.$isLabel"
-        class="option__desc"
-      >
-        {{ props.option.$groupLabel }}
-      </div>
-      <div
-        v-else
-        class="option__desc"
-      >
-        {{ props.option.choice }}
-      </div>
-    </template>
-    <template #selection="{ values, search, isOpen }">
-      <span
-        v-if="values.length &amp;&amp; !isOpen"
-        class="multiselect__placeholder"
-      >{{ `${values.length} ${values.length < 2 ? 'Option' : 'Optionen'} ausgewählt` }}</span>
-    </template>
-  </multiselect>
+    <label
+      :for="`msf-select-${index}`"
+      class="msf-input__label ms-input__label--select"
+    >{{ data.label }} <span
+      v-if="data.is_required"
+      class="c-txt c-txt--highlight"
+    >*</span> </label>
+    <multiselect
+      :id="`msf-select-${index}`"
+      v-model="selection"
+      :options="choices"
+      :multiple="true"
+      group-values="choices"
+      group-label="group"
+      label="choice"
+      track-by="index"
+      placeholder="Wählen Sie Ihr Wohnprojekt aus"
+      :show-labels="false"
+      :group-select="true"
+      :close-on-select="false"
+      :clear-on-select="false"
+    >
+      <template #caret>
+        <svg class="multiselect__select">
+          <use xlink:href="#icon-chevron-down" />
+        </svg>
+      </template>
+      <template #option="props">
+        <div class="option__checkmark">
+          <svg
+            v-if="props.option.$isLabel && selection.length > 0 "
+            class="option__icon"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 12 4"
+          ><rect
+            x=".167"
+            y=".75"
+            width="11.667"
+            height="2.5"
+            rx="1"
+          /></svg>
+        </div>
+        <div
+          v-if="props.option.$isLabel"
+          class="option__desc"
+        >
+          {{ props.option.$groupLabel }}
+        </div>
+        <div
+          v-else
+          class="option__desc"
+        >
+          {{ props.option.choice }}
+        </div>
+      </template>
+      <template #selection="{ values, search, isOpen }">
+        <span
+          v-if="values.length &amp;&amp; !isOpen"
+          class="multiselect__placeholder"
+        >{{ `${values.length} ${values.length < 2 ? 'Option' : 'Optionen'} ausgewählt` }}</span>
+      </template>
+    </multiselect>
+    <span
+      v-if="v$.$errors && v$.$errors[0]"
+      class="'c-input__validation', c-input__validation--error msf-input__validation"
+    >
+    {{ v$.$errors[0].$message }}
+  </span>
+  </div>
 </template>
 
 <style src="@styles/vendor/_multiselect.scss"></style>
