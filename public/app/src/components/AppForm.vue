@@ -46,7 +46,10 @@ export default {
         })
 
         await intersectionObserver.observe(headerEl)
-        headerEl.scrollIntoView({behavior: 'smooth', block: 'end'})
+        window.scrollTo({
+          top: document.querySelector('.msf-form').getBoundingClientRect().top,
+          behavior: 'smooth'
+        });
       }
     }
 
@@ -89,7 +92,7 @@ export default {
 
     <div class="msf-form__steps">
       <transition
-        name="move-up"
+        name="fade"
       >
         <FormAfterSubmission
           v-if="formResponse"
