@@ -98,7 +98,11 @@ export default {
       })
     }
 
-    return {storeEntry, selection, rootEl, currentStep, makeSelection, v$, nationalities: nationalitiesArr }
+    const nationalityFilter = (option, label, search) => {
+        return (label || '').toLocaleLowerCase().startsWith(search.toLocaleLowerCase())
+    };
+
+    return {storeEntry, selection, rootEl, currentStep, makeSelection, v$, nationalities: nationalitiesArr, nationalityFilter }
   }
 }
 </script>
@@ -119,6 +123,7 @@ export default {
       :id="`msf-select-${index}`"
       :model-value="selection"
       label="name"
+      :filterBy="nationalityFilter"
       :options="nationalities"
       @option:selected="makeSelection"
     >
