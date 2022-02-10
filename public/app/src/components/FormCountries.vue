@@ -5,7 +5,7 @@ import store from '@/store'
 import vSelect from 'vue-select'
 import {useVuelidate} from '@vuelidate/core'
 import {required, helpers, minLength} from '@vuelidate/validators'
-import nationalities from '@/assets/nationalities.json'
+import nationalities from '@/assets/countries.json'
 import _capitalize from "lodash.capitalize";
 
 export default {

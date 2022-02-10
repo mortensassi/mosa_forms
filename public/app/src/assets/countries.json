@@ -45,7 +45,7 @@
 {"id":188,"name":"Costa Rica","alpha2":"cr","alpha3":"cri"},
 {"id":531,"name":"Curaçao","alpha2":"cw","alpha3":"cuw"},
 {"id":208,"name":"Dänemark","alpha2":"dk","alpha3":"dnk"},
-{"id":276,"name":"Deutschland","alpha2":"de","alpha3":"deu"},
+{"id":276,"name":"Deutschland","alpha2":"de","alpha3":"deu","selected": "true"},
 {"id":212,"name":"Dominica","alpha2":"dm","alpha3":"dma"},
 {"id":214,"name":"Dominikanische Republik","alpha2":"do","alpha3":"dom"},
 {"id":262,"name":"Dschibuti","alpha2":"dj","alpha3":"dji"},

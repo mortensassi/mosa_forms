@@ -16,6 +16,7 @@ export default {
 <template>
   <div class="msf-overview-element__title">{{ data.name }}</div>
   <div class="msf-overview-element__value">
+    <span v-if="data.value.selection.length < 1">nein</span>
     <span
       v-for="(choice, choiceIndex) in data.value.selection"
       :key="`overview-${data-id}-${choiceIndex}`"
