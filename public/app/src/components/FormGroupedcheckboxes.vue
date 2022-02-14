@@ -112,11 +112,11 @@ export default {
 
       if (collection) {
         collection.forEach(checkbox => {
-          const checkboxIndex = checkboxes.value.findIndex(el => el.fieldname === checkbox.fieldname)
+          const checkboxIndex = props.data.groups[checkbox.group.id].checkboxes.findIndex(el => el.fieldname === checkbox.fieldname)
           const { value, fieldname } = checkbox
           const val = { value, fieldname }
 
-          updateSelection(checkboxIndex, val, currentGroup.value)
+          updateSelection(checkboxIndex, val, checkbox.group.id)
         })
       }
     }
@@ -241,31 +241,30 @@ export default {
       }
     })
 
+    const currentGroupSelection = computed(() => {
+      return selection.value.filter(item => checkboxes.value.some(check => item.fieldname === check.fieldname) )
+    })
+
     const toggleAll = () => {
-      const checkboxes = props.data.groups.flatMap(group => group.checkboxes)
+      if (currentGroupSelection.value.length < checkboxes.value.length ) {
+        props.data.groups[currentGroup.value].checkboxes.forEach((item, index) => {
+          const { checkbox, fieldname } = item
+          const val = { fieldname, value: checkbox }
 
-      if (selection.value.length < checkboxes.length ) {
-        props.data.groups.forEach((group, groupIndex) => {
-          group.checkboxes.forEach((item, index) => {
-            const { checkbox, fieldname } = item
-            const val = { fieldname, value: checkbox }
-
-            if (!selection.value.some((selectedItem) => selectedItem.fieldname === fieldname)) {
-              updateSelection(index, val, groupIndex)
-            }
-          })
+          if (!selection.value.some((selectedItem) => selectedItem.fieldname === fieldname)) {
+            updateSelection(index, val, currentGroup.value)
+          }
         })
       } else {
-        props.data.groups.forEach((group, groupIndex) => {
-          group.checkboxes.forEach((item, index) => {
-            const { checkbox, fieldname } = item
-            const val = { fieldname, value: checkbox }
+        props.data.groups[currentGroup.value].checkboxes.forEach((item, index) => {
+          const { checkbox, fieldname } = item
+          const val = { fieldname, value: checkbox }
 
-            if (selection.value.some((selectedItem) => fieldname === selectedItem.fieldname && selectedItem.disabled !== true)) {
-              updateSelection(index, val, groupIndex)
-            }
-          })
+          if (selection.value.some((selectedItem) => fieldname === selectedItem.fieldname && selectedItem.disabled !== true)) {
+            updateSelection(index, val, currentGroup.value)
+          }
         })
+
       }
     }
 
@@ -301,6 +300,7 @@ export default {
       getCheckboxData,
       storedStepFields,
       checkboxStateUpdate,
+      currentGroupSelection,
       makeSelection,
       toggleAll,
       v$
@@ -325,31 +325,34 @@ export default {
         <span class="c-btn__label">{{ `${button.name}` }} <span>({{ selection.filter(item => item.group.id === groupIndex).length }})</span> </span>
       </button>
 
-      <div class="msf-input msf-input--select-all msf-input--checkbox c-input c-input--checkbox">
+      <div
+        v-if="data.groups[currentGroup].checkboxes.length > 1"
+        class="msf-input msf-input--select-all msf-input--checkbox c-input c-input--checkbox"
+      >
         <label
           :for="`GroupedCheckboxes-g-${currentGroup}-select-all`"
           class="c-input__label msf-input__label msf-input__label--checkbox"
         >Alle auswählen</label>
         <div class="msf-input__wrapper">
           <svg
-              v-if="selection.length > 0"
-              class="msf-input__icon"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 12 4"
+            v-if="currentGroupSelection.length > 0"
+            class="msf-input__icon"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 12 4"
           ><rect
-              x=".167"
-              y=".75"
-              width="11.667"
-              height="2.5"
-              rx="1"
+            x=".167"
+            y=".75"
+            width="11.667"
+            height="2.5"
+            rx="1"
           /></svg>
           <input
-              :id="`GroupedCheckboxes-g-${currentGroup}-select-all`"
-              @change="toggleAll"
-              :checked="selection.length === data.groups.flatMap(group => group.checkboxes).length"
-              type="checkbox"
-              class="c-input__control msf-input__control msf-input__control--checkbox msf-input__control--select-all"
+            :id="`GroupedCheckboxes-g-${currentGroup}-select-all`"
+            :checked="currentGroupSelection.length === data.groups[currentGroup].checkboxes.length"
+            type="checkbox"
+            class="c-input__control msf-input__control msf-input__control--checkbox msf-input__control--select-all"
+            @change="toggleAll"
           >
         </div>
       </div>
