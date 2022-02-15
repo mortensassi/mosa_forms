@@ -63,17 +63,21 @@ export default {
   setup(props, { emit }) {
     const prepareCompName = (name) => _capitalize(_camelCase(name))
     const groups = computed(() => props.step.groups)
+    const computedGroups = computed({
+      get: () => groups.value,
+      set: (val) => groups.value.splice(val.index, val.del, val.data)
+    })
     const storedFormEntries = computed(() => store.state.form.entries)
     const formData = computed(() => store.state.form.data)
 
     const duplicateCount = ref(0)
     const duplicates = ref([])
     const duplicateFields = () => {
-      const duplicateField = groups.value[duplicatorGroup.value].fields.filter(field => field.acf_fc_layout === 'duplicate')
+      const duplicateField = computedGroups.value[duplicatorGroup.value].fields.filter(field => field.acf_fc_layout === 'duplicate')
       if (duplicateCount.value < duplicateField[0].max_count)
-      duplicateCount.value += 1
-      groups.value.forEach((group, groupIndex) => {
-        const { fields } = groups.value[groupIndex]
+        duplicateCount.value += 1
+      computedGroups.value.forEach((group, groupIndex) => {
+        const { fields } = computedGroups.value[groupIndex]
         const duplicator = fields.find(field => field['acf_fc_layout'] === 'duplicate')
 
         if (duplicator) {
@@ -88,13 +92,23 @@ export default {
             }
           })
 
-          groups.value[groupIndex].fields = [...fields, ...duplicates.value]
-          groups.value[groupIndex].fields.push(groups.value[groupIndex].fields.splice(duplicatorPosition, 1)[0])
+          computedGroups.value = {
+            index: groupIndex + 1,
+            del: 0,
+            data: {
+              title: `${groupIndex + 1}. ${computedGroups.value[duplicatorGroup.value].title}`,
+              fields: duplicates.value
+            }
+          }
+
+          computedGroups.value[groupIndex + 1].fields.push(computedGroups.value[groupIndex].fields.splice(duplicatorPosition, 1)[0])
+
+          const duplicateGroupIndex = computedGroups.value.findIndex(group => group.fields.some(item => item.acf_fc_layout === 'duplicate'))
 
           store.duplicateFields({
             index: props.currentStep,
-            groupIndex,
-            fields: group.fields
+            groupTitle: `${groupIndex + 1}. ${group.title}`,
+            groupIndex: duplicateGroupIndex,
           }, duplicateCount.value)
         }
       })
@@ -102,18 +116,16 @@ export default {
 
     const removeDuplicate = async () => {
       duplicateCount.value -= 1
-      groups.value.forEach((group, groupIndex) => {
-        const { fields } = groups.value[groupIndex]
-        const hasDuplicatorField = fields.find(field => field['acf_fc_layout'] === 'duplicate')
+      const indexOfGroupWithDuplicator = computedGroups.value.findIndex(group => group.fields.some(field => field['acf_fc_layout'] === 'duplicate'))
+      const groupWithDuplicator = computedGroups.value.find(group => group.fields.some(field => field['acf_fc_layout'] === 'duplicate'))
+      const duplicator = groupWithDuplicator.fields.find(field => field['acf_fc_layout'] === 'duplicate')
+      const duplicatorPosition = groupWithDuplicator.fields.indexOf(duplicator)
 
-        if (hasDuplicatorField) {
-          groups.value[groupIndex].fields = groups.value[groupIndex].fields.filter(field => field.subgroup < 1)
+      computedGroups.value[indexOfGroupWithDuplicator - 1].fields.push(computedGroups.value[indexOfGroupWithDuplicator].fields.splice(duplicatorPosition, 1)[0])
 
-          store.removeDuplicates(props.currentStep, groupIndex, duplicateCount.value)
-        }
-      })
+      await computedGroups.value.splice(indexOfGroupWithDuplicator, 1)
 
-
+      store.removeDuplicates(props.currentStep, indexOfGroupWithDuplicator)
     }
 
     onMounted(() => {
@@ -162,9 +174,7 @@ export default {
       }
     }
 
-    // TODO: Validate on button
-
-    return { formData, prepareCompName, duplicateFields, removeDuplicate, duplicateCount, groups, storedFormEntries, duplicatorGroup, prepareStepChange, v$ }
+    return { formData, prepareCompName, duplicateFields, removeDuplicate, duplicateCount, groups, computedGroups, storedFormEntries, duplicatorGroup, prepareStepChange, v$ }
   }
 }
 </script>
@@ -174,7 +184,7 @@ export default {
     class="msf-step"
   >
     <div
-      v-for="(group, groupIndex) in step.groups"
+      v-for="(group, groupIndex) in computedGroups"
       :key="`mosa-forms_s-${currentStep}-g-${groupIndex}`"
       class="msf-step__group"
     >

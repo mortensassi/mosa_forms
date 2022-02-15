@@ -30,8 +30,8 @@ export default {
 
   props: {
     image: {
-      type: Number,
-      default: 0
+      type: Object,
+      default: null
     }
   },
 

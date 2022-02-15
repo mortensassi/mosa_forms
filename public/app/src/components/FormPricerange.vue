@@ -143,7 +143,7 @@ export default {
       :data="'inputData'"
       :data-id="'val'"
       :enable-cross="false"
-      :max="data.max.max_val"
+      :max="Number(data.max.max_val)"
       :tooltip="'none'"
       class="msf-range-slider"
     >

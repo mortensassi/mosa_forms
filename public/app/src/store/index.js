@@ -1,5 +1,4 @@
-import fetchData from '@/api'
-import {reactive, inject} from 'vue'
+import {reactive} from 'vue'
 
 const store = {
   state: reactive({
@@ -72,15 +71,13 @@ const store = {
   },
 
   duplicateFields(step, count) {
+    this.state.form.entries.steps[step.index].groups.splice(step.groupIndex + 1, 0, { fields: [], title: step.groupTitle})
     this.state.form.entries.steps[step.index].groups[step.groupIndex].duplicates = step.fields
     this.state.form.entries.steps[step.index].groups[step.groupIndex].duplicateCount = count
   },
 
-  removeDuplicates(stepIndex, groupIndex, count) {
-    const groupWithDuplicator = this.state.form.entries.steps[stepIndex].groups[groupIndex]
-    groupWithDuplicator.fields = groupWithDuplicator.fields.filter(field => field.subgroup === count)
-    groupWithDuplicator.duplicates = groupWithDuplicator.fields.filter(field => field.subgroup === count)
-    groupWithDuplicator.duplicateCount = count
+  removeDuplicates(stepIndex, index) {
+    this.state.form.entries.steps[stepIndex].groups.splice(index, 1)
   }
 }
 

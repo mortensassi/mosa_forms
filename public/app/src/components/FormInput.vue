@@ -65,8 +65,15 @@ export default {
     const root = ref(null)
     const currentStep = ref(store.state.form.step)
     const setFormEntry = inject('setFormEntry')
-    const storedFields = store.state.form.entries.steps[currentStep.value].groups[props.stepGroupIndex].fields
-    const storeEntry = computed(() => storedFields[props.realIndex])
+    const storedGroup = store.state.form.entries.steps[currentStep.value].groups[props.stepGroupIndex]
+    let storedFields = null
+    if (storedGroup) {
+      storedFields = store.state.form.entries.steps[currentStep.value].groups[props.stepGroupIndex].fields
+    }
+    const storeEntry = computed(() => {
+      if (!storedFields) return null
+      return storedFields[props.realIndex]
+    })
     const validationRules = computed(() => {
       const rules = {}
 
@@ -108,13 +115,13 @@ export default {
     const v$ = useVuelidate(validationRules, value)
 
     onMounted(() => {
-      if (storeEntry.value) {
+      if (storeEntry.value && storeEntry.value['value']) {
         value.value = storeEntry.value['value'].userInput
         root.value.querySelector('.c-input__control')['value'] = storeEntry.value['value'].userInput
       }
     })
 
-    return {root, currentStep, setFormEntry, value, v$}
+    return {root, currentStep, storedFields, storeEntry, setFormEntry, value, v$}
   },
 
   render() {
@@ -126,7 +133,6 @@ export default {
       type: field.type,
       required: field.is_required,
       placeholder: field.placeholder,
-      max: field.type === 'date' ? '2999-12-31' : '', // datepicker year fix to prevent 6 char year number
 
       onInput: (v) => {
         this.value = v.target.value
@@ -149,6 +155,10 @@ export default {
       onBlur: async () => {
         await this.v$.$validate()
       }
+    }
+
+    if (field.type === 'date') {
+      inputProps = { ...inputProps, ...{ max: '2999-12-31' }  }
     }
 
     if (field.is_required) {
