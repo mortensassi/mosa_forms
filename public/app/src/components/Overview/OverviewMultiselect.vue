@@ -19,7 +19,7 @@ export default {
     <span v-if="data.value.selection.length < 1">nein</span>
     <span
       v-for="(choice, choiceIndex) in data.value.selection"
-      :key="`overview-${data-id}-${choiceIndex}`"
+      :key="`overview-${data.id}-${choiceIndex}`"
     >
       {{ choice.choice }}
       <span v-if="choiceIndex < data.value.selection.length - 1">
