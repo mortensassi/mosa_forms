@@ -65,9 +65,10 @@ const store = {
   },
 
   setFormEntry(entry) {
-    const {step, group, subgroup, id, name, value, type, realIndex, link} = entry
+    const {step, group, subgroup, id, name, value, type, realIndex, link, listHeight} = entry
+    console.log('SETTIN FORM ENTRY', name, listHeight ? listHeight : '')
 
-    this.state.form.entries.steps[step].groups[group].fields[realIndex] = {step, group, subgroup, id, name, value, type, realIndex, link}
+    this.state.form.entries.steps[step].groups[group].fields[realIndex] = {step, group, subgroup, id, name, value, type, realIndex, link, listHeight}
   },
 
   duplicateFields(step, count) {

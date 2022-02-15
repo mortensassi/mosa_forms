@@ -3,7 +3,7 @@ import {useVuelidate} from '@vuelidate/core'
 import {helpers, minLength, required} from '@vuelidate/validators'
 import store from '@/store'
 import _throttle from 'lodash.throttle'
-import {ref, computed, onMounted, watch, inject, reactive,} from 'vue'
+import {ref, computed, onMounted, watch, inject, nextTick} from 'vue'
 import FormCheckbox from '@/components/FormCheckbox.vue'
 
 export default {
@@ -77,7 +77,7 @@ export default {
         selection.value.push({ id, fieldname: val.fieldname, value: val.value, disabled: val.disabled, group: { id: group, name: props.data.groups[group].name }  })
       }
 
-      setFormEntry({
+      let storeData = {
         step: currentStep.value,
         group: props.stepGroupIndex,
         realIndex: props.realIndex,
@@ -88,7 +88,15 @@ export default {
           selection: selection.value,
           fieldname: props.data.fieldname,
         }
-      })
+      }
+
+      if (storeEntry.value && storeEntry.value.listHeight) {
+        storeData.listHeight = storeEntry.value.listHeight
+      } else {
+        storeData.listHeight = maxHeight.value
+      }
+
+      setFormEntry(storeData)
     }
 
     const makeSelection = () => {
@@ -97,18 +105,7 @@ export default {
         collection = storeEntry.value.value.selection
       } else if (preselectedCheckboxes.value.length > 0) {
         collection = preselectedCheckboxes.value
-      } /*else if (multiselectEntries.value && multiselectEntries.value.length > 0) {
-        multiselectEntries.value.forEach(entry => {
-          const checkbox = checkboxes.value.find(checkbox => checkbox.fieldname === entry.region && entry.selected)
-          if (checkbox) {
-            if (collection) {
-              collection = [...collection, ...[checkbox]]
-            } else {
-              collection = [...[checkbox]]
-            }
-          }
-        })
-      }*/
+      }
 
       if (collection) {
         collection.forEach(checkbox => {
@@ -164,30 +161,24 @@ export default {
       }
     }
     const collapseList = computed(() => checkboxes.value.length > 9)
-    const maxHeight = ref(0)
     const listIsCollapsed = ref(true)
-    const setMaxHeight = (reset, once) => {
-      if (!collapseList.value) return
-      const elBox = checkboxesEl.value.getBoundingClientRect()
-      if (once) {
-        maxHeight.value = elBox.height
-      }
-      const ninthEl = checkboxesEl.value.querySelectorAll('.msf-input--checkbox')[8]
-      const ninthElBox = ninthEl.getBoundingClientRect()
-      if (reset) {
-        return maxHeight.value
-      }
-      return elBox.height - (elBox.bottom - ninthElBox.bottom) + ninthElBox.height / 2
-    }
 
-    const setMaxHeightVariable = (reset) => {
-      checkboxesEl.value.style.setProperty('--list-max-height', `${setMaxHeight(reset)}px`)
-      if (reset) {
-        checkboxesEl.value.classList.add('msf-input__checkboxes--is-expanded')
-        listIsCollapsed.value = false
-        maxHeight.value = ''
+    const maxHeight = computed(() => {
+      if (!collapseList.value) return 0
+
+      if (storeEntry.value && storeEntry.value.listHeight) return storeEntry.value.listHeight
+
+      const elBox =  checkboxesEl.value.getBoundingClientRect()
+
+      if (collapseList.value && listIsCollapsed.value) {
+        const ninthEl = checkboxesEl.value.querySelectorAll('.msf-input--checkbox')[10]
+        const ninthElBox = ninthEl.getBoundingClientRect()
+
+        return elBox.height - (elBox.bottom - ninthElBox.bottom) + ninthElBox.height / 2
       }
-    }
+
+      return elBox.height
+    })
 
     const setCurrentGroup = (index) => {
       if (storeEntry.value) {
@@ -272,14 +263,6 @@ export default {
 
     onMounted(() => {
       makeSelection()
-
-      setMaxHeight(true, true)
-      if (collapseList.value && listIsCollapsed.value) {
-        setMaxHeightVariable()
-        window.addEventListener('resize', () => _throttle(() => setMaxHeightVariable, 200))
-      } else {
-        setMaxHeightVariable(true)
-      }
     })
 
     return {
@@ -290,8 +273,7 @@ export default {
       collapseList,
       listIsCollapsed,
       formEntries,
-      setMaxHeight,
-      setMaxHeightVariable,
+      maxHeight,
       updateSelection,
       setCurrentGroup,
       currentStep,
@@ -361,7 +343,7 @@ export default {
       <div
         ref="checkboxesEl"
         class="msf-input__checkboxes"
-        :class="{ 'msf-input__checkboxes--collapsed' : collapseList }"
+        :class="listIsCollapsed ? 'msf-input__checkboxes--collapsed' : 'msf-input__checkboxes--is-expanded'"
       >
         <FormCheckbox
           v-for="(input, inputIndex) in checkboxes"
@@ -377,7 +359,7 @@ export default {
       <button
         v-if="collapseList && listIsCollapsed"
         class="c-link msf-form__collapse-trigger"
-        @click="setMaxHeightVariable(true)"
+        @click="listIsCollapsed = !listIsCollapsed"
       >
         Alle Gebiete ansehen ({{ checkboxes.length }})
       </button>
@@ -390,3 +372,10 @@ export default {
     </div>
   </div>
 </template>
+
+<style>
+  .msf-input__checkboxes--collapsed {
+    --list-max-height: v-bind(maxHeight);
+    max-height: calc(var(--list-max-height) * 1px)
+  }
+</style>
