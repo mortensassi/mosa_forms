@@ -152,6 +152,7 @@
 }
 
 .option__desc {
+  white-space: break-spaces;
   margin-left: 0.5rem;
 
   @include bp($large-bp) {
@@ -162,6 +163,7 @@
 .option__checkmark {
   position: relative;
   display: flex;
+  flex-shrink: 0;
   align-items: center;
   justify-content: center;
   width: 24px;
@@ -211,9 +213,17 @@
       transform: scale(0);
       fill: #fff;
     }
+
     &::before {
-      transform: scale(1) translate(-2px, -2px);
+      transform: scale(1);
       background-color: #fff;
+    }
+
+    @include bp($large-bp) {
+      &::before {
+        transform: scale(1) translate(-2px, -2px);
+        background-color: #fff;
+      }
     }
   }
 
