@@ -14,7 +14,6 @@
       const formId = inject('formId')
       const storedStateName = `mosa-forms-${formId}`
       const storedState = sessionStorage.getItem(storedStateName)
-      const clearStorage = () => sessionStorage.clear()
 
       onBeforeMount(async () => {
         const data = window[`mosaFormsData${formId}`]
@@ -40,8 +39,6 @@
         sessionStorage.setItem(storedStateName, JSON.stringify(newState))
 
       }, { deep: true })
-
-      return { clearStorage }
     },
   }
 </script>
