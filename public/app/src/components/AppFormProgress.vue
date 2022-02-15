@@ -27,7 +27,7 @@ export default {
       if (currentStep.value === index) return 'msf-progress__item--active'
     }
 
-    const positionBar = () => {
+    const positionBar = async () => {
       const pos = ref(null)
       if (stepImage.value) {
         pos.value = boundingBox.value.height / 2
@@ -57,18 +57,6 @@ export default {
 
         positionBar()
       }
-
-      const headerEl = document.querySelector('.c-header')
-
-      const intersectionObserver = new IntersectionObserver(async (entries) => {
-        let [entry] = entries
-        if (entry.isIntersecting) {
-          intersectionObserver.unobserve(headerEl)
-        }
-      })
-
-      await intersectionObserver.observe(headerEl)
-      headerEl.scrollIntoView({behavior: 'smooth', block: 'end'})
     })
 
     watch(stepImage, async (n) => {

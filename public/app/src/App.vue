@@ -1,7 +1,7 @@
 <script>
   import AppForm from '@/components/AppForm.vue'
   import store from '@/store'
-  import { onBeforeMount, inject, watch } from 'vue'
+  import {onBeforeMount, inject, watch, onMounted, nextTick} from 'vue'
 
   export default {
     name: 'MosaFormsApp',

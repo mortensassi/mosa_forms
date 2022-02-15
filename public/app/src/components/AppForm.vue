@@ -1,10 +1,11 @@
 <script>
-import {ref, computed} from 'vue'
+import {ref, computed, watch, inject} from 'vue'
 import store from '@/store'
 import AppFormHeader from '@/components/AppFormHeader.vue'
 import FormStep from '@/components/FormStep.vue'
 import FormOverview from '@/components/FormOverview.vue'
 import FormAfterSubmission from '@/components/FormAfterSubmission.vue'
+import VueScrollTo from 'vue-scrollto'
 
 export default {
   name: 'AppForm',
@@ -19,6 +20,7 @@ export default {
   setup() {
     const showOverview = ref(false)
     const showResponse = ref(false)
+
     const goToStep = async (step) => {
       if (step) {
         if (step === 'overview') {
@@ -35,21 +37,6 @@ export default {
             await store.updateStep(store.state.form.step + step)
           }
         }
-
-        const headerEl = document.querySelector('.c-header')
-
-        const intersectionObserver = new IntersectionObserver(async (entries) => {
-          let [entry] = entries
-          if (entry.isIntersecting) {
-            intersectionObserver.unobserve(headerEl)
-          }
-        })
-
-        await intersectionObserver.observe(headerEl)
-        window.scrollTo({
-          top: document.querySelector('.msf-form').getBoundingClientRect().top,
-          behavior: 'smooth'
-        });
       }
     }
 
@@ -57,6 +44,10 @@ export default {
     const currentStep = computed(() => store.state.form.step)
     const step = computed(() => formData.value.acf.steps[currentStep.value])
     const formResponse = computed(() => store.state.form.response)
+
+    watch(step, () => {
+      VueScrollTo.scrollTo(document.querySelector('.c-hero'), 500)
+    })
 
     return {
       step,
@@ -125,14 +116,14 @@ export default {
 <style lang="scss" src="@styles/components/_step.scss"/>
 
 <style lang="scss">
-.move-up-enter-active,
-.move-up-leave-active {
-  @include anim($dur: 500ms, $mode: ease-in);
+.fade-enter-active,
+.fade-leave-active {
+  @include anim($dur: 200ms, $mode: ease-in);
 }
 
-.move-up-enter-from,
-.move-up-leave-to {
+.fade-enter-from,
+.fade-leave-to {
   opacity: 0;
-  visibility: hidden;
+  display: none;
 }
 </style>

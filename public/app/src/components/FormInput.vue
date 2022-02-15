@@ -1,11 +1,10 @@
 <script>
-import dayjs from 'dayjs';
-import customParseFormat from 'dayjs/plugin/customParseFormat';
-
+import dayjs from 'dayjs'
+import customParseFormat from 'dayjs/plugin/customParseFormat'
 import {useVuelidate} from '@vuelidate/core'
-import {required, email, helpers, numeric, minLength} from '@vuelidate/validators'
+import {required, email, helpers, numeric} from '@vuelidate/validators'
 import store from '@/store'
-import {inject, onMounted, ref, watch, reactive} from 'vue'
+import {inject, onMounted, ref} from 'vue'
 import {h, computed} from 'vue'
 
 export default {

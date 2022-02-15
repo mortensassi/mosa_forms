@@ -24,6 +24,7 @@
     "vee-validate": "^4.5.7",
     "vue": "^3.2.16",
     "vue-multiselect": "^3.0.0-alpha.2",
+    "vue-scrollto": "^2.20.0",
     "vue-select": "^4.0.0-beta.1",
     "vue-slider-component": "^4.0.0-beta.4",
     "vue3-treeselect": "^0.1.10"
