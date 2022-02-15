@@ -212,7 +212,9 @@ export default {
           const checkboxIndex = checkboxes.value.findIndex(el => el.fieldname === checkbox.region)
           const val = checkboxes.value.find(el => el.fieldname === checkbox.region)
 
-          val.disabled = true
+          if (val) {
+            val.disabled = true
+          }
 
           if (val && !selection.value.some(el => el.fieldname === checkbox.region)) {
             updateSelection(checkboxIndex, val, currentGroup.value)
