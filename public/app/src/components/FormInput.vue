@@ -1,6 +1,7 @@
 <script>
 import dayjs from 'dayjs'
-import customParseFormat from 'dayjs/plugin/customParseFormat'
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+import IMask from 'imask';
 import {useVuelidate} from '@vuelidate/core'
 import {required, email, helpers, numeric} from '@vuelidate/validators'
 import store from '@/store'
@@ -90,7 +91,7 @@ export default {
 
       if (props.data.type === 'date' ) {
         rules.ageVerification = helpers.withMessage('Ihr angegebenes Alter entspricht nicht dem Mindestalter. Sie müssen mindestens 15 Jahre alt sein.',  (val) => {
-          return ageValidation(val,);
+          return ageValidation(val,'DD.MM.YYYY');
         })
       }
 
@@ -118,6 +119,13 @@ export default {
         value.value = storeEntry.value['value'].userInput
         root.value.querySelector('.c-input__control')['value'] = storeEntry.value['value'].userInput
       }
+
+      if(props.data.type === 'date') {
+        const inputElement = root.value.querySelector('.c-input__control');
+        IMask(inputElement, {
+          mask: Date,
+        });
+      }
     })
 
     return {root, currentStep, storedFields, storeEntry, setFormEntry, value, v$}
@@ -129,7 +137,7 @@ export default {
     let inputProps = {
       id: `msf-input-${this.index}`,
       class: ['c-input__control', 'msf-input__control', `msf-input__control--${field.type}`],
-      type: field.type,
+      type: field.type === 'date' ? 'text' : field.type,
       required: field.is_required,
       placeholder: field.placeholder,
 
@@ -154,10 +162,6 @@ export default {
       onBlur: async () => {
         await this.v$.$validate()
       }
-    }
-
-    if (field.type === 'date') {
-      inputProps = { ...inputProps, ...{ max: '2999-12-31' }  }
     }
 
     if (field.is_required) {
