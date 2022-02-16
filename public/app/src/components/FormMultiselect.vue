@@ -164,6 +164,7 @@ export default {
         <span
           v-if="values.length &amp;&amp; !isOpen"
           class="multiselect__placeholder"
+          :class="{'multiselect__placeholder--filled' : values.length}"
         >{{ `${values.length} ${values.length < 2 ? 'Option' : 'Optionen'} ausgewählt` }}</span>
       </template>
     </multiselect>

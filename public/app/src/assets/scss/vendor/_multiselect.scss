@@ -10,13 +10,12 @@
 
 .multiselect__tags {
   flex: 1;
-  padding: 0.75rem 3rem 0.75rem 0.75rem;
+  padding: 0.625rem;
   border-radius: 0.25rem;
-  border: 0.09375rem solid map-get($brand-colors, 'black', '200');
+  border: 0.125rem solid map-get($brand-colors, 'black', '200');
 
   @include bp($large-bp) {
-    padding: 0.625rem 2.5rem 0.625rem 0.625rem;
-    border-width: 0.125rem;
+    padding: 1rem 1.125rem;
   }
 
   .multiselect--active & {
@@ -54,17 +53,25 @@
 
 .multiselect__placeholder {
   padding: 0;
+
+  &.multiselect__placeholder--filled {
+    color: map-get($brand-colors, 'black', '900');
+  }
 }
 
 .multiselect__select {
   top: 50%;
-  right: 1.5rem;
-  transform: translate(-50%, -50%);
   stroke: map-get($brand-colors, 'black', '900-25');
-  width: 1rem;
-  height: 1rem;
+  width: 1.5rem;
+  height: 1.5rem;
   padding: 0;
   z-index: 500;
+
+  transform: translate(-12px, -50%);
+
+  @include bp($large-bp) {
+    transform: translate(-18px, -50%);
+  }
 
   &::before {
     display: none;
@@ -72,7 +79,11 @@
 
   .multiselect--active & {
     stroke: map-get($brand-colors, 'green', '800');
-    transform: translate(-50%, -50%);
+    transform: translate(-12px, -50%);
+
+    @include bp($large-bp) {
+      transform: translate(-18px, -50%);
+    }
   }
 }
 
@@ -81,11 +92,7 @@
 
   &,
   .multiselect--above & {
-    border-width: 0.09375rem;
-
-    @include bp($large-bp) {
-      border-width: 0.125rem;
-    }
+    border-width: 0.125rem;
   }
 
   .multiselect--above & {
