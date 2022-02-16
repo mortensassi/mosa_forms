@@ -164,7 +164,7 @@ export default {
     const listIsCollapsed = ref(true)
 
     const maxHeight = computed(() => {
-      if (!collapseList.value) return 0
+      if (!collapseList.value) return 500
 
       if (storeEntry.value && storeEntry.value.listHeight) return storeEntry.value.listHeight
 
@@ -376,6 +376,7 @@ export default {
 <style>
   .msf-input__checkboxes--collapsed {
     --list-max-height: v-bind(maxHeight);
+    min-height: 104px;
     max-height: calc(var(--list-max-height) * 1px)
   }
 </style>
