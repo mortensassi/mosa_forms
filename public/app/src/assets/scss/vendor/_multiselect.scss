@@ -125,7 +125,7 @@
 
 .multiselect__option {
   display: flex;
-  align-items: center;
+  //align-items: center;
   margin-left: 1rem;
   border-radius: 0.25rem;
 
@@ -161,9 +161,15 @@
 .option__desc {
   white-space: break-spaces;
   margin-left: 0.5rem;
+  position: relative;
+  top: 0.2em;
+
+  @include text-token('sans', 'copy', 'sm');
 
   @include bp($large-bp) {
+    top: -0.1em;
     margin-left: 0.75rem;
+    @include text-token('sans', 'copy', 'md');
   }
 }
 

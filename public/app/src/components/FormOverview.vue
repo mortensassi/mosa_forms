@@ -266,7 +266,7 @@ export default {
             class="c-btn c-btn--secondary msf-overview-button"
             @click="goToStep(stepIndex)"
           >
-            Angaben Bearbeiten
+            Angaben bearbeiten
           </button>
         </div>
       </div>
