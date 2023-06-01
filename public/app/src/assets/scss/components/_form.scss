@@ -96,6 +96,60 @@
   color: map-get($brand-colors, 'black', '900-50');
 }
 
+.msf-form-checkbox-tooltip {
+  order: -2;
+  margin-top: 0.2em;
+
+  .u-tooltip__icon-wrap {
+    width: 1.25rem;
+    height: 1.25rem;
+
+    .u-tooltip__icon {
+      width: 0.625rem;
+      height: 0.625rem;
+    }
+  }
+
+  .u-tooltip__table {
+    width: 100%;
+
+    caption {
+      text-align: left;
+      @include text-token('sans', 'copy', 'sm');
+      padding-bottom: 0.625rem;
+    }
+
+    tr {
+      th,
+      td {
+        border-bottom: 1px solid map-get($brand-colors, 'black', '900-25');
+      }
+
+      &:last-child {
+        td {
+          border-bottom: none;
+        }
+      }
+    }
+
+    th,
+    td {
+      min-width: 1.75rem;
+      padding: 0.125rem 0.25rem;
+      @include text-token('sans', 'copy', 'sm');
+
+      &:first-child {
+        padding-left: 0;
+        padding-right: 0.75rem;
+      }
+    }
+
+    th {
+      font-weight: 500;
+    }
+  }
+}
+
 .msf-form__duplicator {
   margin-top: 3rem;
   display: flex;

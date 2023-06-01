@@ -42,6 +42,8 @@ export default {
 
   setup(props) {
     const setFormEntry = inject('setFormEntry')
+    const showTooltip = inject('showTooltip')
+    const hideTooltip = inject('hideTooltip')
     const formEntries = ref(store.state.form.entries)
     const checkboxesEl = ref(null)
     const currentStep = ref(store.state.form.step)
@@ -110,7 +112,7 @@ export default {
       if (collection) {
         collection.forEach(checkbox => {
           const checkboxIndex = props.data.groups[checkbox.group.id].checkboxes.findIndex(el => el.fieldname === checkbox.fieldname)
-          const { value, fieldname } = checkbox
+          const { value, fieldname} = checkbox
           const val = { value, fieldname }
 
           updateSelection(checkboxIndex, val, checkbox.group.id)
@@ -140,7 +142,7 @@ export default {
     const storeEntry = computed(() => storedFields[props.realIndex])
     const checkboxes = computed(() => {
       return props.data.groups[currentGroup.value].checkboxes.map(checkbox => {
-        return { value: checkbox.checkbox, checked: checkbox.checked, fieldname: checkbox.fieldname }
+        return { value: checkbox.checkbox, checked: checkbox.checked, fieldname: checkbox.fieldname, tooltip: checkbox.table_popup ? checkbox.table_popup : false }
       })
     })
 
@@ -152,10 +154,12 @@ export default {
         if (match) {
           isDisabled = true
         }
-      }
+      } 
+
       return {
         type: 'checkbox',
         label: input.value,
+        tooltip: input.tooltip ? input.tooltip : false,
         checked: selection.value.some(checkbox => checkbox.fieldname === input.fieldname),
         disabled: isDisabled
       }
@@ -263,6 +267,26 @@ export default {
 
     onMounted(() => {
       makeSelection()
+
+      if (checkboxesEl.value) {
+        const checkboxes = checkboxesEl.value.querySelectorAll('.msf-input--checkbox')
+        checkboxes.forEach(checkbox => {
+          const trigger = checkbox.querySelector('.u-tooltip__icon-wrap')
+          const tooltipEl = checkbox.querySelector('.u-tooltip__content')
+
+          if (tooltipEl) {
+            const showEvents = ['mouseover', 'focus'];
+            const hideEvents = ['mouseleave', 'blur'];
+
+            showEvents.forEach(e => {
+              trigger.addEventListener(e, () => showTooltip(checkbox, trigger, tooltipEl))
+            })
+            hideEvents.forEach(e => {
+              trigger.addEventListener(e, () => hideTooltip(tooltipEl))
+            })
+          }
+        })
+      }
     })
 
     return {

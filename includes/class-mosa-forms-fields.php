@@ -1,5 +1,6 @@
 <?php
 
+use Schrittweiter\Acf\Fields\Table;
 use WordPlate\Acf\ConditionalLogic;
 use WordPlate\Acf\Fields\FlexibleContent;
 use WordPlate\Acf\Fields\Group;
@@ -71,6 +72,7 @@ return [
 																			 __('Checkboxes', 'mosa'),
 																			 'checkboxes'
 																		 )
+																			 	->layout('block')
 																				 ->buttonLabel(
 																					 __('+ Add Checkbox', 'mosa')
 																				 )
@@ -78,7 +80,10 @@ return [
 																					 Text::make(
 																						 __('Checkbox', 'mosa'),
 																						 'checkbox'
-																					 ),
+																					 )
+																						 ->wrapper([
+																							 'width' => 60
+																						 ]),
 																					 Text::make(__('Fieldname', 'mosa'), 'fieldname')
 																						 ->wrapper([
 																							 'width' => 25
@@ -87,7 +92,12 @@ return [
 																					 TrueFalse::make(__('Checked', 'mosa'), 'checked')
 																					 ->wrapper([
 																						 'width' => 15
-																					 ])
+																					 ]),
+
+																					 Table::make(__('Tabellen Popup','schrittweiter'),'table_popup')
+																						 ->wrapper([
+																							 'width' => 100
+																						 ]),
 																				 ])
 																	 ])
 														 ]),
