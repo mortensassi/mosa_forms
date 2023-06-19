@@ -62,7 +62,41 @@ export default {
     <label
       :for="`msf-input-${index}`"
       class="c-input__label msf-input__label msf-input__label--checkbox"
-    >{{ data.label }}</label>
+    >{{ data.label }}
+      <span
+        v-if="data.tooltip"
+        class="msf-form-checkbox-tooltip"
+        :aria-labelledby="`msf-input-${index}-tooltip`"
+      >
+        <span class="u-tooltip__icon-wrap">
+          <svg class="u-tooltip__icon"><use xlink:href="#icon-info" /></svg>
+        </span>
+        <span
+          :id="`msf-input-${index}-tooltip`"
+          role="tooltip"
+          class="u-tooltip__content"
+        > 
+
+          <table class="u-tooltip__table">
+            <caption>Wohnungen der Volkswohnung<br/>in {{data.label}}</caption>
+            <thead>
+              <tr>
+                <th v-for="header in data.tooltip.header">
+                  {{header.c}}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="row in data.tooltip.body">
+                <td v-for="cell in row">{{cell.c}}</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <span class="u-tooltip__arrow" />
+        </span>
+      </span>
+    </label>
     <input
       :id="`msf-input-${index}`"
       type="checkbox"
@@ -71,39 +105,7 @@ export default {
       :disabled="data.disabled"
       @change="$emit('change', data.label)"
     >
-    <span
-      v-if="data.tooltip"
-      class="msf-form-checkbox-tooltip"
-      :aria-labelledby="`msf-input-${index}-tooltip`"
-    >
-      <span class="u-tooltip__icon-wrap">
-        <svg class="u-tooltip__icon"><use xlink:href="#icon-info" /></svg>
-      </span>
-      <span
-        :id="`msf-input-${index}-tooltip`"
-        role="tooltip"
-        class="u-tooltip__content"
-      >
 
-        <table class="u-tooltip__table">
-          <caption>Wohnungen im Stadtteil</caption>
-          <thead>
-            <tr>
-                <th v-for="header in data.tooltip.header">
-                  {{header.c}}
-                </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="row in data.tooltip.body">
-              <td v-for="cell in row">{{cell.c}}</td>
-            </tr>
-          </tbody>
-        </table>
-
-        <span class="u-tooltip__arrow" />
-      </span>
-    </span>
   </div>
 </template>
 

@@ -101,7 +101,7 @@ input[type="date"] {
 .msf-input__checkboxes--collapsed {
   position: relative;
   max-height: calc(var(--list-max-height) + 2.5rem);
-  overflow-y: hidden;
+  overflow: hidden;
 
   &::before {
     @include anim($prop: transform);
@@ -139,7 +139,7 @@ input[type="date"] {
 .msf-input--checkbox {
   position: relative;
   display: flex;
-  flex: 0 0 50%;
+  flex: 0 0 100%;
   flex-flow: row-reverse nowrap;
   justify-content: flex-end;
   align-items: flex-start;
@@ -149,7 +149,7 @@ input[type="date"] {
   }
 
   &:nth-child(even) {
-    padding-left: 1rem;
+    //padding-left: 1rem;
   }
 
   margin-bottom: 1rem;
