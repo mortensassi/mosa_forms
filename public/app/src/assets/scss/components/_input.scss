@@ -87,8 +87,8 @@ input[type="date"] {
 .msf-input__checkboxes {
   @include anim($prop: max-height);
 
-  display: flex;
-  flex-flow: row wrap;
+  //display: flex;
+  //flex-flow: row wrap;
   max-height: 100%;
   padding: 1.5rem 1rem 0;
   margin: 0 -1rem;
@@ -110,7 +110,7 @@ input[type="date"] {
     left: 0;
     bottom: 0;
     width: 100%;
-    height: 2rem;
+    height: 2.5rem;
     background-image: linear-gradient(to top, #fff, rgba(#fff, 0.5));
     z-index: 1;
   }
@@ -121,6 +121,20 @@ input[type="date"] {
   &::before {
     transform: translateY(100%);
   }
+}
+
+.msf-input__checkboxes-inner {
+  column-count: 1;
+  column-fill: balance;
+
+  .msf-input__checkboxes--collapsed & {
+    overflow: hidden;
+  }
+
+  @include bp($large-bp) {
+    column-count: 3;
+  }
+
 }
 
 .msf-input--counter {
@@ -138,7 +152,7 @@ input[type="date"] {
 
 .msf-input--checkbox {
   position: relative;
-  display: flex;
+  display: inline-flex;
   flex: 0 0 100%;
   flex-flow: row-reverse nowrap;
   justify-content: flex-end;
@@ -198,6 +212,7 @@ input[type="date"] {
 .msf-input__label--checkbox {
   @include text-token('sans', 'copy', 'md');
   margin-left: 0.75rem;
+  white-space: nowrap;
 }
 
 .msf-input__label--button-group {

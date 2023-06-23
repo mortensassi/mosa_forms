@@ -7,7 +7,7 @@
     "serve": "vite preview"
   },
   "dependencies": {
-    "@floating-ui/dom": "^0.1.7",
+    "@floating-ui/dom": "^1.4.2",
     "@vitejs/plugin-legacy": "^1.6.4",
     "@vuelidate/components": "^1.1.14",
     "@vuelidate/core": "^2.0.0-alpha.34",

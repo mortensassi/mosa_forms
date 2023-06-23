@@ -154,7 +154,7 @@ export default {
         if (match) {
           isDisabled = true
         }
-      } 
+      }
 
       return {
         type: 'checkbox',
@@ -176,9 +176,12 @@ export default {
 
       if (collapseList.value && listIsCollapsed.value) {
         const ninthEl = checkboxesEl.value.querySelectorAll('.msf-input--checkbox')[10]
-        const ninthElBox = ninthEl.getBoundingClientRect()
+        const ninthElBox = ninthEl.getBoundingClientRect();
 
-        return elBox.height - (elBox.bottom - ninthElBox.bottom) + ninthElBox.height / 2
+        const innerEl = checkboxesEl.value.querySelector('.msf-input__checkboxes-inner');
+        const innerElBox = innerEl.getBoundingClientRect()
+
+        return elBox.height -  innerElBox.height / 2
       }
 
       return elBox.height
@@ -369,16 +372,18 @@ export default {
         class="msf-input__checkboxes"
         :class="listIsCollapsed ? 'msf-input__checkboxes--collapsed' : 'msf-input__checkboxes--is-expanded'"
       >
-        <FormCheckbox
-          v-for="(input, inputIndex) in checkboxes"
-          :key="`GroupedCheckboxes-g-${currentGroup}-c-${inputIndex}`"
-          :data="getCheckboxData(input)"
-          :selection="selection"
-          :index="`GroupedCheckboxes-g-${currentGroup}-c-${inputIndex}`"
-          :input-index="inputIndex"
-          :group-index="currentGroup"
-          @change="checkboxStateUpdate(input, inputIndex)"
-        />
+        <div class="msf-input__checkboxes-inner">
+          <FormCheckbox
+            v-for="(input, inputIndex) in checkboxes"
+            :key="`GroupedCheckboxes-g-${currentGroup}-c-${inputIndex}`"
+            :data="getCheckboxData(input)"
+            :selection="selection"
+            :index="`GroupedCheckboxes-g-${currentGroup}-c-${inputIndex}`"
+            :input-index="inputIndex"
+            :group-index="currentGroup"
+            @change="checkboxStateUpdate(input, inputIndex)"
+          />
+        </div>
       </div>
       <button
         v-if="collapseList && listIsCollapsed"
