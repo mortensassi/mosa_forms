@@ -28,7 +28,7 @@ export default {
     stepGroupIndex: {
       type: Number,
       default: null
-    },
+    }
   },
 
   setup(props) {
@@ -37,6 +37,44 @@ export default {
     const storedFields = store.state.form.entries.steps[currentStep.value].groups[props.stepGroupIndex].fields
     const storeEntry = computed(() => storedFields[props.realIndex])
     const setFormEntryHelper = inject('setFormEntry')
+    const errorMessage = ref('')
+
+
+    const effectiveMaxValue = computed(() => {
+      return props.maxValue || getCalculatedMaxValue()
+    })
+
+    function getCalculatedMaxValue() {
+      let maxValue = getMinRoomsValue(store.state.form.entries, 'minRooms')
+      if (maxValue) {
+        switch (maxValue) {
+          case '1-2': return 4;
+          case '2': return 4;
+          case '2-3': return 4;
+          case '3': return 5;
+          case '3-4': return 6;
+          case '4': return 6;
+          case '4-5': return 7;
+          case '>5': return 99;
+          default: return 99;
+        }
+      }
+      return 99; // Default max value if nothing else is specified
+    }
+
+    function getMinRoomsValue(formEntries, fieldKey) {
+      for (let step of formEntries.steps) {
+        for (let group of step.groups) {
+          for (let field of group.fields) {
+            if (field.value && field.value.fieldname === fieldKey) {
+              return field.value.userInput.choice;
+            }
+          }
+        }
+      }
+      return null;
+    }
+
     const setFormEntry = () => {
       setFormEntryHelper({
         step: currentStep.value,
@@ -57,6 +95,17 @@ export default {
       })
     }
 
+    const validateValues = () => {
+      const totalValue = inputValue.reduce((sum, input) => sum + input.val, 0)
+      if (totalValue > effectiveMaxValue.value) {
+        errorMessage.value = `Die angegebene Personenanzahl ist zu groß für die ausgewählte Wohnungsgröße. Bitte wählen Sie für diese Personenanzahl eine größere Wohnung.`
+        return false
+      } else {
+        errorMessage.value = ''
+        return true
+      }
+    }
+
     const validationRules = computed(() => {
       const rules = []
 
@@ -67,15 +116,19 @@ export default {
               required: helpers.withMessage(props.data.error_message || 'Fehler', required),
               numeric: helpers.withMessage(props.data.error_message || 'Fehler', numeric),
               minValue: helpers.withMessage(props.data.error_message || 'Fehler', minValue(props.data.inputs[i].min_val)),
+              maxValue: helpers.withMessage(``, (value) => {
+                const totalValue = inputValue.reduce((sum, input, index) => sum + (index === i ? value : input.val), 0)
+                return totalValue <= effectiveMaxValue.value
+              })
             }
           }
-        })  
+        })
       }
 
       return rules
     })
 
-    const v = useVuelidate()
+    const v = useVuelidate(validationRules, inputValue)
 
     const updateInputValue = (type, index) => {
       checkValue()
@@ -101,6 +154,7 @@ export default {
           arr[valI].val = 0
         }
       })
+      validateValues()
     }, { deep: true})
 
     onMounted(() => {
@@ -111,6 +165,7 @@ export default {
       } else {
         setFormEntry()
       }
+      v.value.$validate()
     })
 
     const checkValue = () => {
@@ -119,6 +174,8 @@ export default {
 
     return {
       inputValue,
+      errorMessage,
+      validateValues,
       updateInputValue,
       storeEntry,
       validationRules,
@@ -189,5 +246,11 @@ export default {
         </div>
       </template>
     </ValidateEach>
+    <div
+      v-if="errorMessage"
+      class="msf-input__validation msf-input__validation--count msf-input__validation--error"
+    >
+      {{ errorMessage }}
+    </div>
   </div>
 </template>

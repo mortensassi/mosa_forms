@@ -74,6 +74,10 @@ input[type="date"] {
 .msf-input-wrap {
   display: flex;
   align-items: center;
+
+  &:has(.msf-input__validation--count) {
+    position: relative;
+  }
 }
 
 .msf-input--btn-group {
@@ -259,6 +263,11 @@ input[type="date"] {
   position: absolute;
   top: calc(100% + 1.5rem);
   left: 0;
+
+  &.msf-input__validation--error {
+    @extend .c-input__validation--error !optional;
+    top: calc(100% + 0.6rem);
+  }
 
   .msf-input__control + &,
   .msf-input--select & {
