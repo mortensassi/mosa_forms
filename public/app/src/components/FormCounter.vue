@@ -48,13 +48,13 @@ export default {
       let maxValue = getMinRoomsValue(store.state.form.entries, 'minRooms')
       if (maxValue) {
         switch (maxValue) {
-          case '1-2': return 4;
-          case '2': return 4;
+          case '1-2': return 3.5;
+          case '2': return 3.5;
           case '2-3': return 4;
-          case '3': return 5;
-          case '3-4': return 6;
+          case '3': return 4.5;
+          case '3-4': return 5.5;
           case '4': return 6;
-          case '4-5': return 7;
+          case '4-5': return 6.5;
           case '>5': return 99;
           default: return 99;
         }
@@ -95,8 +95,12 @@ export default {
       })
     }
 
+    const calculateTotalValue = () => {
+      return inputValue[0].val + (inputValue[1].val * 0.75)
+    }
+
     const validateValues = () => {
-      const totalValue = inputValue.reduce((sum, input) => sum + input.val, 0)
+      const totalValue = calculateTotalValue()
       if (totalValue > effectiveMaxValue.value) {
         errorMessage.value = `Die angegebene Personenanzahl ist zu groß für die ausgewählte Wohnungsgröße. Bitte wählen Sie für diese Personenanzahl eine größere Wohnung.`
         return false
@@ -117,7 +121,7 @@ export default {
               numeric: helpers.withMessage(props.data.error_message || 'Fehler', numeric),
               minValue: helpers.withMessage(props.data.error_message || 'Fehler', minValue(props.data.inputs[i].min_val)),
               maxValue: helpers.withMessage(``, (value) => {
-                const totalValue = inputValue.reduce((sum, input, index) => sum + (index === i ? value : input.val), 0)
+                const totalValue = inputValue[0].val + ((i === 1 ? value : inputValue[1].val) * 0.75)
                 return totalValue <= effectiveMaxValue.value
               })
             }
