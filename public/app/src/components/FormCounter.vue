@@ -38,29 +38,31 @@ export default {
     const storeEntry = computed(() => storedFields[props.realIndex])
     const setFormEntryHelper = inject('setFormEntry')
     const errorMessage = ref('')
+    const isExceedingLimit = ref(false)
+
+    const apartmentSizeConditions = {
+      '1-2': { maxValue: 3.5, strict: true },
+      '2': { maxValue: 3.5, strict: false },
+      '2-3': { maxValue: 4, strict: false },
+      '3': { maxValue: 4.5, strict: true },
+      '3-4': { maxValue: 5.5, strict: false },
+      '4': { maxValue: 6, strict: true },
+      '4-5': { maxValue: 6.5, strict: false },
+      '>5': { maxValue: Infinity, strict: false }
+    }
 
 
     const effectiveMaxValue = computed(() => {
-      return props.maxValue || getCalculatedMaxValue()
+      const minRooms = getMinRoomsValue(store.state.form.entries, 'minRooms')
+      const condition = apartmentSizeConditions[minRooms] || { maxValue: Infinity, strict: false }
+      return condition.maxValue
     })
 
-    function getCalculatedMaxValue() {
-      let maxValue = getMinRoomsValue(store.state.form.entries, 'minRooms')
-      if (maxValue) {
-        switch (maxValue) {
-          case '1-2': return 3.5;
-          case '2': return 3.5;
-          case '2-3': return 4;
-          case '3': return 4.5;
-          case '3-4': return 5.5;
-          case '4': return 6;
-          case '4-5': return 6.5;
-          case '>5': return 99;
-          default: return 99;
-        }
-      }
-      return 99; // Default max value if nothing else is specified
-    }
+    const isStrictComparison = computed(() => {
+      const minRooms = getMinRoomsValue(store.state.form.entries, 'minRooms')
+      const condition = apartmentSizeConditions[minRooms] || { maxValue: Infinity, strict: false }
+      return condition.strict
+    })
 
     function getMinRoomsValue(formEntries, fieldKey) {
       for (let step of formEntries.steps) {
@@ -101,11 +103,13 @@ export default {
 
     const validateValues = () => {
       const totalValue = calculateTotalValue()
-      if (totalValue > effectiveMaxValue.value) {
+      if (isStrictComparison.value ? totalValue >= effectiveMaxValue.value : totalValue > effectiveMaxValue.value) {
         errorMessage.value = `Die angegebene Personenanzahl ist zu groß für die ausgewählte Wohnungsgröße. Bitte wählen Sie für diese Personenanzahl eine größere Wohnung.`
+        isExceedingLimit.value = true
         return false
       } else {
         errorMessage.value = ''
+        isExceedingLimit.value = false
         return true
       }
     }
@@ -120,10 +124,10 @@ export default {
               required: helpers.withMessage(props.data.error_message || 'Fehler', required),
               numeric: helpers.withMessage(props.data.error_message || 'Fehler', numeric),
               minValue: helpers.withMessage(props.data.error_message || 'Fehler', minValue(props.data.inputs[i].min_val)),
-              maxValue: helpers.withMessage(``, (value) => {
-                const totalValue = inputValue[0].val + ((i === 1 ? value : inputValue[1].val) * 0.75)
-                return totalValue <= effectiveMaxValue.value
-              })
+              notExceedingLimit: helpers.withMessage(
+                ``,
+                () => !isExceedingLimit.value
+              ),
             }
           }
         })
@@ -135,30 +139,26 @@ export default {
     const v = useVuelidate(validationRules, inputValue)
 
     const updateInputValue = (type, index) => {
-      checkValue()
-      if (inputValue[index].val >= 0 && inputValue[index].val < Number(props.data.inputs[index].max_val) ) {
-        if (type === 'increment') {
-          inputValue[index].val += 1
-        } else {
-          inputValue[index].val -= 1
-        }
-      } else {
-        inputValue[index].val = 0
+      const newValue = type === 'increment' ? inputValue[index].val + 1 : inputValue[index].val - 1
+      if (newValue >= 0) {
+        inputValue[index].val = newValue
       }
 
+      validateValues()
+      v.value.$validate()
       setFormEntry()
     }
 
     watch(inputValue, (arr) => {
       // Control max value handling
       arr.forEach((val, valI) => {
-        if (val.val > props.data.inputs[valI].max_val) {
-          arr[valI].val = Number(props.data.inputs[valI].max_val)
-        } else if (val.val < 0) {
+        if (val.val < 0) {
           arr[valI].val = 0
         }
       })
       validateValues()
+      v.value.$validate()
+      setFormEntry()
     }, { deep: true})
 
     onMounted(() => {
@@ -169,11 +169,14 @@ export default {
       } else {
         setFormEntry()
       }
+      validateValues()
       v.value.$validate()
     })
 
     const checkValue = () => {
+      validateValues()
       v.value.$validate()
+      setFormEntry()
     }
 
     return {
@@ -184,7 +187,11 @@ export default {
       storeEntry,
       validationRules,
       v,
-      checkValue
+      checkValue,
+      effectiveMaxValue,
+      calculateTotalValue,
+      isStrictComparison,
+      isExceedingLimit
     }
   }
 }
