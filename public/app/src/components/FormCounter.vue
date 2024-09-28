@@ -43,12 +43,12 @@ export default {
     const apartmentSizeConditions = {
       '1-2': { maxValue: 3.5, strict: true },
       '2': { maxValue: 3.5, strict: false },
-      '2-3': { maxValue: 4, strict: false },
-      '3': { maxValue: 4.5, strict: true },
-      '3-4': { maxValue: 5.5, strict: false },
-      '4': { maxValue: 6, strict: true },
-      '4-5': { maxValue: 6.5, strict: false },
-      '>5': { maxValue: Infinity, strict: false }
+      '2-3': { maxValue: 4, strict: true },
+      '3': { maxValue: 4.5, strict: false },
+      '3-4': { maxValue: 5.5, strict: true },
+      '4': { maxValue: 6, strict: false },
+      '4-5': { maxValue: 6.5, strict: true },
+      '>5': { maxValue: Infinity, strict: true }
     }
 
 
