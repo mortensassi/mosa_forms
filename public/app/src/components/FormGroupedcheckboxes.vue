@@ -187,6 +187,9 @@ export default {
       return elBox.height
     })
 
+    // Add a key to force re-render of checkboxes when group changes
+    const checkboxKey = ref(0)
+
     const setCurrentGroup = (index) => {
       if (storeEntry.value) {
         storeEntry.value.value.location = props.data.groups[index].name
@@ -194,6 +197,8 @@ export default {
       }
 
       currentGroup.value = index
+      // Increment the key to force re-render
+      checkboxKey.value++
     }
 
     const preselectedCheckboxes = computed(() => {
@@ -268,33 +273,52 @@ export default {
       }
     }
 
+    const setupTooltips = () => {
+      nextTick(() => {
+        if (checkboxesEl.value) {
+          const checkboxes = checkboxesEl.value.querySelectorAll('.msf-input--checkbox')
+          checkboxes.forEach(checkbox => {
+            const trigger = checkbox.querySelector('.u-tooltip__icon-wrap')
+            const tooltipEl = checkbox.querySelector('.u-tooltip__content')
+
+            if (tooltipEl) {
+              const showEvents = ['mouseover', 'focus'];
+              const hideEvents = ['mouseleave', 'blur'];
+
+              // Remove existing event listeners
+              showEvents.forEach(e => {
+                trigger.removeEventListener(e, () => showTooltip(checkbox, trigger, tooltipEl))
+              })
+              hideEvents.forEach(e => {
+                trigger.removeEventListener(e, () => hideTooltip(tooltipEl))
+              })
+
+              // Add new event listeners
+              showEvents.forEach(e => {
+                trigger.addEventListener(e, () => showTooltip(checkbox, trigger, tooltipEl))
+              })
+              hideEvents.forEach(e => {
+                trigger.addEventListener(e, () => hideTooltip(tooltipEl))
+              })
+            }
+          })
+        }
+      })
+    }
+
     onMounted(() => {
       makeSelection()
+      setupTooltips()
+    })
 
-      if (checkboxesEl.value) {
-        const checkboxes = checkboxesEl.value.querySelectorAll('.msf-input--checkbox')
-        checkboxes.forEach(checkbox => {
-          const trigger = checkbox.querySelector('.u-tooltip__icon-wrap')
-          const tooltipEl = checkbox.querySelector('.u-tooltip__content')
-
-          if (tooltipEl) {
-            const showEvents = ['mouseover', 'focus'];
-            const hideEvents = ['mouseleave', 'blur'];
-
-            showEvents.forEach(e => {
-              trigger.addEventListener(e, () => showTooltip(checkbox, trigger, tooltipEl))
-            })
-            hideEvents.forEach(e => {
-              trigger.addEventListener(e, () => hideTooltip(tooltipEl))
-            })
-          }
-        })
-      }
+    watch(currentGroup, () => {
+      setupTooltips()
     })
 
     return {
       checkboxesEl,
       currentGroup,
+      checkboxKey,
       checkboxes,
       selection,
       collapseList,

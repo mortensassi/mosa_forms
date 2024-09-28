@@ -2,7 +2,7 @@
 import {useVuelidate} from '@vuelidate/core'
 import {required, helpers} from '@vuelidate/validators'
 import store from '@/store'
-import {inject, onMounted, computed, ref} from 'vue'
+import {inject, onMounted, computed, ref, watch} from 'vue'
 
 export default {
   name: 'FormCheckbox',
@@ -54,6 +54,44 @@ export default {
       default: ''
     }
   },
+  setup(props) {
+    const showTooltip = inject('showTooltip')
+    const hideTooltip = inject('hideTooltip')
+
+    const setupTooltip = () => {
+      const checkbox = document.getElementById(`msf-input-${props.index}`)
+      if (checkbox) {
+        const trigger = checkbox.querySelector('.u-tooltip__icon-wrap')
+        const tooltipEl = checkbox.querySelector('.u-tooltip__content')
+
+        if (tooltipEl && trigger) {
+          const showEvents = ['mouseover', 'focus']
+          const hideEvents = ['mouseleave', 'blur']
+
+          showEvents.forEach(e => {
+            trigger.removeEventListener(e, () => showTooltip(checkbox, trigger, tooltipEl))
+            trigger.addEventListener(e, () => showTooltip(checkbox, trigger, tooltipEl))
+          })
+          hideEvents.forEach(e => {
+            trigger.removeEventListener(e, () => hideTooltip(tooltipEl))
+            trigger.addEventListener(e, () => hideTooltip(tooltipEl))
+          })
+        }
+      }
+    }
+
+    onMounted(() => {
+      setupTooltip()
+    })
+
+    watch(() => props.groupIndex, () => {
+      setTimeout(setupTooltip, 0)
+    })
+
+    return {
+      setupTooltip
+    }
+  }
 }
 </script>
 
@@ -75,7 +113,7 @@ export default {
           :id="`msf-input-${index}-tooltip`"
           role="tooltip"
           class="u-tooltip__content"
-        > 
+        >
 
           <table class="u-tooltip__table">
             <caption>Wohnungen der Volkswohnung<br/>in {{data.label}}</caption>
