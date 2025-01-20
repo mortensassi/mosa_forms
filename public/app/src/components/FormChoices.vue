@@ -42,11 +42,89 @@ export default {
       return props.data.buttons.filter(button => button.selected)
     })
 
+    function getFormFieldNumberValue(formEntries, fieldKey) {
+      for (let step of formEntries.steps) {
+        for (let group of step.groups) {
+          for (let field of group.fields) {
+
+            if(field.type === 'price_range') {
+              if (field.value && field.value.fieldname.includes(fieldKey)) {
+
+                // Check if inputData.collection exists and is an array
+                if (Array.isArray(field.value.inputData?.collection)) {
+                  // Extract the "val" from each object in the collection
+                  const mergedValue = field.value.inputData.collection.reduce((sum, item) => {
+                    return sum + (item.val || 0); // Default to 0 if val is missing
+                  }, 0);
+                  return mergedValue;
+                } else {
+                  return 0; // Default value if collection is not valid
+                }
+              }
+            } else {
+              if (field.value && field.value.fieldname === fieldKey) {
+                if (Array.isArray(field.value.userInput)) {
+                  // Sum up the "value" from each object in the array
+                  const mergedValue = field.value.userInput.reduce((sum, item) => {
+                    return sum + (item.value || 0); // Default to 0 if value is missing
+                  }, 0);
+                  return mergedValue;
+                } else if (field.value.userInput && typeof field.value.userInput === 'object') {
+                  // Return "value" directly if userInput is an object
+                  return field.value.userInput.value || 0;
+                }
+              }
+            }
+          }
+        }
+      }
+      return 0; // Return default value if not found
+    }
+
+    const validateKDU = () => {
+      if (!props.data.is_kdu_check ||
+        !selection.value ||
+        props.data.buttons[selection.value]?.text !== "Ja") {
+        console.log('Validation passed: No KDU check required');
+        return true;
+      }
+
+      const anzahlPersonen = getFormFieldNumberValue(store.state.form.entries, 'anzahlPersonen');
+      const maxPrice = getFormFieldNumberValue(store.state.form.entries, 'maxPrice');
+      console.log('adultCount:', anzahlPersonen, 'maxPrice:', maxPrice);
+
+      const numberOfPeople = anzahlPersonen || 0;
+      const maxRent = maxPrice || 0;
+      console.log('numberOfPeople:', numberOfPeople, 'maxRent:', maxRent);
+
+      const kduRates = props.data.kdu_rates;
+
+      let allowedRent = 0;
+      if (numberOfPeople <= 1) allowedRent = parseInt(kduRates.persons_one);
+      else if (numberOfPeople === 2) allowedRent = parseInt(kduRates.persons_two);
+      else if (numberOfPeople === 3) allowedRent = parseInt(kduRates.persons_three);
+      else if (numberOfPeople === 4) allowedRent = parseInt(kduRates.persons_four);
+      else if (numberOfPeople === 5) allowedRent = parseInt(kduRates.persons_five);
+      else {
+        const additionalPeople = numberOfPeople - 5;
+        allowedRent = parseInt(kduRates.persons_five) + (additionalPeople * parseInt(kduRates.persons_additional));
+      }
+
+      console.log('allowedRent:', allowedRent);
+      return maxRent <= allowedRent;
+    };
+
     const validationRules = computed(() => {
       const rules = {}
 
       if (props.data.is_required) {
         rules.required = helpers.withMessage(props.data.error_message || 'Fehler', required)
+      }
+
+      if (props.data.is_kdu_check) {
+        rules.kdu = helpers.withMessage(props.data.kdu_rates.error_message,
+          validateKDU
+        )
       }
 
       return rules
@@ -81,6 +159,15 @@ export default {
         selection.value = v.value.id
       }
     })
+
+    watch(
+      [() => store.state.form.entries, selection],
+      () => {
+        v$.value.$validate() // Trigger revalidation whenever dependencies change
+      },
+      { deep: true }
+    )
+
 
     onMounted(() => {
       if (storeEntry.value) {
@@ -117,7 +204,14 @@ export default {
       }
     })
 
-    return { choices, selection, storeEntry, makeChoice, selectedChoices, v$ }
+    const errorMessage = computed(() => {
+      if (v$.value.$errors.length > 0) {
+        return v$.value.$errors[0].$message
+      }
+      return null
+    })
+
+    return { choices, selection, storeEntry, makeChoice, selectedChoices, v$, errorMessage }
   }
 }
 </script>
@@ -161,6 +255,12 @@ export default {
           </span>
         </span>
     </button>
+    <div
+      v-if="errorMessage"
+      class="msf-input__validation msf-input__validation--choice msf-input__validation--error"
+    >
+      {{ errorMessage }}
+    </div>
   </div>
 </template>
 
@@ -202,5 +302,9 @@ export default {
     width: 1.6875rem;
     height: 1.6875rem;
   }
+}
+
+.msf-input__validation--choice {
+  margin-top: -1.5em;
 }
 </style>

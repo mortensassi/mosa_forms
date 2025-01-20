@@ -378,6 +378,7 @@ return [
 																		  ->delay()
 																		  ->mediaUpload(false)
 																		  ->toolbar('mosa_forms_toolbar'),
+
 														 ]),
 												   Layout::make(__('Counter', 'mosa'), 'counter')
 														 ->fields([
@@ -466,7 +467,53 @@ return [
 																					 'has_info'
 																				 )->equals(1)
 																			 ])
-																	 ])
+																	 ]),
+
+															 TrueFalse::make(__('KDU Check', 'mosa'), 'is_kdu_check')
+																 ->stylisedUi()
+																 ->wrapper([
+																	 'width' => '50%'
+																 ]),
+
+															 Group::make(__('KDU Raten','mosa'), 'kdu_rates')
+																 ->conditionalLogic([
+																	 ConditionalLogic::if('is_kdu_check')->equals(1)
+																 ])
+																 ->fields([
+																	 Number::make(__('Max Miete Warm', 'mosa'), 'persons_one')
+																		 ->prepend('1 Person')
+																		 ->append('€')
+																		 ->required(),
+
+																	 Number::make(__('Max Miete Warm', 'mosa'), 'persons_two')
+																		 ->prepend('2 Personen')
+																		 ->append('€')
+																		 ->required(),
+
+																	 Number::make(__('Max Miete Warm', 'mosa'), 'persons_three')
+																		 ->prepend('3 Personen')
+																		 ->append('€')
+																		 ->required(),
+
+																	 Number::make(__('Max Miete Warm', 'mosa'), 'persons_four')
+																		 ->prepend('4 Personen')
+																		 ->append('€')
+																		 ->required(),
+
+																	 Number::make(__('Max Miete Warm', 'mosa'), 'persons_five')
+																		 ->prepend('5 Personen')
+																		 ->append('€')
+																		 ->required(),
+
+																	 Number::make(__('Max Miete Warm', 'mosa'), 'persons_additional')
+																		 ->prepend('jede weitere Person')
+																		 ->append('€')
+																		 ->required(),
+
+																	 Textarea::make(__('Fehlermeldung', 'mosa'), 'error_message')
+																		 ->newLines('br')
+																		 ->required(),
+																 ])
 														 ]),
 												   Layout::make(__('Country Select', 'mosa'), 'countries')
 												   	->fields([
