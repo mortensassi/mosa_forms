@@ -258,9 +258,8 @@ export default {
     <div
       v-if="errorMessage"
       class="msf-input__validation msf-input__validation--choice msf-input__validation--error"
-    >
-      {{ errorMessage }}
-    </div>
+      v-html="errorMessage"
+    ></div>
   </div>
 </template>
 

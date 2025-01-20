@@ -510,8 +510,8 @@ return [
 																		 ->append('€')
 																		 ->required(),
 
-																	 Textarea::make(__('Fehlermeldung', 'mosa'), 'error_message')
-																		 ->newLines('br')
+																	 WysiwygEditor::make(__('Fehlermeldung', 'mosa'), 'error_message')
+																		 ->mediaUpload(false)
 																		 ->required(),
 																 ])
 														 ]),
