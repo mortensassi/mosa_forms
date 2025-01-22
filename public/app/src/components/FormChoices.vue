@@ -304,6 +304,12 @@ export default {
 }
 
 .msf-input__validation--choice {
-  margin-top: -1.5em;
+  position: relative;
+  top: 0;
+  @include bp($large-bp) {
+    position: absolute;
+    margin-top: -1.5em;
+    top: calc(100% + 0.6rem);
+  }
 }
 </style>
